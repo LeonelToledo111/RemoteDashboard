@@ -1,1 +1,1 @@
-web: gunicorn serverDashboard.wsgi.py --log-file -
+web: gunicorn serverDashboard.wsgi --log-file -
