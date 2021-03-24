@@ -1,0 +1,57 @@
+{
+  "name": "dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@turf/turf": "^6.3.0",
+    "axios": "^0.19.2",
+    "create-react-class": "^15.7.0",
+    "deck.gl": "^8.4.10",
+    "mapbox-gl": "^0.39.1",
+    "python-shell": "^1.0.8",
+    "react": "^16.14.0",
+    "react-csv-reader": "^3.1.2",
+    "react-datepicker": "^2.16.0",
+    "react-dom": "^16.14.0",
+    "react-dropdown": "^1.9.2",
+    "react-json-table": "^0.1.1",
+    "react-json-to-table": "^0.1.7",
+    "react-map-gl": "^6.1.10",
+    "react-new-window": "^0.1.2",
+    "react-perfect-scrollbar": "^1.5.8",
+    "react-redux": "^7.2.2",
+    "react-scripts": "3.3.1",
+    "react-scrollbar": "^0.5.6",
+    "react-shadow-scroll": "^1.0.1",
+    "redux": "^4.0.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^4.2.0"
+  }
+}
