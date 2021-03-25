@@ -28,8 +28,8 @@ const items = [
       { name: "climate", label: "Climate", onClick },
       { name: "losses", label: "Losses Computation", onClick },
       { name: "payout", label: "Payout Optimization", onClick },
-      { name: "metClone1", label: "metClone1", onClick },
-      { name: "metClone2", label: "metClone2", onClick }
+      { name: "metClone1", label: "Hydro-Meteorological Variables", onClick },
+      { name: "metClone2", label: "High Resolution Meteorological Varibles", onClick }
     ]
   },
   "divider",
