@@ -125,78 +125,47 @@ function  MetClone2() {
     const maxLat = useSelector(state=>state.max_lat);
 
         const items = [
-            { id: 1, label: "10m u-component of wind", value: "true" },
-            { id: 2, label: "10m v-component of wind", value: "false" },
-            { id: 3, label: "2m dewpoint temperature", value: "true"},
-            { id: 4, label: "2m temperature", value: "false" },
-            { id: 5, label: "Evaporation from bare soil", value: "false" },
-            { id: 6, label: "Evaporation from open water surfaces excluding oceans", value: "false" },
-            { id: 7, label: "Evaporation from the top of canopy", value: "false" },
-            { id: 8, label: "Evaporation from vegetation transpiration", value: "false" },
-            { id: 9, label: "Forecast albedo", value: "false" },
-            { id: 10, label: "Lake bottom temperature", value: "false" },
-            { id: 11, label: "Lake ice depth", value: "false" },
-            { id: 12, label: "Lake ice temperature", value: "false" },
-            { id: 13, label: "Lake mix-layer depth", value: "false" },
-            { id: 14, label: "Lake mix-layer temperature", value: "false" },
-            { id: 15, label: "Lake shape factor", value: "false" },
-            { id: 16, label: "Lake total layer temperature", value: "false" },
-            { id: 17, label: "Leaf area index, high vegetation", value: "false" },
-            { id: 18, label: "Leaf area index, low vegetation", value: "false" },
-            { id: 19, label: "Potential evaporation", value: "false" },
-            { id: 20, label: "Runoff", value: "false" },
-            { id: 21, label: "Skin reservoir content", value: "false" },
-            { id: 22, label: "Skin temperature", value: "false" },
-            { id: 23, label: "Snow albedo", value: "false" },
-            { id: 24, label: "Snow cover", value: "false" },
-            { id: 25, label: "Snow density", value: "false" },
-            { id: 26, label: "Snow depth", value: "false" },
-            { id: 27, label: "Snow depth water equivalent", value: "false" },
-            { id: 28, label: "Snow evaporation", value: "false" },
-            { id: 29, label: "Snowfall", value: "false" },
-            { id: 30, label: "Snowmelt", value: "false" },
-            { id: 31, label: "Soil temperature level 1", value: "false" },
-            { id: 32, label: "Soil temperature level 2", value: "false" },
-            { id: 33, label: "Soil temperature level 3", value: "false" },
-            { id: 34, label: "Soil temperature level 4", value: "false" },
-            { id: 35, label: "Sub-surface runoff", value: "false" },
-            { id: 36, label: "Surface latent heat flux", value: "false" },
-            { id: 37, label: "Surface net solar radiation", value: "false" },
-            { id: 38, label: "Surface net thermal radiation", value: "false" },
-            { id: 39, label: "Surface pressure", value: "false" },
-            { id: 40, label: "Surface runoff", value: "false" },
-            { id: 41, label: "Surface sensible heat flux", value: "false" },
-            { id: 42, label: "Surface solar radiation downwards", value: "false" },
-            { id: 43, label: "Surface thermal radiation downwards", value: "false" },
-            { id: 44, label: "Temperature of snow layer", value: "false" },
-            { id: 45, label: "Total evaporation", value: "false" },
-            { id: 46, label: "Total precipitation", value: "false" },
-            { id: 47, label: "Volumetric soil water layer 1", value: "false" },
-            { id: 48, label: "Volumetric soil water layer 2", value: "false" },
-            { id: 49, label: "Volumetric soil water layer 3", value: "false" },
-            { id: 50, label: "Volumetric soil water layer 4", value: "false" },
-            { id: 51, label: "Select All" }
+            { id: 1, label: "Sentinel-1 SAR", value: "true" },
+            { id: 2, label: "Sentinel-2 MSI", value: "false" },
+            { id: 3, label: "Sentinel-3 OLCI", value: "true"},
+            { id: 4, label: "Sentinel-3 Synergy", value: "false" },
+            { id: 5, label: "Sentinel-3 Altimetry", value: "false" },
+            { id: 6, label: "Sentinel-5 TROPOMI", value: "false" },
+            { id: 7, label: "LandSat", value: "false" },
+            { id: 8, label: "Sentinel-C", value: "false" },       
+            { id: 9, label: "Select All" }
           ];
 
           const dataSets = [
-            { id: 1, label: "CHIRPS" },
-            { id: 2, label: "CMORPH" },
-            { id: 3, label: "ARC 2" },
-            { id: 4, label: "RFE" },
+            { id: 1, label: "Maize" },
+            { id: 2, label: "Sweet maize" },
+            { id: 3, label: "Rice" },
+            { id: 4, label: "Wheat" },
+            { id: 5, label: "Sunflower" },
+            { id: 6, label: "Tobacco" },
+            { id: 7, label: "Soybean" },
+            { id: 8, label: "Sugar cane" },
+            { id: 9, label: "Cashew" },
           ];
 
           const processedVariables = [
-            { id: 1, label: "Potential Evapotranspiration" },
-            { id: 2, label: "Onset of Planting date" },
-            { id: 3, label: "Soil Moisture" },
-            { id: 4, label: "Select All" },
+            { id: 1, label: "Plot boundaries" },
+            { id: 2, label: "Leaf area index" },
+            { id: 3, label: "Sowing date" },
+            { id: 4, label: "Harvest date" },
+            { id: 5, label: "Crop yield" },
+            { id: 6, label: "GHG-1" },
+            { id: 7, label: "GHG-2" },
+            { id: 8, label: "Soil moisture" },
+            { id: 9, label: "Flood" },
+            { id: 10, label: "Select All" },
           ];
 
         return ( 
         <div>
             <div>
                 <div className = "variables"> 
-                <h3 id ="example">ERA5Land (ECMWF)</h3>
+                <h3 id ="example">High-resolution dataset</h3>
                 <Divider style={{ margin: "6px 0" }} />
     
                     <div id ="CheckBoxGroupTest" className="blockVariables">  
