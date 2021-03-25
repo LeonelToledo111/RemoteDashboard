@@ -152,7 +152,7 @@ function  MetClone1() {
         <div>
             <div>
                 <div className = "variables"> 
-                <h3 id ="example">Modelling Framework (ECMWF)</h3>
+                <h3 id ="example">Modelling Framework</h3>
                 <Divider style={{ margin: "6px 0" }} />
     
                     <div id ="CheckBoxGroupTest" className="blockVariables">  
