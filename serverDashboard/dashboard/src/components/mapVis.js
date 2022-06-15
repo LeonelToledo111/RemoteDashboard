@@ -164,7 +164,6 @@ class MapboxContainerVis extends React.Component {
           </div>
           
         </div>
-        <CSVReader onFileLoaded={(data, fileInfo, originalFile) => console.dir(data, fileInfo, originalFile)} />
         
       </div>
     );
