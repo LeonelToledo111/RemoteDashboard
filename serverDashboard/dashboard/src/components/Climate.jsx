@@ -15,7 +15,7 @@ async function postClimateVariables(){
         }
       };
 
-    const response = await axios.post('http://192.168.1.134:8000/climateVariablesHandler', {
+    const response = await axios.post('http://127.0.0.1:8000/climateVariablesHandler', {
         firstName: 'Fred',
         lastName: 'Flintstone'
       },axiosConfig)
