@@ -24,17 +24,12 @@ class MapboxContainerVis extends React.Component {
     };
     
     this.refTileLayerTiff = React.createRef();
-    this.refSliderTime = React.createRef();
-    this.refTextVar=React.createRef();
     this.refColorBar=React.createRef();
     this.refMapInfo=React.createRef();
-    this.fileNameNetCDF =''
   }
-  
-  
 
-  serverTiffasy = async (selectFile) => {
-    console.log("Click en serverTiff:",selectFile);
+  
+  serverTiffasy = async (confFile) => {
     let axiosConfig = {
       headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -43,42 +38,24 @@ class MapboxContainerVis extends React.Component {
       }
     };
 
-    if(selectFile)
-      this.refSliderTime.current.value=0
-    
-    let timei=this.refSliderTime.current.value
-    // https://codesandbox.io/s/0l64q?file=/src/components/GeoTiffLayer.js
-    const response = await axios.post('http://127.0.0.1:8000/getGeoTiffHandle', {
-        file:this.fileNameNetCDF,
-        selectFile: selectFile,
-        timei:timei
-      },axiosConfig)
+    const response = await axios.post('http://127.0.0.1:8000/getGeoTiffHandle', confFile ,axiosConfig)
+
 
     let link="http://localhost:"+response.data.port+"/tiles/{z}/{x}/{y}.png?";
     link+="filename="+response.data.fileNameTiff;
     link+="&projection=EPSG:3857";
-    link+="&band=1&palette=colorbrewer.diverging.RdYlGn_11";
+    link+=`&band=${response.data.band}`
+    link+="&palette=colorbrewer.diverging.RdYlGn_11";
     if(response.data['ext']=='tif'){
       link+="&min="+response.data['minRAW'];
       link+="&max="+response.data['maxRAW'];
     }
-    
-    // link+="&band=1&palette=colorbrewer.cyclic.hsv"
-    Object.entries(response.data).forEach(([key,value]) => {
-      console.log(key+' '+value);
-    });
-
-    this.fileNameNetCDF=response.data.fileNameNetCDF;
     this.refTileLayerTiff.current.setUrl(link);
-    this.refSliderTime.current.max=response.data['timeN']-1
-    this.refTextVar.current.innerText=("    "+response.data['nameVar']+"    "+response.data['datei']).replace(/ /g, "\u00a0")
-    console.log("***********")
-    console.log("******ColorBar ",this.refColorBar)
-    this.refColorBar.state.title=response.data['nameVar'];
+
+    this.refColorBar.state.title=response.data['var'];
     this.refColorBar.state.min=response.data['min'].toFixed(2);
     this.refColorBar.state.max=response.data['max'].toFixed(2);
     this.refColorBar.props.map.update();
-    console.log("link:",link);
   }
 
   INITIAL_VIEW_STATE = {
@@ -131,12 +108,6 @@ class MapboxContainerVis extends React.Component {
                     opacity={0.8}
                     ref={this.refTileLayerTiff}
                   />
-                  <Circle
-                    center={center}
-                    pathOptions={{ color: 'green', fillColor: 'green' }}
-                    radius={100}
-                  />
-                  
                 </LayerGroup>
               </LayersControl.Overlay>
               
@@ -147,20 +118,35 @@ class MapboxContainerVis extends React.Component {
 
         <div>
           <div>
-            <button onClick={()=>this.serverTiffasy(true)}
-                    style={{background: "rgb(230, 230, 230)"}}
-            >
-              netCDF
+            
+            <button onClick={()=>this.serverTiffasy({
+              // file:"/media/alex/Datos/netcdf/Zimbabwe/ssr/ssr-N(-16.0):W(30.0):S(-19.0):E(33.0)-31x31-1980.1.1_0:0:0-1989.12.31_23:0:0.nc",
+              file:"/media/alex/Datos/netcdf/Mali/wind/wind10m-N(14.0):W(-6.0):S(11.0):E(-3.0)-31x31-1980.1.1_0:0:0-1989.12.31_23:0:0.nc",
+              var:"v10",
+              time:100
+              }) }
+              style={{background: "rgb(255, 128, 128)"}}
+              >
+                netCDF
             </button>
-            <span ref={this.refTextVar} style={{ width:"40%" }}></span>
-          </div>
-          <div>
-            <input ref={this.refSliderTime}
-                  onClick={()=>this.serverTiffasy(false)}
-                  type="range" min="0" max="0"
-                  defaultValue="0" step="1"
-                  style={{ width:"100%" }}
-            />
+            <button onClick={()=>this.serverTiffasy({
+              file:"/media/alex/Datos/CSV/structure_import.csv",
+              var:"phase3.start"
+              }) }
+              style={{background: "rgb(128, 255, 128)"}}
+              >
+                CSV
+            </button>
+
+            <button onClick={()=>this.serverTiffasy({
+              file:"/media/alex/Datos/SENTINEL/SENTINEL2A_20210603-082236-074_L2A_T35LRL_C_V1-0_ATB_R1.tif",
+              band:1
+              }) }
+              style={{background: "rgb(128, 128, 255)"}}
+              >
+                Tif
+            </button>
+
           </div>
           
         </div>
