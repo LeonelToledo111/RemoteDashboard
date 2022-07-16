@@ -5,12 +5,13 @@ import { MapContainer, TileLayer, ScaleControl, LayersControl, Popup, Marker, ic
 
 import CSVReader from 'react-csv-reader'
 import ColorBar from './ColorBar';
+import SliderL from './SliderL';
 // import CustomMarker from './CustomMarker';
 import MapInfo from "./MapInfo";
 import { LineUtil } from 'leaflet';
 
-
-
+//agregar botón
+//https://stackoverflow.com/questions/68414583/custom-button-on-the-leaflet-map-with-react-leaflet-version3
 
 
 const MAPBOX_ACCESS_TOKEN  = 'pk.eyJ1IjoibGlnaHRidXJuIiwiYSI6ImNpeXViOGptcDAwMmYzMmxmZml6am0xZG0ifQ.FiaHv8Pwcxr_LyuxMtry3w';
@@ -26,10 +27,17 @@ class MapboxContainerVis extends React.Component {
     this.refTileLayerTiff = React.createRef();
     this.refColorBar=React.createRef();
     this.refMapInfo=React.createRef();
+    this.refSlider=React.createRef();
+    this.backConfFile =''
   }
 
   
   serverTiffasy = async (confFile) => {
+    // console.log("confFile: ",confFile)
+    if( confFile == undefined ){
+      confFile=this.backConfFile;
+      confFile.time=this.refSlider.state.value;
+    }
     let axiosConfig = {
       headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -56,6 +64,21 @@ class MapboxContainerVis extends React.Component {
     this.refColorBar.state.min=response.data['min'].toFixed(2);
     this.refColorBar.state.max=response.data['max'].toFixed(2);
     this.refColorBar.props.map.update();
+
+    
+
+    if(response.data['ext']=='nc'){
+      this.refSlider.state.show=true;
+      this.refSlider.state.max=response.data['timeN']-1
+    }
+    else{
+      this.refSlider.state.show=false;
+    }
+    
+
+    this.refSlider.props.map.update();
+    this.backConfFile=confFile;
+    
   }
 
   INITIAL_VIEW_STATE = {
@@ -87,9 +110,19 @@ class MapboxContainerVis extends React.Component {
               url={url}
               format="image/png"
             />
-
             
-            <ColorBar  childRef={ref => (this.refColorBar= ref)} />
+            <ColorBar
+              childRef={ref => (this.refColorBar= ref)}
+              position="bottomright"
+            />
+
+            <SliderL
+              childRef={ref => (this.refSlider= ref)}
+              show={false}
+              position="bottomright"
+              // event={ () => {console.log("Hola Slider")} }
+              event = { this.serverTiffasy }
+            />
             {/* <CustomMarker /> */}
             
 
@@ -114,9 +147,9 @@ class MapboxContainerVis extends React.Component {
             </LayersControl>
 
           </MapContainer>
-        </div>
+        {/* </div>
 
-        <div>
+        <div> */}
           <div>
             
             <button onClick={()=>this.serverTiffasy({
@@ -129,6 +162,7 @@ class MapboxContainerVis extends React.Component {
               >
                 netCDF
             </button>
+
             <button onClick={()=>this.serverTiffasy({
               file:"/media/alex/Datos/CSV/structure_import.csv",
               var:"phase3.start"
