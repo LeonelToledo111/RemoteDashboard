@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { useMap } from "react-leaflet";
 import L from 'leaflet';
-import {mapColor} from './mapColor.json'
 
 
 // https://stackoverflow.com/questions/52012591/react-leaflet-create-a-custom-components/52067137#52067137
@@ -24,41 +23,47 @@ class SliderL extends React.Component {
     }
 
     createControl() {
-        const ColorBar = L.Control.extend({
+        const SliderL = L.Control.extend({
             options:{
                 //top right, topleft, bottom right, bottom left
                 position: this.props.position || 'bottomleft',
             },
 
             onAdd: (map) => {
+              this.map=map;
 
+              console.log("******SliderL*******",this.state.min, this.state.max)
               const container = L.DomUtil.create('div','sliderL-container');
               this.container = container;
-              this._makeSlider(container);
-              map.update=()=>{
+              this.makeSlider(this.container);
+              
+              
+              console.log("this.map: ",this.map)
+              this.update=()=>{
+                console.log("******update SliderL*******")
                 if( this.state.show ){
                     this.control.addTo(map);
                 }                    
                 else{
                     this.control.remove(map);
                 }
-                    
-                //   this._container.innerHTML = this.makeBar();
+                // this.makeSlider(this.container);                    
+                  // this.container.innerHTML = this.makeBar();
               };
               
-              return container;
+              return this.container;
             },
 
             onRemove: function (map) {
               // Nothing to do here
             }
         });
-        return new ColorBar();
+        return new SliderL();
         // return new ColorBar({ position: "bottomleft" });
         // return new MapInfo({ position: this.props.position });
     }
 
-    _makeSlider(container){
+    makeSlider(container){
         const label = L.DomUtil.create('p', 'sliderL-label',container);
         this.label=label;
         label.innerHTML = this.state.title+' '+this.state.value;

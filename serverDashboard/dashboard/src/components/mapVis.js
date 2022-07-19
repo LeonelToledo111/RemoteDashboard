@@ -6,16 +6,18 @@ import { MapContainer, TileLayer, ScaleControl, LayersControl, Popup, Marker, ic
 import CSVReader from 'react-csv-reader'
 import ColorBar from './ColorBar';
 import SliderL from './SliderL';
-// import CustomMarker from './CustomMarker';
 import MapInfo from "./MapInfo";
+
+// import CustomMarker from './CustomMarker';
+
 import { LineUtil } from 'leaflet';
+
 
 //agregar botón
 //https://stackoverflow.com/questions/68414583/custom-button-on-the-leaflet-map-with-react-leaflet-version3
 
 
 const MAPBOX_ACCESS_TOKEN  = 'pk.eyJ1IjoibGlnaHRidXJuIiwiYSI6ImNpeXViOGptcDAwMmYzMmxmZml6am0xZG0ifQ.FiaHv8Pwcxr_LyuxMtry3w';
-
 
 class MapboxContainerVis extends React.Component {
 
@@ -25,18 +27,22 @@ class MapboxContainerVis extends React.Component {
     };
     
     this.refTileLayerTiff = React.createRef();
-    this.refColorBar=React.createRef();
-    this.refMapInfo=React.createRef();
-    this.refSlider=React.createRef();
+    this.refColorBar      = React.createRef();
+    this.refSliderL       = React.createRef();
+    //this.refSlider        = React.createRef();
+    this.refMapInfo       = React.createRef();
     this.backConfFile =''
   }
 
   
   serverTiffasy = async (confFile) => {
     // console.log("confFile: ",confFile)
+
+    // console.log("refSlider:",this.refSlider)
+    // console.log("**refColorBar:",this.refColorBar)
     if( confFile == undefined ){
       confFile=this.backConfFile;
-      confFile.time=this.refSlider.state.value;
+      confFile.time=this.refSliderL.state.value;
     }
     let axiosConfig = {
       headers: {
@@ -58,25 +64,31 @@ class MapboxContainerVis extends React.Component {
       link+="&min="+response.data['minRAW'];
       link+="&max="+response.data['maxRAW'];
     }
+
+    Object.entries(response.data).forEach(([key,value]) => {
+      console.log(key+' '+value);
+    });
+
     this.refTileLayerTiff.current.setUrl(link);
 
     this.refColorBar.state.title=response.data['var'];
     this.refColorBar.state.min=response.data['min'].toFixed(2);
     this.refColorBar.state.max=response.data['max'].toFixed(2);
-    this.refColorBar.props.map.update();
-
-    
+    //this.refColorBar.props.map.update();
+    this.refColorBar.update();
+    // this.refColorBar.current.map.update();
 
     if(response.data['ext']=='nc'){
-      this.refSlider.state.show=true;
-      this.refSlider.state.max=response.data['timeN']-1
+      this.refSliderL.state.show=true;
+      this.refSliderL.state.max=response.data['timeN']-1
     }
     else{
-      this.refSlider.state.show=false;
+      this.refSliderL.state.show=false;
     }
-    
+    this.refSliderL.update();
+    // this.refSlider.props.map.update();
+    // this.refSlider.current.map.update();
 
-    this.refSlider.props.map.update();
     this.backConfFile=confFile;
     
   }
@@ -117,10 +129,9 @@ class MapboxContainerVis extends React.Component {
             />
 
             <SliderL
-              childRef={ref => (this.refSlider= ref)}
+              childRef={ref => (this.refSliderL= ref)}
               show={false}
               position="bottomright"
-              // event={ () => {console.log("Hola Slider")} }
               event = { this.serverTiffasy }
             />
             {/* <CustomMarker /> */}

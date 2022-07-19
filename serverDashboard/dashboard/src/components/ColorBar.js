@@ -6,7 +6,7 @@ import {mapColor} from './mapColor.json'
 
 // https://stackoverflow.com/questions/52012591/react-leaflet-create-a-custom-components/52067137#52067137
 // https://codesandbox.io/s/inspiring-http-p8lwj?file=/src/Map.js:292-303
-class MapInfo extends React.Component {
+class ColorBar extends React.Component {
 
     constructor(props){
         super(props);
@@ -27,12 +27,18 @@ class MapInfo extends React.Component {
             },
 
             onAdd: (map) => {
+              this.map=map;
+              console.log("******ColorBar*******",this.state.min, this.state.max)
+              const container = L.DomUtil.create('div', 'leaflet-insets');
+              this.container = container;
+              this.container.innerHTML = this.makeBar();
+              this.update=()=>{
+                console.log("******update ColorBar*******")
+                this.container.innerHTML = this.makeBar();
+              };
 
-              console.log(this.state.min, this.state.max)
-              this._container = L.DomUtil.create('div', 'leaflet-insets');
-              this._container.innerHTML = this.makeBar();
-              map.update=()=>{ this._container.innerHTML = this.makeBar();};
-              return this._container;
+
+              return this.container;
             },
 
             onRemove: function (map) {
@@ -69,7 +75,8 @@ class MapInfo extends React.Component {
     componentDidMount() {
       const { map } = this.props;
       const control = this.createControl();
-      control.addTo(map);
+      this.control=control;
+      this.control.addTo(map);
 
       const { childRef } = this.props;
       childRef(this);
@@ -93,6 +100,6 @@ function withMap(Component) {
   };
 }
 
-export default withMap(MapInfo);
+export default withMap(ColorBar);
 
 
