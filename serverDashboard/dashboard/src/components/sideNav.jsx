@@ -51,6 +51,10 @@ function SidebarItem({ depthStep = 10, depth = 0, expanded, item, ...rest }) {
         dispatch(setValue(8));
       }  
 
+      if(item.name==="Visualization"){
+        dispatch(setValue(9));
+      } 
+
     }
   
     function onClick(e) {

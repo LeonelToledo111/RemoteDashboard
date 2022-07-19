@@ -10,6 +10,7 @@ import PayoutOptimization from './PayoutOptimization';
 import Climate from './Climate';
 import ReactShadowScroll from 'react-shadow-scroll';
 import {useSelector, useDispatch} from 'react-redux';
+import Visualization from './Visualization';
 
     function choice(choiceNumber){
 
@@ -63,6 +64,12 @@ import {useSelector, useDispatch} from 'react-redux';
         if(choiceNumber===8){
             return  <div> 
              <MetClone2/> 
+        </div>
+        }
+
+        if(choiceNumber===9){
+            return  <div> 
+             <Visualization/> 
         </div>
         }
 

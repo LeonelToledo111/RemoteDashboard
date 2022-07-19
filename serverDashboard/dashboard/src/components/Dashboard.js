@@ -29,7 +29,8 @@ const items = [
       { name: "losses", label: "Losses Computation", onClick },
       { name: "payout", label: "Payout Optimization", onClick },
       { name: "metClone1", label: "Hydro-Meteorological Variables", onClick },
-      { name: "metClone2", label: "High Resolution Meteorological Varibles", onClick }
+      { name: "metClone2", label: "High Resolution Meteorological Varibles", onClick },
+      { name: "Visualization", label: "Visualization", onClick }
     ]
   },
   "divider",
