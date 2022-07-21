@@ -16,11 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
+
+from serverDashboard import getGeoTiff
 from . import testing
 from . import scpTest
 from . import meteorologicalVariables
 from . import climateIndices
 from . import climateVariables
+from . import getGeoTiff
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,4 +37,5 @@ urlpatterns = [
     path('climateIndicesHandler', climateIndices.handle,name="CliInd"),
     path('buttonCode', testing.buttonCodeTest, name="script"),
     path('', TemplateView.as_view(template_name='index.html')),
+    path('getGeoTiffHandle', getGeoTiff.handle,name="TiffVal"),
 ]

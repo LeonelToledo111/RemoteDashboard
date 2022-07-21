@@ -95,11 +95,14 @@ h3 {
 
 .mapContainer{
   /*min-width: 1000px;*/
-  width: 100vw;
+  flex:auto;
+  display: flex;
+  align-items: flex-end;
+  width: 80vw;
   height: 100vh;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  align-items: center;
-  float: left;
+  /* align-items: center; */
+  float: right;
 }
 
 
@@ -230,6 +233,36 @@ h3 {
 	top:1px;
 }
 
+.leaflet-container {
+  /* width: 100vw; */
+  /* height: 100vh; */
+  /* width: 800px;
+  height: 600px; */
+  width: 100%;
+  height: 95%;
+}
 
+.sr-only {
+  display: none;
+}
+
+.sliderL-container{
+  background-color:#ffffff80;
+  color:black;
+  align-items: center;
+}
+
+.sliderL{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sliderL-label{
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 
 

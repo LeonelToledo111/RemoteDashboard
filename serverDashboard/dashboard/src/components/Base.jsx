@@ -3,6 +3,7 @@ import Dashboard from './Dashboard';
 import FormsManager from './Forms';
 import MapboxContainer from './map';
 import MapboxContainer2 from './map2';
+import MapboxContainerVis from './mapVis'
 import './../index.css';
 
 
@@ -46,7 +47,8 @@ class BaseLayout extends Component {
     return ( 
         <div className ="baseWrapper">
             <div className="mapWrapper">
-                <MapboxContainer2/>
+                {/* <MapboxContainer2/> */}
+                <MapboxContainerVis/>
             </div>
 
 
