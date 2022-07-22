@@ -30,7 +30,12 @@ class MapboxContainerVis extends React.Component {
       confFile.time=this.refSliderL.state.value;
     }
     else{
-      this.refSliderL.state.value=confFile.time;
+      if( confFile.time == undefined ){
+        this.refSliderL.state.value=0;
+      }
+      else{
+        this.refSliderL.state.value=confFile.time;
+      }
     }
     let axiosConfig = {
       headers: {
@@ -53,9 +58,9 @@ class MapboxContainerVis extends React.Component {
       link+="&max="+response.data['maxRAW'];
     }
 
-    // Object.entries(response.data).forEach(([key,value]) => {
-    //   console.log(key+' '+value);
-    // });
+    Object.entries(response.data).forEach(([key,value]) => {
+      console.log(key+' '+value);
+    });
 
     this.refTileLayerTiff.current.setUrl(link);
 
@@ -78,7 +83,9 @@ class MapboxContainerVis extends React.Component {
     }
     this.refSliderL.update();
 
+    confFile.file=response.data.fileName;
     this.backConfFile=confFile;
+    return response.data.vars
     
   }
 
@@ -92,10 +99,14 @@ class MapboxContainerVis extends React.Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
+    const { childRef } = this.props;
+    childRef(this);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
+    const { childRef } = this.props;
+    childRef(undefined);
   }
   
   render() {
@@ -123,13 +134,10 @@ class MapboxContainerVis extends React.Component {
               position="bottomright"
               event = { this.serverTiffasy }
             />
-            {/* <CustomMarker /> */}
-            
 
             <MapInfo childRef={ref => (this.refMapInfo= ref)}/>
 
             <ScaleControl position="bottomleft" />
-            
 
             <LayersControl position="topright">
               <LayersControl.Overlay checked name="GeoTiff">
@@ -147,44 +155,7 @@ class MapboxContainerVis extends React.Component {
             </LayersControl>
 
           </MapContainer>
-        {/* </div>
 
-        <div> */}
-          <div>
-            
-            <button onClick={()=>this.serverTiffasy({
-              // file:"/media/alex/Datos/netcdf/Zimbabwe/ssr/ssr-N(-16.0):W(30.0):S(-19.0):E(33.0)-31x31-1980.1.1_0:0:0-1989.12.31_23:0:0.nc",
-              // file:"/media/alex/Datos/netcdf/Mali/wind/wind10m-N(14.0):W(-6.0):S(11.0):E(-3.0)-31x31-1980.1.1_0:0:0-1989.12.31_23:0:0.nc",
-              // var:"v10",
-              //file:"/media/alex/Datos/netcdf/Mozambique/wind/wind10m-N(-11.0):W(32.0):S(-26.0):E(41.0)-91x151-1950.1.1_1:0:0-1959.12.31_23:0:0.nc",
-              file:"/media/alex/Datos/netcdf/Mozambique/ssr/ssr-N(-11.0):W(32.0):S(-26.0):E(41.0)-91x151-1950.1.1_1:0:0-1959.12.31_23:0:0.nc",
-              time:37715
-              }) }
-              style={{background: "rgb(255, 128, 128)"}}
-              >
-                netCDF
-            </button>
-
-            <button onClick={()=>this.serverTiffasy({
-              file:"/media/alex/Datos/CSV/structure_import.csv",
-              var:"phase3.start"
-              }) }
-              style={{background: "rgb(128, 255, 128)"}}
-              >
-                CSV
-            </button>
-
-            <button onClick={()=>this.serverTiffasy({
-              file:"/media/alex/Datos/SENTINEL/SENTINEL2A_20210603-082236-074_L2A_T35LRL_C_V1-0_ATB_R1.tif",
-              band:1
-              }) }
-              style={{background: "rgb(128, 128, 255)"}}
-              >
-                Tif
-            </button>
-
-          </div>
-          
         </div>
         
       </div>

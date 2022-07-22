@@ -28,15 +28,15 @@ class SliderL extends React.Component {
             onAdd: (map) => {
               this.map=map;
 
-              console.log("******SliderL*******",this.state.min, this.state.max)
+              // console.log("******SliderL*******",this.state.min, this.state.max)
               const container = L.DomUtil.create('div','sliderL-container');
               this.container = container;
               this.makeSlider(this.container);
               
               
-              console.log("this.map: ",this.map)
+              // console.log("this.map: ",this.map)
               this.update=()=>{
-                console.log("******update SliderL*******")
+                // console.log("******update SliderL*******")
                 if( this.state.show ){
                     this.control.addTo(map);
                 }                    

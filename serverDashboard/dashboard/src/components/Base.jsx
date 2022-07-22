@@ -10,6 +10,11 @@ import './../index.css';
 
 class BaseLayout extends Component {
 
+    constructor(props){
+        super(props);
+        this.refVis = React.createRef();
+    }
+
     //<FormsManager selection= {this.state.selectionChoice}/>
 /*
     render() { 
@@ -48,7 +53,9 @@ class BaseLayout extends Component {
         <div className ="baseWrapper">
             <div className="mapWrapper">
                 {/* <MapboxContainer2/> */}
-                <MapboxContainerVis/>
+                <MapboxContainerVis
+                    childRef={ref=>{this.refVis=ref;}}
+                />
             </div>
 
 
@@ -59,7 +66,9 @@ class BaseLayout extends Component {
             </div>   
 
             <div className ="moduleOverlay">
-                    <FormsManager/> 
+                    <FormsManager
+                        refVis={()=>this.refVis}
+                    /> 
             </div> 
 
             </div>

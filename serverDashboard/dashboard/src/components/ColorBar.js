@@ -24,12 +24,12 @@ class ColorBar extends React.Component {
 
             onAdd: (map) => {
               this.map=map;
-              console.log("******ColorBar*******",this.state.min, this.state.max)
+              // console.log("******ColorBar*******",this.state.min, this.state.max)
               const container = L.DomUtil.create('div', 'leaflet-insets');
               this.container = container;
               this.container.innerHTML = this.makeBar();
               this.update=()=>{
-                console.log("******update ColorBar*******")
+                // console.log("******update ColorBar*******")
                 this.container.innerHTML = this.makeBar();
               };
 

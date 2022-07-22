@@ -12,7 +12,7 @@ import ReactShadowScroll from 'react-shadow-scroll';
 import {useSelector, useDispatch} from 'react-redux';
 import Visualization from './Visualization';
 
-    function choice(choiceNumber){
+    function choice({value:choiceNumber, refVis }){
 
         if(choiceNumber===0){
             return  <div> 
@@ -69,18 +69,19 @@ import Visualization from './Visualization';
 
         if(choiceNumber===9){
             return  <div> 
-             <Visualization/> 
+             <Visualization refVis={refVis}/> 
         </div>
         }
 
     }
-    function FormsManager(){
+    function FormsManager({refVis}){
         const value = useSelector(state=>state.moduleSelection);
+
         return ( 
             <div className ="activeModule">     
                        
                     <div> 
-                        {choice(value) }
+                        {choice({value,refVis}) }
                     </div>  
                          
             </div>

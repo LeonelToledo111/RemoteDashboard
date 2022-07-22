@@ -66,7 +66,7 @@ class ConfigFile:
         if 'var' in bodyJSON.keys():
             self.var = bodyJSON['var']
 
-        print("self.band:",self.band)
+        # print("self.band:",self.band)
 
 
         if self.fileName != '':
@@ -119,7 +119,7 @@ class ConfigFile:
             dims=nc_file[var].dims
             if( (len(dims)==3) and ("longitude" in dims) and ("latitude" in dims) and ("time" in dims) ):
                 self.vars.append(var)
-                print("for *********nameVar",var)
+                # print("for *********nameVar",var)
         if len(self.vars)==0 :
             self.error = true
             return
@@ -153,11 +153,12 @@ class ConfigFile:
         columns.remove("lon")
         self.band=1
         self.colN=len(columns)
+        self.vars=columns
         if( self.col >= self.colN ):
             self.col=0
         
-        print("columns:", columns )
-        print("***col:", self.col )
+        # print("columns:", columns )
+        # print("***col:", self.col )
 
         if self.var=='':
             self.var=str(columns[self.col])
@@ -167,22 +168,22 @@ class ConfigFile:
         
 
         # self.var='phase1.trigger'
-        print("var:", self.var )
+        # print("var:", self.var )
         usecols=["lon","lat",self.var]
         df = pd.read_csv(self.fileName,usecols=usecols)
         lon=df.lon
         lat=df.lat
         val=df[self.var]
-        print("lon: ",lon)
-        print("lat: ",lat)
-        print("var: ",val)
+        # print("lon: ",lon)
+        # print("lat: ",lat)
+        # print("var: ",val)
         rbfi = Rbf(lon, lat, val, epsilon=0.001)
-        print("rbfi")
+        # print("rbfi")
         lon_min=lon.min()
         lon_max=lon.max()
         lat_min=lat.min()
         lat_max=lat.max()
-        print("lon_min: ",lon_min)
+        # print("lon_min: ",lon_min)
         dstep=0.01
         lonTiff = np.arange(lon_min,lon_max+dstep/2,dstep)
         latTiff = np.arange(lat_min,lat_max+dstep/2,dstep)
@@ -191,23 +192,23 @@ class ConfigFile:
         x = np.tile(lonTiff, Nlat)
         y = np.repeat(latTiff, Nlon)
         interpolateXY=rbfi(x, y)
-        print("interpolate")
+        # print("interpolate")
         self.min=interpolateXY.min()
         self.max=interpolateXY.max()
-        print("self.min: ",self.min)
+        # print("self.min: ",self.min)
         dfn = pd.DataFrame({"x":x, "y":y, "value":interpolateXY})
-        print("dfn")
+        # print("dfn")
         data = dfn.sort_values(by = ["y", "x"], ascending = [False, True])
-        print("sort")
+        # print("sort")
         name=self.path+"GeoTIFF"+str(self.id)
-        print("name:",name)
+        # print("name:",name)
         toTIFF(data, name)
-        print("toTIFF")
+        # print("toTIFF")
         self.fileNameTiff=name+".tif"
         self.ext="tif"
     
     def openTiff(self):
-        print("openTiff")
+        # print("openTiff")
         self.fileNameTiff=self.fileName
         self.var="band"+str(self.band)
 
@@ -220,7 +221,7 @@ def handle(request):
 
       if request.method == 'POST':
             body = request.body.decode('utf-8')
-            print("---------ConfigFile-----------")
+            # print("---------ConfigFile-----------")
             conf=ConfigFile(body)
 
             # print("conf.fileName: ",conf.fileName)
@@ -244,6 +245,7 @@ def handle(request):
             response['timeN']=conf.timeN
             response['time']=conf.time
             response['var']=str(conf.var)
+            response['vars']=conf.vars
             response['min']=conf.min
             response['max']=conf.max
             response['minRAW']=conf.minRAW
