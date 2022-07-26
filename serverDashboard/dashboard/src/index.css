@@ -98,8 +98,8 @@ h3 {
   flex:auto;
   display: flex;
   align-items: flex-end;
-  width: 80vw;
-  height: 80vh;
+  width: 100vw;
+  height: 100vh;
   border: 1px solid rgba(0, 0, 0, 0.1);
   /* align-items: center; */
   float: right;
