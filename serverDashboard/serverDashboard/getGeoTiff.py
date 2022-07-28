@@ -67,6 +67,7 @@ class ConfigFile:
             self.var = bodyJSON['var']
 
         # print("self.band:",self.band)
+        # print("self.var:",self.var)
 
 
         if self.fileName != '':
@@ -112,7 +113,6 @@ class ConfigFile:
     def openNetCDF(self):
         nc_file = xr.open_dataset(self.fileName)
         # print(nc_file)
-        # print('***********')
         # print(nc_file['longitude'])
         
         for var in nc_file:
@@ -120,6 +120,7 @@ class ConfigFile:
             if( (len(dims)==3) and ("longitude" in dims) and ("latitude" in dims) and ("time" in dims) ):
                 self.vars.append(var)
                 # print("for *********nameVar",var)
+        
         if len(self.vars)==0 :
             self.error = true
             return
@@ -128,8 +129,9 @@ class ConfigFile:
             self.var=self.vars[0]
         
         if not( self.var in self.vars ):
-            self.error = true
-            return
+            self.var=self.vars[0]
+
+        
 
         self.band = 1
 
@@ -221,7 +223,7 @@ def handle(request):
 
       if request.method == 'POST':
             body = request.body.decode('utf-8')
-            # print("---------ConfigFile-----------")
+            print("---------ConfigFile-----------")
             conf=ConfigFile(body)
 
             # print("conf.fileName: ",conf.fileName)
