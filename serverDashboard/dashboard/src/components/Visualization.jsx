@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Divider from "@material-ui/core/Divider";
+import SelectP from './SelectP';
 // import MapboxContainerVis from './mapVis'
+
+
+
 
 class Visualization extends Component {
 
@@ -8,8 +12,35 @@ class Visualization extends Component {
         super(props);
         this.state = {
             refVis: this.props.refVis,
-            vars: []
+            refSelect: React.createRef(),
+            vars: [],
+            //options: [{value:"hola", label:"label"}]
+            options: ["hola", "label"]
         };
+        this.handleUpdate = this.handleUpdate.bind(this)
+        this.makeSelect = this.makeSelect.bind(this)
+    }
+
+    async handleUpdate(vari){
+        this.state.refVis().var=vari;
+        this.makeSelect( await this.state.refVis().serverTiffasy() )
+    }
+
+    makeSelect(vars){
+        console.log("vars:",vars);
+        // this.state.options = vars.map(function(nameVar) {
+        //     return {value:nameVar, label:nameVar};
+        // });
+        // this.setState({
+        //     ...this.prevState,
+        //     options: vars
+        // })
+
+        // prevState  => ({ ...prevState,   name : data.name })
+        console.log("options:",this.state.options);
+        // console.log("Selectvar: ",this);
+        this.state.refSelect.handleUpdate(vars);
+        console.log("this.state.refSelect: ",this.state.refSelect)
     }
 
     render() { 
@@ -70,19 +101,35 @@ class Visualization extends Component {
                 </div> */}
                 <div className ="myButton">
                     <button onClick={
-                        ()=>{
-                            console.log("Select File");
-                            this.vars=this.state.refVis().serverTiffasy({
+                        async ()=>{
+                            // console.log("Select File");
+                            // const vars=this.state.refVis().serverTiffasy({
+                            //     file:""
+                            // });
+
+                            // if( vars != undefined ){
+                            //     const options = vars.map(function(nameVar) {
+                            //         return nameVar+"x";
+                            //     });
+                            //     console.log("Options: ",options);
+                            // }
+
+                            this.makeSelect( await this.state.refVis().serverTiffasy({
                                 file:""
-                            })
-                            console.log(this.vars);
+                            }) )
+                                
+
+                            
+
                         }}> Select File </button>
                 </div>
                 <br/>
-                    <select name="vars">
-                    <option value=""></option>
-                </select>
-                
+                <div className="selectVar">
+                { this.state.options.map(vari=>vari)} 
+                {/* <Select /> */}
+                {/* https://www.storyblok.com/tp/react-dynamic-component-from-json */}
+                </div>
+                <SelectP childRef={ref => (this.state.refSelect= ref)} event={this.handleUpdate} />
                 
             </div>
         
@@ -91,5 +138,11 @@ class Visualization extends Component {
     }
 
 }
+
+
+
+
+   
+  
 
 export default Visualization;

@@ -21,6 +21,7 @@ class MapboxContainerVis extends React.Component {
     this.refSliderL       = React.createRef();
     this.refMapInfo       = React.createRef();
     this.backConfFile =''
+    this.var=''
   }
 
   
@@ -28,6 +29,7 @@ class MapboxContainerVis extends React.Component {
     if( confFile == undefined ){
       confFile=this.backConfFile;
       confFile.time=this.refSliderL.state.value;
+      confFile.var=this.var;
     }
     else{
       if( confFile.time == undefined ){
