@@ -89,7 +89,7 @@ class MapboxContainerVis extends React.Component {
 
     confFile.file=response.data.fileName;
     this.backConfFile=confFile;
-    return response.data.vars
+    return {vars:response.data.vars, var:response.data.var}
     
   }
 

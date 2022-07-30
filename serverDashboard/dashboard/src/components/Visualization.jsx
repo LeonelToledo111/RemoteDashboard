@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Divider from "@material-ui/core/Divider";
-import SelectP from './SelectP';
+// import SelectP from './SelectP';
 
 
 
@@ -10,20 +10,18 @@ class Visualization extends Component {
         super(props);
         this.state = {
             refVis: this.props.refVis,
-            refSelect: React.createRef(),
-            vars: [],
+            data: {vars:[],var:''}
         };
-        this.handleUpdate = this.handleUpdate.bind(this)
-        this.makeSelect = this.makeSelect.bind(this)
+        this.changeSelect = this.changeSelect.bind(this)
     }
 
-    async handleUpdate(vari){
-        this.state.refVis().var=vari;
-        this.makeSelect( await this.state.refVis().serverTiffasy() )
-    }
-
-    makeSelect(vars){
-        this.state.refSelect.handleUpdate(vars);
+    async changeSelect(event){
+        console.log("envent:",event.target.value)
+        this.state.refVis().var=event.target.value
+        this.setState({
+            ...this.prevState,
+            data:await this.state.refVis().serverTiffasy()
+        })
     }
 
     render() { 
@@ -34,36 +32,31 @@ class Visualization extends Component {
 
             <h3>Visualization Module</h3>
                     <Divider style={{ margin: "6px 0" }} />
-                
-
-                {/* <div className = "soilDataset"> 
-                    <h3>GeoTIFF</h3>
-
-                </div>
-
-                <div className = "calibration">
-                    <h3>Other Type of file...</h3>
-                    <Divider style={{ margin: "6px 0" }} />
-                </div> */}
-                    
             </div>
 
-                {/* <h3>Crop Type</h3>
-                    <Divider style={{ margin: "6px 0" }} /> */}
-                
-
-                
             <div className ="myButton">
                 <button onClick={
                     async ()=>{
-                        this.makeSelect( await this.state.refVis().serverTiffasy({
-                            file:""
-                        }) )
-                    }}> Select File </button>
+                        this.setState({
+                            ...this.prevState,
+                            data:await this.state.refVis().serverTiffasy({
+                                file:""
+                            })
+                        })
+
+                    }}> Select File</button>
             </div>
             <br/>
-            {/* https://www.storyblok.com/tp/react-dynamic-component-from-json */}
-            <SelectP childRef={ref => (this.state.refSelect= ref)} event={this.handleUpdate} />
+
+            {
+                this.state.data.vars.length>0  &&
+                <select  onChange={this.changeSelect} value={this.state.data.var}>
+                    {this.state.data.vars.map(val => <option value={val}>{val}</option>)}
+                </select>
+            }
+
+            
+
                 
         </div>
         
