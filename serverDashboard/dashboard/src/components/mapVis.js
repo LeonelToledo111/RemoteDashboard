@@ -21,13 +21,16 @@ class MapboxContainerVis extends React.Component {
     this.refSliderL       = React.createRef();
     this.refMapInfo       = React.createRef();
     this.backConfFile =''
+    this.var=''
   }
 
   
   serverTiffasy = async (confFile) => {
+    console.log("***1serverTiffasy***:",confFile);
     if( confFile == undefined ){
       confFile=this.backConfFile;
       confFile.time=this.refSliderL.state.value;
+      confFile.var=this.var;
     }
     else{
       if( confFile.time == undefined ){
@@ -44,6 +47,7 @@ class MapboxContainerVis extends React.Component {
           "proxy" : "false",
       }
     };
+    console.log("***2serverTiffasy***:",confFile);
 
     const response = await axios.post('http://127.0.0.1:8000/getGeoTiffHandle', confFile ,axiosConfig)
 
@@ -85,7 +89,7 @@ class MapboxContainerVis extends React.Component {
 
     confFile.file=response.data.fileName;
     this.backConfFile=confFile;
-    return response.data.vars
+    return {vars:response.data.vars, var:response.data.var}
     
   }
 

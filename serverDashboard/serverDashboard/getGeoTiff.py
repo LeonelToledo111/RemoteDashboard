@@ -42,6 +42,10 @@ class ConfigFile:
         self.dateIni = ''
         self.dateEnd = ''
         self.datePeriod= 0
+        self.min=0
+        self.minRAW=0
+        self.max=0
+        self.maxRAW=0
 
         self.path = os.path.expanduser('~')+"/temp/"
         filePort = open(self.path+"port.json", "r")
@@ -67,6 +71,7 @@ class ConfigFile:
             self.var = bodyJSON['var']
 
         # print("self.band:",self.band)
+        # print("self.var:",self.var)
 
 
         if self.fileName != '':
@@ -78,14 +83,8 @@ class ConfigFile:
             self.openNetCDF()
         elif self.ext=='csv':
             self.openCSV()
+
         
-        
-        tiff_file = xr.open_dataset(self.fileNameTiff)
-        self.minRAW = float(tiff_file['band_data'][self.band-1].min())
-        self.maxRAW = float(tiff_file['band_data'][self.band-1].max())
-        if (self.ext=="tif"):
-            self.min=self.minRAW
-            self.max=self.maxRAW
         
 
     def iniSelectFile(self):
@@ -112,7 +111,6 @@ class ConfigFile:
     def openNetCDF(self):
         nc_file = xr.open_dataset(self.fileName)
         # print(nc_file)
-        # print('***********')
         # print(nc_file['longitude'])
         
         for var in nc_file:
@@ -120,6 +118,7 @@ class ConfigFile:
             if( (len(dims)==3) and ("longitude" in dims) and ("latitude" in dims) and ("time" in dims) ):
                 self.vars.append(var)
                 # print("for *********nameVar",var)
+        
         if len(self.vars)==0 :
             self.error = true
             return
@@ -128,8 +127,9 @@ class ConfigFile:
             self.var=self.vars[0]
         
         if not( self.var in self.vars ):
-            self.error = true
-            return
+            self.var=self.vars[0]
+
+        
 
         self.band = 1
 
@@ -137,7 +137,9 @@ class ConfigFile:
         datei= str( nc_file.time.data[ self.time ] )
         self.timeN = len( nc_file[ 'time' ] )
         self.min=float(pr.min())
+        self.minRAW=self.min
         self.max=float(pr.max())
+        self.maxRAW=self.max
         pr = pr.rio.set_spatial_dims('longitude', 'latitude')
         pr.rio.crs
         self.fileNameTiff=self.path+"GeoTIFF"+str(self.id)+".tif"
@@ -194,7 +196,9 @@ class ConfigFile:
         interpolateXY=rbfi(x, y)
         # print("interpolate")
         self.min=interpolateXY.min()
+        self.minRAW=self.min
         self.max=interpolateXY.max()
+        self.maxRAW=self.max
         # print("self.min: ",self.min)
         dfn = pd.DataFrame({"x":x, "y":y, "value":interpolateXY})
         # print("dfn")
@@ -210,7 +214,46 @@ class ConfigFile:
     def openTiff(self):
         # print("openTiff")
         self.fileNameTiff=self.fileName
-        self.var="band"+str(self.band)
+
+        # if self.var=='band1':
+        #     self.band=1
+        # elif self.var=='band2':
+        #     self.band=2
+        # elif self.var=='band3':
+        #     self.band=3
+        # temp=self.var.replace("band", "", 1)
+
+        # print("*****",self.var,"->",temp)
+        # self.var="band"+str(self.band)
+        
+        # tiff_file = xr.open_dataset(self.fileNameTiff)
+        tiff_file = xr.open_dataset(self.fileNameTiff)
+
+        # print("***********",tiff_file.attrs['long_name'])
+        self.bandN=len(tiff_file['band_data'])
+
+        print("1****",self.var, self.band)
+
+        if self.var.isnumeric():
+            self.band=int(self.var)
+        else:
+            self.band=1
+        
+        if self.band>self.bandN :
+            self.band=1
+
+        self.var=str(self.band)
+        print("2****",self.var, self.band)
+
+        # self.var=str(self.band)
+        for i in range( self.bandN ):
+            self.vars.append( str(i+1) )
+            # self.vars.append( 'band'+str(i+1) )
+        self.minRAW = float(tiff_file['band_data'][self.band-1].min())
+        self.maxRAW = float(tiff_file['band_data'][self.band-1].max())
+        self.min=self.minRAW
+        self.max=self.maxRAW
+        
 
 
 
@@ -221,7 +264,7 @@ def handle(request):
 
       if request.method == 'POST':
             body = request.body.decode('utf-8')
-            # print("---------ConfigFile-----------")
+            print("---------ConfigFile-----------")
             conf=ConfigFile(body)
 
             # print("conf.fileName: ",conf.fileName)

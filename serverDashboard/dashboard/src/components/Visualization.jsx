@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Divider from "@material-ui/core/Divider";
-// import MapboxContainerVis from './mapVis'
+// import SelectP from './SelectP';
+
+
 
 class Visualization extends Component {
 
@@ -8,8 +10,18 @@ class Visualization extends Component {
         super(props);
         this.state = {
             refVis: this.props.refVis,
-            vars: []
+            data: {vars:[],var:''}
         };
+        this.changeSelect = this.changeSelect.bind(this)
+    }
+
+    async changeSelect(event){
+        console.log("envent:",event.target.value)
+        this.state.refVis().var=event.target.value
+        this.setState({
+            ...this.prevState,
+            data:await this.state.refVis().serverTiffasy()
+        })
     }
 
     render() { 
@@ -20,76 +32,44 @@ class Visualization extends Component {
 
             <h3>Visualization Module</h3>
                     <Divider style={{ margin: "6px 0" }} />
-                
+            </div>
 
-                <div className = "soilDataset"> 
-                    <h3>GeoTIFF</h3>
-
-                </div>
-
-                <div className = "calibration">
-                    <h3>Other Type of file...</h3>
-                    <Divider style={{ margin: "6px 0" }} />
-                </div>
-                    
-                </div>
-
-                <h3>Crop Type</h3>
-                    <Divider style={{ margin: "6px 0" }} />
-                
-
-                {/* <div className ="myButton">
-                    <button onClick={
-                        ()=>{
-                            console.log("NetCDF");
-                            this.state.refVis().serverTiffasy({
-                                file:"/media/alex/Datos/netcdf/Mozambique/ssr/ssr-N(-11.0):W(32.0):S(-26.0):E(41.0)-91x151-1950.1.1_1:0:0-1959.12.31_23:0:0.nc",
-                                //time:37715
-                            })
-                        }}> NetCDF </button>
-                </div>
-                <div className ="myButton">
-                    <button onClick={
-                        ()=>{
-                            console.log("CSV");
-                            this.state.refVis().serverTiffasy({
-                                file:"/media/alex/Datos/CSV/structure_import.csv",
-                                var:"phase3.start"
-                            })
-                        }}> CSV </button>
-                </div>
-                <div className ="myButton">
-                    <button onClick={
-                        ()=>{
-                            console.log("GeoTiff");
-                            this.state.refVis().serverTiffasy({
-                                file:"/media/alex/Datos/SENTINEL/SENTINEL2A_20210603-082236-074_L2A_T35LRL_C_V1-0_ATB_R1.tif",
-                                band:1
-                            })
-                        }}> GeoTiff </button>
-                </div> */}
-                <div className ="myButton">
-                    <button onClick={
-                        ()=>{
-                            console.log("Select File");
-                            this.vars=this.state.refVis().serverTiffasy({
+            <div className ="myButton">
+                <button onClick={
+                    async ()=>{
+                        this.setState({
+                            ...this.prevState,
+                            data:await this.state.refVis().serverTiffasy({
                                 file:""
                             })
-                            console.log(this.vars);
-                        }}> Select File </button>
-                </div>
-                <br/>
-                    <select name="vars">
-                    <option value=""></option>
-                </select>
-                
-                
+                        })
+
+                    }}> Select File</button>
             </div>
+            <br/>
+
+            {
+                this.state.data.vars.length>0  &&
+                <select  onChange={this.changeSelect} value={this.state.data.var}>
+                    {this.state.data.vars.map(val => <option value={val}>{val}</option>)}
+                </select>
+            }
+
+            
+
+                
+        </div>
         
          );
 
     }
 
 }
+
+
+
+
+   
+  
 
 export default Visualization;
