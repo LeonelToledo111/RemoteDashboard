@@ -17,7 +17,7 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
 
-from osgeo import gdal
+#from osgeo import gdal
 
 def toTIFF(dfn, name):
     dfn.to_csv(name+".xyz", index = False, header = None, sep = " ")
