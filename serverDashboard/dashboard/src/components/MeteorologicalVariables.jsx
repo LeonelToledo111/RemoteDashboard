@@ -57,7 +57,7 @@ async function postDataAxios(){
         }
       };
 
-    const response = await axios.post('http://192.168.1.134:8000/meteorologicalVariablesHandler', {
+    const response = await axios.post('http://127.0.0.1:8000/meteorologicalVariablesHandler', {
         firstName: 'Fred',
         lastName: 'Flintstone',
         m_u_component_of_wind : selectedItem=[0],
@@ -264,7 +264,7 @@ function  MeteorologicalVariables() {
                 </div>
 
                 <div className ="myButton">
-                    <button onClick={purr}> RUN </button>
+                    <button onClick={postDataAxios}> RUN </button>
 
                 </div>
                 
