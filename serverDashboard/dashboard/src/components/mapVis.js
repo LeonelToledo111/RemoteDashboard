@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, ScaleControl, LayersControl, LayerGroup } from
 import ColorBar from './ColorBar';
 import SliderL from './SliderL';
 import MapInfo from "./MapInfo";
+import ChartL from './ChartL';
 
 
 const MAPBOX_ACCESS_TOKEN  = 'pk.eyJ1IjoibGlnaHRidXJuIiwiYSI6ImNpeXViOGptcDAwMmYzMmxmZml6am0xZG0ifQ.FiaHv8Pwcxr_LyuxMtry3w';
@@ -14,14 +15,71 @@ class MapboxContainerVis extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      layers:[
+        // {
+        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
+        //   filename:"/home/alex/temp/GeoTIFF0bd87538-72a6-498b-ac89-9be3298140fc.tif",
+        //   projection:"EPSG:3857",
+        //   band:"1",
+        //   palette:"colorbrewer.diverging.RdYlGn_11"},
+        // {
+        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
+        //   filename:"/home/alex/temp/GeoTIFF64de4f6b-2531-43ea-8bd4-4a490945f879.tif",
+        //   projection:"EPSG:3857",
+        //   band:"1",
+        //   palette:"colorbrewer.diverging.RdYlGn_11"},
+        // {
+        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
+        //   filename:"/home/alex/temp/GeoTIFF799b04bf-9386-4d94-8ffb-c232612bfde3.tif",
+        //   projection:"EPSG:3857",
+        //   band:"1",
+        //   palette:"colorbrewer.diverging.RdYlGn_11"},
+        // {
+        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
+        //   filename:"/home/alex/temp/GeoTIFF9dfc4a12-7fb5-4026-87e4-c1a391d1044b.tif",
+        //   projection:"EPSG:3857",
+        //   band:"1",
+        //   palette:"colorbrewer.diverging.RdYlGn_11"},
+        // {
+        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
+        //   filename:"/home/alex/temp/GeoTIFFc3b5462b-86c1-44f2-b3fc-193a9a3540c2.tif",
+        //   projection:"EPSG:3857",
+        //   band:"1",
+        //   palette:"colorbrewer.diverging.RdYlGn_11"},
+        // {
+        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
+        //   filename:"/home/alex/temp/GeoTIFFceda3f49-7831-4334-a5bc-7a636664182d.tif",
+        //   projection:"EPSG:3857",
+        //   band:"1",
+        //   palette:"colorbrewer.diverging.RdYlGn_11"},
+        // {
+        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
+        //   filename:"/home/alex/temp/GeoTIFFd9621c60-6d26-4b19-a3f5-33a65b4c3076.tif",
+        //   projection:"EPSG:3857",
+        //   band:"1",
+        //   palette:"colorbrewer.diverging.RdYlGn_11"},
+        // {
+        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
+        //   filename:"/home/alex/temp/GeoTIFFe4a80346-f50a-431d-919a-5bcda700e633.tif",
+        //   projection:"EPSG:3857",
+        //   band:"1",
+        //   palette:"colorbrewer.diverging.RdYlGn_11"}
+        ]
     };
     
+
+    
+
     this.refTileLayerTiff = React.createRef();
     this.refColorBar      = React.createRef();
     this.refSliderL       = React.createRef();
     this.refMapInfo       = React.createRef();
+    this.refChartL        = React.createRef();
     this.backConfFile =''
     this.var=''
+
+    this.serverTiffasy = this.serverTiffasy.bind(this)
+    
   }
 
   
@@ -47,49 +105,84 @@ class MapboxContainerVis extends React.Component {
           "proxy" : "false",
       }
     };
+    
+    // confFile.path="/media/alex/Datos/netcdf/u_10m"
+
     console.log("***2serverTiffasy***:",confFile);
 
     const response = await axios.post('http://127.0.0.1:8000/getGeoTiffHandle', confFile ,axiosConfig)
 
+    console.log("response:",response.data)
 
-    let link="http://localhost:"+response.data.port+"/tiles/{z}/{x}/{y}.png?";
-    link+="filename="+response.data.fileNameTiff;
+    const layers=[]
+    response.data.files.forEach( file=>{
+      console.log("*****",file.fileNameTiff)
+      let item={};
+      item.url="http://localhost:"+file.port+"/tiles/{z}/{x}/{y}.png";
+      item.filename=file.fileNameTiff;
+      item.projection="EPSG:3857";
+      item.band=String(file.band);
+      item.palette="colorbrewer.diverging.RdYlGn_11";
+      item.min=String(file['minRAW']);
+      item.max=String(file['maxRAW']);
+      layers.push(item)
+    });
+
+    this.setState({
+      ...this.prevState,
+      layers: []
+    })
+
+    this.setState({
+      ...this.prevState,
+      layers: layers
+    })
+
+    
+    // console.log("***************layers1:",layers);
+    console.log("***************layers:",this.state.layers.length);
+
+
+    let link="http://localhost:"+response.data.files[0].port+"/tiles/{z}/{x}/{y}.png?";
+    link+="filename="+response.data.files[0].fileNameTiff;
     link+="&projection=EPSG:3857";
-    link+=`&band=${response.data.band}`
+    link+=`&band=${response.data.files[0].band}`
     link+="&palette=colorbrewer.diverging.RdYlGn_11";
-    if(response.data['ext']=='tif'){
-      link+="&min="+response.data['minRAW'];
-      link+="&max="+response.data['maxRAW'];
+    if(response.data.files[0]['ext']=='tif'){
+      link+="&min="+response.data.files[0]['minRAW'];
+      link+="&max="+response.data.files[0]['maxRAW'];
     }
 
-    Object.entries(response.data).forEach(([key,value]) => {
+    console.log("link:",link);
+
+    Object.entries(response.data.files[0]).forEach(([key,value]) => {
       console.log(key+' '+value);
     });
 
     this.refTileLayerTiff.current.setUrl(link);
 
-    this.refColorBar.state.title=response.data['var'];
-    this.refColorBar.state.min=response.data['min'].toFixed(2);
-    this.refColorBar.state.max=response.data['max'].toFixed(2);
+    this.refColorBar.state.title=response.data.files[0]['var'];
+    this.refColorBar.state.min=response.data.files[0]['min'].toFixed(2);
+    this.refColorBar.state.max=response.data.files[0]['max'].toFixed(2);
     this.refColorBar.update();
 
-    if(response.data['ext']=='nc'){
+    if(response.data.files[0]['ext']=='nc'){
       this.refSliderL.state.show=true;
       this.refSliderL.state.min=0
-      var date = new Date(response.data['dateIni']);
-      date.setTime(date.getTime() + parseInt(this.refSliderL.state.value) * parseInt(response.data['datePeriod']) );//horas
+      var date = new Date(response.data.files[0]['dateIni']);
+      date.setTime(date.getTime() + parseInt(this.refSliderL.state.value) * parseInt(response.data.files[0]['datePeriod']) );//horas
 
       this.refSliderL.state.title=date.toString();
-      this.refSliderL.state.max=response.data['timeN']-1
+      this.refSliderL.state.max=response.data.files[0]['timeN']-1
     }
     else{
       this.refSliderL.state.show=false;
     }
     this.refSliderL.update();
 
-    confFile.file=response.data.fileName;
+    confFile.file=response.data.files[0].fileName;
     this.backConfFile=confFile;
-    return {vars:response.data.vars, var:response.data.var}
+    return {vars:response.data.files[0].vars, var:response.data.files[0].var}
     
   }
 
@@ -116,6 +209,37 @@ class MapboxContainerVis extends React.Component {
   render() {
     const url=`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/{z}/{x}/{y}?access_token=${MAPBOX_ACCESS_TOKEN}`;
     const center=[this.INITIAL_VIEW_STATE.latitude,this.INITIAL_VIEW_STATE.longitude];
+    // const listaLayers=JSON.parse("{'layers':[ <TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFF9184cc09-78df-4f14-adc7-39ff5fc26d8f.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} />, <TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFFe59d7ebd-e15a-4c37-b49c-c8cb249bf83b.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} /> ]}")
+    // var data = '{"layers":"';
+    // data.concat('Hola');
+    // // data.concat('[');
+    // // data.concat('<TileLayer url="http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFF9184cc09-78df-4f14-adc7-39ff5fc26d8f.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11" format="image/png" transparency={true} opacity={0.8} />');
+    // // data.concat(',');
+    // // data.concat('<TileLayer url="http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFFe59d7ebd-e15a-4c37-b49c-c8cb249bf83b.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11" format="image/png" transparency={true} opacity={0.8} />');
+    // // data.concat(']');
+
+    // data.concat('"}');
+    const mylayer=[]
+
+    // mylayer.push(JSON.parse("<TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFF9184cc09-78df-4f14-adc7-39ff5fc26d8f.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} />"));
+    // mylayer.push(JSON.parse("<div></div>"));
+
+    // JSON.parse(data);
+    // let data = '{"layers":[';
+    // data = data.concat("<TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFF9184cc09-78df-4f14-adc7-39ff5fc26d8f.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} />");
+    // data = data.concat(',');
+    // data = data.concat("<TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFFe59d7ebd-e15a-4c37-b49c-c8cb249bf83b.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} />");
+    // data = data.concat(']}');
+    // console.log("data:",data);
+    //const listaLayers=[ <TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFF9184cc09-78df-4f14-adc7-39ff5fc26d8f.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} />, <TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFFe59d7ebd-e15a-4c37-b49c-c8cb249bf83b.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} /> ]
+    // const listaLayers2=JSON.parse("{'layers':[ <TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFF9184cc09-78df-4f14-adc7-39ff5fc26d8f.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} />, <TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFFe59d7ebd-e15a-4c37-b49c-c8cb249bf83b.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} /> ]}")
+    // const listaLayers=JSON.parse(data);
+    // console.log("listaLayers:",listaLayers);
+    // console.log("listaLayers2:",listaLayers2.layers);
+    // console.log("listaLayers3:",listaLayers2.layers[0]);
+    console.log("mylayer:",mylayer)
+
+    
     return (
       <div >
         <div className="mapContainer">
@@ -135,13 +259,20 @@ class MapboxContainerVis extends React.Component {
             <SliderL
               childRef={ref => (this.refSliderL= ref)}
               show={false}
-              position="bottomright"
+              position="topright"
               event = { this.serverTiffasy }
             />
 
+            {/* <ChartL
+              childRef={ref => (this.refChartL= ref)}
+              show={true}
+              position="topright"
+              // event = { console.log("Hola") }
+            /> */}
+
             <MapInfo childRef={ref => (this.refMapInfo= ref)}/>
 
-            <ScaleControl position="bottomleft" />
+            <ScaleControl position="topright" />
 
             <LayersControl position="topright">
               <LayersControl.Overlay checked name="GeoTiff">
@@ -153,6 +284,24 @@ class MapboxContainerVis extends React.Component {
                     opacity={0.8}
                     ref={this.refTileLayerTiff}
                   />
+                  {/* {listaLayers.layers[0]} */}
+                  {mylayer }
+                  
+                  {
+                    this.state.layers.map((item) => (
+                      <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} />
+                      // <TileLayer onChange={this.serverTiffasy} url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} />
+                      // <div>
+                      //   <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} />
+                      // <b>**************************************{item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette}</b>
+                      // </div>
+                    ))
+
+                    
+                  }
+
+                  
+
                 </LayerGroup>
               </LayersControl.Overlay>
               

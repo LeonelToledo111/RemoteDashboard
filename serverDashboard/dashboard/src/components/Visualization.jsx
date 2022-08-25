@@ -54,6 +54,24 @@ class Visualization extends Component {
                     {this.state.data.vars.map(val => <option value={val}>{val}</option>)}
                 </select>
             }
+            <div className ="u10Button;myButton">
+                <button onClick={
+                    async ()=>{
+                        await this.state.refVis().serverTiffasy({
+                            path:"/media/alex/Datos/netcdf/u_10m"
+                        })
+
+                    }}>u10</button>
+            </div>
+            <div className ="v10Button;myButton">
+                <button onClick={
+                    async ()=>{
+                        await this.state.refVis().serverTiffasy({
+                            path:"/media/alex/Datos/netcdf/v_10m"
+                        })
+
+                    }}>v10</button>
+            </div>
 
             
 
