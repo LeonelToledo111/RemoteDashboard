@@ -10,6 +10,8 @@ from tkinter import filedialog as fd
 from sympy import false, true
 
 import xarray as xr 
+import rioxarray
+
 
 import uuid
 
@@ -17,7 +19,7 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
 
-#from osgeo import gdal
+from osgeo import gdal
 
 def toTIFF(dfn, name):
     dfn.to_csv(name+".xyz", index = False, header = None, sep = " ")
@@ -281,14 +283,14 @@ def handle(request):
                 # print("file: ",bodyJSON['path']+"/"+list_files[0])
                 if 'path' in bodyJSON.keys():
                     bodyJSON['file']=bodyJSON['path']+"/"+file
-                print("---------ConfigFile-----------")
+                # print("---------ConfigFile-----------")
                 # if(body.file)
                 conf=ConfigFile(bodyJSON)
                 # print("conf.fileName: ",conf.fileName)
-                print('fileNameTiff',conf.fileNameTiff)
+                # print('fileNameTiff',conf.fileNameTiff)
                 # print('port',conf.port)
-                print('timeN',conf.timeN)
-                print('time',conf.time)
+                # print('timeN',conf.timeN)
+                # print('time',conf.time)
                 # print('var',str(conf.var))
                 # print('min',conf.min)
                 # print('max',conf.max)
@@ -331,26 +333,35 @@ def handle(request):
 
             allmin=min(file['min'] for file in files)
             allmax=max(file['max'] for file in files)
-            allminRAW=min(file['minRAW'] for file in files)
-            allmaxRAW=max(file['maxRAW'] for file in files)
             
             for file in files:
                 file['min']=allmin
                 file['max']=allmax
                 # file['minRAW']=allminRAW
                 # file['maxRAW']=allmaxRAW
-                tiff_file = xr.open_rasterio(file['fileNameTiff'])
+                # tiff_file = xr.open_rasterio(file['fileNameTiff'])
                 # print("***********",tiff_file.attrs['long_name'])
                 # print("***********",tiff_file.attrs["transform"])
                 # print("***********",tiff_file.attrs["scales"])
                 # print("***********",tiff_file.attrs["offsets"])
                 # print("***********",tiff_file.sizes['x'])
-                scale=tiff_file.attrs["scales"][0]
-                offset=tiff_file.attrs["offsets"][0]
+                # scale=tiff_file.attrs["scales"][0]
+                # offset=tiff_file.attrs["offsets"][0]
+
+                tiff_file = rioxarray.open_rasterio(file['fileNameTiff'])
+                scale=tiff_file.attrs["scale_factor"]
+                offset=tiff_file.attrs["add_offset"]
+                bounds=tiff_file.rio.bounds()
+                file['longitudeE']=bounds[0]
+                file['latitudeS']=bounds[1]
+                file['longitudeW']=bounds[2]
+                file['latitudeN']=bounds[3]
                 # print("***********scale:",scale)
                 # print("***********offset:",offset)
                 file['minRAW']=(file['min']-offset)/scale
                 file['maxRAW']=(file['max']-offset)/scale
+                # bounds=tiff_file.rio.bounds()
+                # print(bounds[0])
 
 
             response['files']=files

@@ -15,62 +15,9 @@ class MapboxContainerVis extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      layers:[
-        // {
-        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
-        //   filename:"/home/alex/temp/GeoTIFF0bd87538-72a6-498b-ac89-9be3298140fc.tif",
-        //   projection:"EPSG:3857",
-        //   band:"1",
-        //   palette:"colorbrewer.diverging.RdYlGn_11"},
-        // {
-        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
-        //   filename:"/home/alex/temp/GeoTIFF64de4f6b-2531-43ea-8bd4-4a490945f879.tif",
-        //   projection:"EPSG:3857",
-        //   band:"1",
-        //   palette:"colorbrewer.diverging.RdYlGn_11"},
-        // {
-        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
-        //   filename:"/home/alex/temp/GeoTIFF799b04bf-9386-4d94-8ffb-c232612bfde3.tif",
-        //   projection:"EPSG:3857",
-        //   band:"1",
-        //   palette:"colorbrewer.diverging.RdYlGn_11"},
-        // {
-        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
-        //   filename:"/home/alex/temp/GeoTIFF9dfc4a12-7fb5-4026-87e4-c1a391d1044b.tif",
-        //   projection:"EPSG:3857",
-        //   band:"1",
-        //   palette:"colorbrewer.diverging.RdYlGn_11"},
-        // {
-        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
-        //   filename:"/home/alex/temp/GeoTIFFc3b5462b-86c1-44f2-b3fc-193a9a3540c2.tif",
-        //   projection:"EPSG:3857",
-        //   band:"1",
-        //   palette:"colorbrewer.diverging.RdYlGn_11"},
-        // {
-        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
-        //   filename:"/home/alex/temp/GeoTIFFceda3f49-7831-4334-a5bc-7a636664182d.tif",
-        //   projection:"EPSG:3857",
-        //   band:"1",
-        //   palette:"colorbrewer.diverging.RdYlGn_11"},
-        // {
-        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
-        //   filename:"/home/alex/temp/GeoTIFFd9621c60-6d26-4b19-a3f5-33a65b4c3076.tif",
-        //   projection:"EPSG:3857",
-        //   band:"1",
-        //   palette:"colorbrewer.diverging.RdYlGn_11"},
-        // {
-        //   url:"http://localhost:38753/tiles/{z}/{x}/{y}.png",
-        //   filename:"/home/alex/temp/GeoTIFFe4a80346-f50a-431d-919a-5bcda700e633.tif",
-        //   projection:"EPSG:3857",
-        //   band:"1",
-        //   palette:"colorbrewer.diverging.RdYlGn_11"}
-        ]
+      layers:[]
     };
     
-
-    
-
-    this.refTileLayerTiff = React.createRef();
     this.refColorBar      = React.createRef();
     this.refSliderL       = React.createRef();
     this.refMapInfo       = React.createRef();
@@ -138,28 +85,48 @@ class MapboxContainerVis extends React.Component {
       layers: layers
     })
 
+    // this.setState(() => {
+    //   //const nlayers=[...this.state.layers];
+    //   const nlayers=[]
+    //   response.data.files.forEach( file=>{
+    //     console.log("*****",file.fileNameTiff)
+    //     let item={};
+    //     item.url="http://localhost:"+file.port+"/tiles/{z}/{x}/{y}.png";
+    //     item.filename=file.fileNameTiff;
+    //     item.projection="EPSG:3857";
+    //     item.band=String(file.band);
+    //     item.palette="colorbrewer.diverging.RdYlGn_11";
+    //     item.min=String(file['minRAW']);
+    //     item.max=String(file['maxRAW']);
+    //     nlayers.push(item)
+    //   });
+    //   return { layers:nlayers };
+    // });
+
+
+
     
     // console.log("***************layers1:",layers);
     console.log("***************layers:",this.state.layers.length);
 
 
-    let link="http://localhost:"+response.data.files[0].port+"/tiles/{z}/{x}/{y}.png?";
-    link+="filename="+response.data.files[0].fileNameTiff;
-    link+="&projection=EPSG:3857";
-    link+=`&band=${response.data.files[0].band}`
-    link+="&palette=colorbrewer.diverging.RdYlGn_11";
-    if(response.data.files[0]['ext']=='tif'){
-      link+="&min="+response.data.files[0]['minRAW'];
-      link+="&max="+response.data.files[0]['maxRAW'];
-    }
+    // let link="http://localhost:"+response.data.files[0].port+"/tiles/{z}/{x}/{y}.png?";
+    // link+="filename="+response.data.files[0].fileNameTiff;
+    // link+="&projection=EPSG:3857";
+    // link+=`&band=${response.data.files[0].band}`
+    // link+="&palette=colorbrewer.diverging.RdYlGn_11";
+    // if(response.data.files[0]['ext']=='tif'){
+    //   link+="&min="+response.data.files[0]['minRAW'];
+    //   link+="&max="+response.data.files[0]['maxRAW'];
+    // }
 
-    console.log("link:",link);
+    // console.log("link:",link);
 
     Object.entries(response.data.files[0]).forEach(([key,value]) => {
       console.log(key+' '+value);
     });
 
-    this.refTileLayerTiff.current.setUrl(link);
+    // this.refTileLayerTiff.current.setUrl(link);
 
     this.refColorBar.state.title=response.data.files[0]['var'];
     this.refColorBar.state.min=response.data.files[0]['min'].toFixed(2);
@@ -219,7 +186,6 @@ class MapboxContainerVis extends React.Component {
     // // data.concat(']');
 
     // data.concat('"}');
-    const mylayer=[]
 
     // mylayer.push(JSON.parse("<TileLayer url='http://localhost:34015/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp/GeoTIFF9184cc09-78df-4f14-adc7-39ff5fc26d8f.tif&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11' format='image/png' transparency={true} opacity={0.8} />"));
     // mylayer.push(JSON.parse("<div></div>"));
@@ -237,7 +203,7 @@ class MapboxContainerVis extends React.Component {
     // console.log("listaLayers:",listaLayers);
     // console.log("listaLayers2:",listaLayers2.layers);
     // console.log("listaLayers3:",listaLayers2.layers[0]);
-    console.log("mylayer:",mylayer)
+
 
     
     return (
@@ -277,15 +243,17 @@ class MapboxContainerVis extends React.Component {
             <LayersControl position="topright">
               <LayersControl.Overlay checked name="GeoTiff">
                 <LayerGroup>
-                  <TileLayer
+                  {/* <TileLayer
                     url=''
                     format="image/png"
                     transparency={true}
                     opacity={0.8}
                     ref={this.refTileLayerTiff}
-                  />
+                  /> */}
                   {/* {listaLayers.layers[0]} */}
-                  {mylayer }
+
+                  {/* <TileLayer url="http://localhost:34287/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp2&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11" format="image/png" transparency={true} opacity={0.8} /> */}
+
                   
                   {
                     this.state.layers.map((item) => (

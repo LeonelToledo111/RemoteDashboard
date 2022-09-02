@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@turf/turf": "^6.3.0",
     "axios": "^0.19.2",
+    "chart.js": "^3.9.1",
     "create-react-class": "^15.7.0",
     "deck.gl": "^8.4.10",
     "leaflet": "^1.8.0",
