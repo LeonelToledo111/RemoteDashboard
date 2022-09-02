@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios';
 import { MapContainer, TileLayer, ScaleControl, LayersControl, LayerGroup } from 'react-leaflet';
+import * as L from "leaflet";
 
 import ColorBar from './ColorBar';
 import SliderL from './SliderL';
@@ -72,6 +73,12 @@ class MapboxContainerVis extends React.Component {
       item.palette="colorbrewer.diverging.RdYlGn_11";
       item.min=String(file['minRAW']);
       item.max=String(file['maxRAW']);
+      const corner1 = L.latLng(file['latitudeS'], file['longitudeE'])
+      const corner2 = L.latLng(file['latitudeN'], file['longitudeW'])
+      item.bounds = L.latLngBounds(corner1, corner2);
+      // LatLngBoundsExpression
+      // const bounds = new LatLngBounds([40.712216, -74.22655], [40.773941, -74.12544])
+      // item.bounds = bounds
       layers.push(item)
     });
 
@@ -257,7 +264,7 @@ class MapboxContainerVis extends React.Component {
                   
                   {
                     this.state.layers.map((item) => (
-                      <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} />
+                      <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
                       // <TileLayer onChange={this.serverTiffasy} url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} />
                       // <div>
                       //   <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} />
