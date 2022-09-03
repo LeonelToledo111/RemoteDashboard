@@ -10,6 +10,8 @@ from tkinter import filedialog as fd
 from sympy import false, true
 
 import xarray as xr 
+import rioxarray
+
 
 import uuid
 
@@ -17,7 +19,7 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
 
-#from osgeo import gdal
+from osgeo import gdal
 
 def toTIFF(dfn, name):
     dfn.to_csv(name+".xyz", index = False, header = None, sep = " ")
@@ -25,8 +27,8 @@ def toTIFF(dfn, name):
     demn = None
 
 class ConfigFile:
-    def __init__(self,body):
-        bodyJSON = json.loads(body)
+    def __init__(self,bodyJSON):
+        
         self.fileName =''
         self.time = 0 #netcdf
         self.timeN = 1
@@ -264,41 +266,106 @@ def handle(request):
 
       if request.method == 'POST':
             body = request.body.decode('utf-8')
-            print("---------ConfigFile-----------")
-            conf=ConfigFile(body)
-
-            # print("conf.fileName: ",conf.fileName)
-            # print('fileNameTiff',conf.fileNameTiff)
-            # print('port',conf.port)
-            # print('timeN',conf.timeN)
-            # print('time',conf.time)
-            # print('var',str(conf.var))
-            # print('min',conf.min)
-            # print('max',conf.max)
-            # print('minRAW',conf.minRAW)
-            # print('maxRAW',conf.maxRAW)
-            # print('ext',conf.ext)
-            # print('band',conf.band)
-            # print('bandN',conf.bandN)
-
+            bodyJSON = json.loads(body)
             response={}
-            response['fileName']=conf.fileName
-            response['fileNameTiff']=conf.fileNameTiff
-            response['port']=conf.port
-            response['timeN']=conf.timeN
-            response['time']=conf.time
-            response['var']=str(conf.var)
-            response['vars']=conf.vars
-            response['min']=conf.min
-            response['max']=conf.max
-            response['minRAW']=conf.minRAW
-            response['maxRAW']=conf.maxRAW
-            response['ext']=conf.ext
-            response['band']=conf.band
-            response['bandN']=conf.bandN
-            response['dateIni']=conf.dateIni
-            response['dateEnd']=conf.dateEnd
-            response['datePeriod']=conf.datePeriod
+            files=[]
+            list_files=[]
+            print("---------Path-----------")
+            if 'path' in bodyJSON.keys():
+                print("path: ",bodyJSON['path'])
+                list_files = os.listdir(path=bodyJSON['path'])
+                print("list: ",list_files)
+            elif 'file' in bodyJSON.keys():
+                list_files.append(bodyJSON['file'])
+
+            for file in list_files:
+                # print("bodyJSON: ",bodyJSON)
+                # print("file: ",bodyJSON['path']+"/"+list_files[0])
+                if 'path' in bodyJSON.keys():
+                    bodyJSON['file']=bodyJSON['path']+"/"+file
+                # print("---------ConfigFile-----------")
+                # if(body.file)
+                conf=ConfigFile(bodyJSON)
+                # print("conf.fileName: ",conf.fileName)
+                # print('fileNameTiff',conf.fileNameTiff)
+                # print('port',conf.port)
+                # print('timeN',conf.timeN)
+                # print('time',conf.time)
+                # print('var',str(conf.var))
+                # print('min',conf.min)
+                # print('max',conf.max)
+                # print('minRAW',conf.minRAW)
+                # print('maxRAW',conf.maxRAW)
+                # print('ext',conf.ext)
+                # print('band',conf.band)
+                # print('bandN',conf.bandN)
+
+                # tiff_file = xr.open_dataset(conf.fileNameTiff)
+                
+                # print("***********",tiff_file[0])
+                # print("***********",tiff_file[0][0][0])
+                # nodatavals = tiff_file.attrs["nodatavals"][0]
+                # print("nodatavals:",nodatavals)
+                                # nodatavals = -1000
+                # print([data for data in tiff_file[0][0] if data != nodatavals])
+                # maxData=max([data for data in tiff_file[0][0] if data != nodatavals] )
+                # print("***max: ",maxData)
+                
+                dataFile={}
+                dataFile['fileName']=conf.fileName
+                dataFile['fileNameTiff']=conf.fileNameTiff
+                dataFile['port']=conf.port
+                dataFile['timeN']=conf.timeN
+                dataFile['time']=conf.time
+                dataFile['var']=str(conf.var)
+                dataFile['vars']=conf.vars
+                dataFile['min']=conf.min
+                dataFile['max']=conf.max
+                dataFile['minRAW']=conf.minRAW
+                dataFile['maxRAW']=conf.maxRAW
+                dataFile['ext']=conf.ext
+                dataFile['band']=conf.band
+                dataFile['bandN']=conf.bandN
+                dataFile['dateIni']=conf.dateIni
+                dataFile['dateEnd']=conf.dateEnd
+                dataFile['datePeriod']=conf.datePeriod
+                files.append(dataFile)
+
+            allmin=min(file['min'] for file in files)
+            allmax=max(file['max'] for file in files)
+            
+            for file in files:
+                file['min']=allmin
+                file['max']=allmax
+                # file['minRAW']=allminRAW
+                # file['maxRAW']=allmaxRAW
+                # tiff_file = xr.open_rasterio(file['fileNameTiff'])
+                # print("***********",tiff_file.attrs['long_name'])
+                # print("***********",tiff_file.attrs["transform"])
+                # print("***********",tiff_file.attrs["scales"])
+                # print("***********",tiff_file.attrs["offsets"])
+                # print("***********",tiff_file.sizes['x'])
+                # scale=tiff_file.attrs["scales"][0]
+                # offset=tiff_file.attrs["offsets"][0]
+
+                tiff_file = rioxarray.open_rasterio(file['fileNameTiff'])
+                scale=tiff_file.attrs["scale_factor"]
+                offset=tiff_file.attrs["add_offset"]
+                bounds=tiff_file.rio.bounds()
+                file['longitudeE']=bounds[0]
+                file['latitudeS']=bounds[1]
+                file['longitudeW']=bounds[2]
+                file['latitudeN']=bounds[3]
+                # print("***********scale:",scale)
+                # print("***********offset:",offset)
+                file['minRAW']=(file['min']-offset)/scale
+                file['maxRAW']=(file['max']-offset)/scale
+                # bounds=tiff_file.rio.bounds()
+                # print(bounds[0])
+
+
+            response['files']=files
+
             return JsonResponse(response)
 
            
