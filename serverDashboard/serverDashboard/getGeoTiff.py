@@ -49,7 +49,8 @@ class ConfigFile:
         self.max=0
         self.maxRAW=0
 
-        self.path = os.path.expanduser('~')+"/temp/"
+        # self.path = os.path.expanduser('~')+"/temp/"
+        self.path = "/home/temp/"
         filePort = open(self.path+"port.json", "r")
         dataPort = json.load(filePort)
         self.port=dataPort['port']
@@ -106,7 +107,8 @@ class ConfigFile:
             ('All files', '*.*'))
         self.fileName = fd.askopenfilename(
             title='Select file',
-            initialdir='/media/alex/Datos/',
+            # initialdir='/media/alex/Datos/',
+            initialdir='/home/temp/',
             filetypes=filetypes)
         root.destroy()
 

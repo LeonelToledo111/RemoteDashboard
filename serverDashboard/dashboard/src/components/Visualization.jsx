@@ -58,7 +58,8 @@ class Visualization extends Component {
                 <button onClick={
                     async ()=>{
                         await this.state.refVis().serverTiffasy({
-                            path:"/media/alex/Datos/netcdf/u_10m"
+                            path:"/home/date/u_10m"
+                            // path:"/media/alex/Datos/netcdf/u_10m"
                         })
 
                     }}>u10</button>
@@ -67,7 +68,8 @@ class Visualization extends Component {
                 <button onClick={
                     async ()=>{
                         await this.state.refVis().serverTiffasy({
-                            path:"/media/alex/Datos/netcdf/v_10m"
+                            path:"/home/date/v_10m"
+                            // path:"/media/alex/Datos/netcdf/v_10m"
                         })
 
                     }}>v10</button>
