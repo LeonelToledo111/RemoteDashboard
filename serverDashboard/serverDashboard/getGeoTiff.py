@@ -10,7 +10,7 @@ from tkinter import filedialog as fd
 from sympy import false, true
 
 import xarray as xr 
-import rioxarray
+#import rioxarray
 
 import uuid
 
@@ -18,11 +18,11 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
 
-from osgeo import gdal
+#from osgeo import gdal
 
 def toTIFF(dfn, name):
     dfn.to_csv(name+".xyz", index = False, header = None, sep = " ")
-    demn = gdal.Translate(name+".tif", name+".xyz")
+ #   demn = gdal.Translate(name+".tif", name+".xyz")
     demn = None
 
 class ConfigFile:

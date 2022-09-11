@@ -60,15 +60,15 @@ async function postDataAxios(){
     const response = await axios.post('http://127.0.0.1:8000/meteorologicalVariablesHandler', {
         firstName: 'Fred',
         lastName: 'Flintstone',
-        m_u_component_of_wind : selectedItem=[0],
-        m_v_component_of_wind : 'value',
-        m_dewpoint_temperature:  'value',
-        m_temperature : 'value',
-        surface_net_solar_radiation :'value',
-        total_precipitation: 'value',
-        surface_pressure: 'value',
-        forecast_albedo: 'value',
-        evaporation_from_bare_soil: 'value', 
+        m_u_component_of_wind : selectedItem[0],
+        m_v_component_of_wind : selectedItem[1],
+        m_dewpoint_temperature:  selectedItem[2],
+        m_temperature : selectedItem[3],
+        surface_net_solar_radiation :selectedItem[4],
+        total_precipitation: selectedItem[5],
+        surface_pressure: selectedItem[6],
+        forecast_albedo: selectedItem[7],
+        evaporation_from_bare_soil: selectedItem[8], 
         evaporation_from_open_water_surfaces_excluding_oceans: 'value',
         evaporation_from_the_top_of_canopy: 'value',
         evaporation_from_vegetation_transpiration: 'value',
@@ -112,6 +112,7 @@ async function postDataAxios(){
         volumetric_soil_water_layer_4: 'valueFinal',
       },axiosConfig)
 
+      console.log(selectedItem)
       console.log(response.data)
 
 }
@@ -125,7 +126,7 @@ function  MeteorologicalVariables() {
     const maxLat = useSelector(state=>state.max_lat);
 
         const items = [
-            { id: 1, label: "10m u-component of wind", value: "true" },
+            { id: 1, label: "10m u-component of wind", value: "caca" },
             { id: 2, label: "10m v-component of wind", value: "false" },
             { id: 3, label: "2m dewpoint temperature", value: "true"},
             { id: 4, label: "2m temperature", value: "false" },
