@@ -179,6 +179,8 @@ function  MeteorologicalVariables() {
             { id: 51, label: "Select All" }
           ];
 
+          
+
           const dataSets = [
             { id: 1, label: "CHIRPS" },
             { id: 2, label: "CMORPH" },
@@ -205,6 +207,11 @@ function  MeteorologicalVariables() {
                     </div>
 
                     <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className ="myButton">
+                    <button onClick={postDataAxios}> RUN </button>
+
                 </div>
 
                 <div className = "precipitation"> 
@@ -264,10 +271,7 @@ function  MeteorologicalVariables() {
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className ="myButton">
-                    <button onClick={postDataAxios}> RUN </button>
-
-                </div>
+                
                 
             </div>
         
