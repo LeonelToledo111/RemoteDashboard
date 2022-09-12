@@ -209,11 +209,6 @@ function  MeteorologicalVariables() {
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className ="myButton">
-                    <button onClick={postDataAxios}> RUN </button>
-
-                </div>
-
                 <div className = "precipitation"> 
                     <div className="blockPrecipitation">
                         <h3>Precipitation Datasets</h3>
@@ -271,7 +266,10 @@ function  MeteorologicalVariables() {
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                
+                <div className ="myButton">
+                    <button onClick={postDataAxios}> RUN </button>
+
+                </div>
                 
             </div>
         

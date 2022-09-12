@@ -16,6 +16,7 @@ import urllib3
 import argparse
 import pathlib
 import json
+import subprocess
 
 urllib3.disable_warnings()
 
@@ -841,9 +842,10 @@ def handle(request):
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
             print (body)
-            print (body['volumetric_soil_water_layer_4'])
+         #   print (body['volumetric_soil_water_layer_4'])
          #   meteorologicalVariablesDownload()
-            os.system("sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm") 
+         #   os.system("sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm") 
+            completed = subprocess.run(["sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm", '-1'])
             return HttpResponse('This is POST request from Met Var')
             
 
