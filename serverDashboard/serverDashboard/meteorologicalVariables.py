@@ -841,11 +841,11 @@ def handle(request):
            ## name = request.get('firstName')
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
-            print (body)
+           # print (body)
          #   print (body['volumetric_soil_water_layer_4'])
          #   meteorologicalVariablesDownload()
-         #   os.system("sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm") 
-            completed = subprocess.run(["sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm", '-1'])
+             os.system("sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm") 
+          #  completed = subprocess.call(["sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm"])
             return HttpResponse('This is POST request from Met Var')
             
 
