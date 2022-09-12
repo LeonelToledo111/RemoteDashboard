@@ -844,7 +844,8 @@ def handle(request):
            # print (body)
          #   print (body['volumetric_soil_water_layer_4'])
          #   meteorologicalVariablesDownload()
-             os.system("sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm") 
+           #  os.system("sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm") 
+            subprocess.run([sys.executable, "batch.py"])
           #  completed = subprocess.call(["sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm"])
             return HttpResponse('This is POST request from Met Var')
             
