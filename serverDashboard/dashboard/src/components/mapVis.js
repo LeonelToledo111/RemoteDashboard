@@ -67,6 +67,7 @@ class MapboxContainerVis extends React.Component {
       console.log("*****",file.fileNameTiff)
       let item={};
       item.url="http://localhost:"+file.port+"/tiles/{z}/{x}/{y}.png";
+      item.url_terracotta="http://localhost:"+file.port_terracotta+"/singleband/"+file.id+"/{z}/{x}/{y}.png";
       item.filename=file.fileNameTiff;
       item.projection="EPSG:3857";
       item.band=String(file.band);
@@ -191,11 +192,14 @@ class MapboxContainerVis extends React.Component {
               <LayersControl.Overlay checked name="GeoTiff">
                 <LayerGroup>
                   {/* <TileLayer url="http://localhost:34287/tiles/{z}/{x}/{y}.png?filename=/home/alex/temp2&projection=EPSG:3857&band=1&palette=colorbrewer.diverging.RdYlGn_11" format="image/png" transparency={true} opacity={0.8} /> */}
-
+                  
+                  {/* <TileLayer url="http://localhost:5001/singleband/2B/{z}/{x}/{y}.png?colormap=greys&stretch_range=[16,29]" format="image/png" transparency={true} opacity={0.8} /> */}
+                  {/* http://localhost:5001/singleband/2A/{z}/{x}/{y}.png?colormap=rdylgn&stretch_range=[43,58] */}
                   
                   {
                     this.state.layers.map((item) => (
-                      <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
+                      <TileLayer url={item.url_terracotta+"?colormap=rdylgn&stretch_range=["+item.min+","+item.max+"]"} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
+                      // <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
                     ))
 
                     

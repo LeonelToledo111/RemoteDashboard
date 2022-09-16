@@ -10,7 +10,7 @@ from tkinter import filedialog as fd
 from sympy import false, true
 
 import xarray as xr 
-#import rioxarray
+import rioxarray
 
 import uuid
 
@@ -18,11 +18,14 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
 
-#from osgeo import gdal
+from osgeo import gdal
+
 
 def toTIFF(dfn, name):
     dfn.to_csv(name+".xyz", index = False, header = None, sep = " ")
- #   demn = gdal.Translate(name+".tif", name+".xyz")
+    demn = gdal.Translate(name+".tif", name+".xyz", options="-a_srs epsg:4326")
+    # -a_srs epsg:4326
+    # "projwin_srs epsg:4326"
     demn = None
 
 class ConfigFile:
@@ -39,7 +42,7 @@ class ConfigFile:
         self.vars = []
         self.ext = ''
         self.error = false
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().hex
         self.dateIni = ''
         self.dateEnd = ''
         self.datePeriod= 0
@@ -53,6 +56,11 @@ class ConfigFile:
         filePort = open(self.path+"port.json", "r")
         dataPort = json.load(filePort)
         self.port=dataPort['port']
+
+        filePort_terracotta = open(self.path+"port_terracotta.json", "r")
+        dataPort_terracotta = json.load(filePort_terracotta)
+        self.port_terracotta=dataPort_terracotta['port']
+
         self.fileNameTiff = ''
         
         if 'file' in bodyJSON.keys():
@@ -144,8 +152,10 @@ class ConfigFile:
         self.max=float(pr.max())
         self.maxRAW=self.max
         pr = pr.rio.set_spatial_dims('longitude', 'latitude')
+        # pr.rio.crs
         pr.rio.crs
-        self.fileNameTiff=self.path+"GeoTIFF"+str(self.id)+".tif"
+        pr.rio.set_crs("epsg:4326")
+        self.fileNameTiff=self.path+"GeoTIFF_"+str(self.id)+".tif"
         pr.rio.to_raster(self.fileNameTiff)
 
         self.dateIni = str(nc_file.time[0].values)
@@ -207,7 +217,7 @@ class ConfigFile:
         # print("dfn")
         data = dfn.sort_values(by = ["y", "x"], ascending = [False, True])
         # print("sort")
-        name=self.path+"GeoTIFF"+str(self.id)
+        name=self.path+"GeoTIFF_"+str(self.id)
         # print("name:",name)
         toTIFF(data, name)
         # print("toTIFF")
@@ -315,7 +325,9 @@ def handle(request):
                 dataFile={}
                 dataFile['fileName']=conf.fileName
                 dataFile['fileNameTiff']=conf.fileNameTiff
+                dataFile['id']=str(conf.id)
                 dataFile['port']=conf.port
+                dataFile['port_terracotta']=conf.port_terracotta
                 dataFile['timeN']=conf.timeN
                 dataFile['time']=conf.time
                 dataFile['var']=str(conf.var)
@@ -331,6 +343,8 @@ def handle(request):
                 dataFile['dateEnd']=conf.dateEnd
                 dataFile['datePeriod']=conf.datePeriod
                 files.append(dataFile)
+            
+            os.system('terracotta ingest /home/temp/GeoTIFF_{id}.tif -o /home/temp/data.sqlite --skip-existing')
 
             allmin=min(file['min'] for file in files)
             allmax=max(file['max'] for file in files)
