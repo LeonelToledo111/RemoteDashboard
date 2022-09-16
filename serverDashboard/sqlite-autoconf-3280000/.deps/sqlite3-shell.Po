@@ -1,0 +1,229 @@
+sqlite3-shell.o: shell.c \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/stdlib.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/features.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/cdefs.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/wordsize.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/gnu/stubs.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/gnu/stubs-64.h \
+ /home/admin/miniconda3/lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/include/stddef.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/waitflags.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/waitstatus.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/endian.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/endian.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/byteswap.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/types.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/types.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/typesizes.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/time.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/select.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/select.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigset.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/time.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/sysmacros.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/pthreadtypes.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/alloca.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stdlib.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/string.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/xlocale.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/string.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/string2.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/string3.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/stdio.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/libio.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/_G_config.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/wchar.h \
+ /home/admin/miniconda3/lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/include/stdarg.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stdio_lim.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sys_errlist.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stdio.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stdio2.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/assert.h \
+ sqlite3.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/ctype.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/signal.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/signum.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/siginfo.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigaction.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigcontext.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigstack.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/ucontext.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigthread.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/pwd.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/unistd.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/posix_opt.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/environments.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/confname.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/getopt.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/unistd.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/dirent.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/dirent.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/posix1_lim.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/local_lim.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/linux/limits.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/stat.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stat.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/time.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/resource.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/resource.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/fcntl.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/fcntl.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/fcntl2.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/utime.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/errno.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/errno.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/linux/errno.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/asm/errno.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/asm-generic/errno.h \
+ /home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/asm-generic/errno-base.h
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/stdlib.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/features.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/cdefs.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/wordsize.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/gnu/stubs.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/gnu/stubs-64.h:
+
+/home/admin/miniconda3/lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/include/stddef.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/waitflags.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/waitstatus.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/endian.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/endian.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/byteswap.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/types.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/types.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/typesizes.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/time.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/select.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/select.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigset.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/time.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/sysmacros.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/pthreadtypes.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/alloca.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stdlib.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/string.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/xlocale.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/string.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/string2.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/string3.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/stdio.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/libio.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/_G_config.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/wchar.h:
+
+/home/admin/miniconda3/lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/include/stdarg.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stdio_lim.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sys_errlist.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stdio.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stdio2.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/assert.h:
+
+sqlite3.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/ctype.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/signal.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/signum.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/siginfo.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigaction.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigcontext.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigstack.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/ucontext.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/sigthread.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/pwd.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/unistd.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/posix_opt.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/environments.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/confname.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/getopt.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/unistd.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/dirent.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/dirent.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/posix1_lim.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/local_lim.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/linux/limits.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/stat.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/stat.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/time.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/sys/resource.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/resource.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/fcntl.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/fcntl.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/fcntl2.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/utime.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/errno.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/bits/errno.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/linux/errno.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/asm/errno.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/asm-generic/errno.h:
+
+/home/admin/miniconda3/x86_64-conda_cos6-linux-gnu/sysroot/usr/include/asm-generic/errno-base.h:

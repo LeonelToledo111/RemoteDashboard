@@ -323,6 +323,9 @@ class Climate extends Component {
                 <div className ="myButton">
                     <button onClick={postClimateVariables}> VARIABLES </button>
                 </div>
+                <div className ="myButton">
+                    <button onClick={postClimateVariables}> RANK </button>
+                </div>
                 
             </div>
         
