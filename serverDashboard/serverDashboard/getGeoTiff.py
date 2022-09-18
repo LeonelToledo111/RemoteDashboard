@@ -344,7 +344,7 @@ def handle(request):
                 dataFile['datePeriod']=conf.datePeriod
                 files.append(dataFile)
             
-            os.system('terracotta ingest /home/temp/GeoTIFF_{id}.tif -o /home/temp/data.sqlite --skip-existing')
+            # os.system('terracotta ingest /home/temp/GeoTIFF_{id}.tif -o /home/temp/data.sqlite --skip-existing')
 
             allmin=min(file['min'] for file in files)
             allmax=max(file['max'] for file in files)
@@ -363,6 +363,8 @@ def handle(request):
                 # scale=tiff_file.attrs["scales"][0]
                 # offset=tiff_file.attrs["offsets"][0]
 
+                print("rioxarray.open:",file['fileNameTiff'])
+
                 tiff_file = rioxarray.open_rasterio(file['fileNameTiff'])
                 scale=tiff_file.attrs["scale_factor"]
                 offset=tiff_file.attrs["add_offset"]
@@ -371,8 +373,12 @@ def handle(request):
                 file['latitudeS']=bounds[1]
                 file['longitudeW']=bounds[2]
                 file['latitudeN']=bounds[3]
-                # print("***********scale:",scale)
-                # print("***********offset:",offset)
+                print("***********scale:",scale)
+                print("***********offset:",offset)
+                print("***********min:",file['min'])
+                print("***********max:",file['max'])
+                print("***********minRAW:",file['minRAW'])
+                print("***********maxRAW:",file['maxRAW'])
                 file['minRAW']=(file['min']-offset)/scale
                 file['maxRAW']=(file['max']-offset)/scale
                 # bounds=tiff_file.rio.bounds()
