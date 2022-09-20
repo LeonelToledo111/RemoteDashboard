@@ -77,6 +77,7 @@ class MapboxContainerVis extends React.Component {
       const corner1 = L.latLng(file['latitudeS'], file['longitudeE'])
       const corner2 = L.latLng(file['latitudeN'], file['longitudeW'])
       item.bounds = L.latLngBounds(corner1, corner2);
+      item.ext=file.ext;
       // LatLngBoundsExpression
       // const bounds = new LatLngBounds([40.712216, -74.22655], [40.773941, -74.12544])
       // item.bounds = bounds
@@ -206,13 +207,16 @@ class MapboxContainerVis extends React.Component {
                   {/* http://localhost:5001/singleband/2A/{z}/{x}/{y}.png?colormap=rdylgn&stretch_range=[43,58] */}
                   
                   {
-                    this.state.layers.map((item) => (
+                    this.state.layers.map((item) => {
                       //<TileLayer url={item.url_terracotta+"?colormap=rdylgn&stretch_range=["+item.min+","+item.max+"]"} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
                       // <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
-
-                      <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
+                      if(item.ext=='tif')
+                        return <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0}/>
+                      else
+                        return <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
                       // <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0}/>
-                    ))
+
+                    })
 
                     
                   }

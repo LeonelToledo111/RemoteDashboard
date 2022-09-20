@@ -18,12 +18,12 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
 
-from osgeo import gdal
+# from osgeo import gdal
 
 
 def toTIFF(dfn, name):
     dfn.to_csv(name+".xyz", index = False, header = None, sep = " ")
-    demn = gdal.Translate(name+".tif", name+".xyz", options="-a_srs epsg:4326")
+    # demn = gdal.Translate(name+".tif", name+".xyz", options="-a_srs epsg:4326")
     # -a_srs epsg:4326
     # "projwin_srs epsg:4326"
     demn = None
@@ -225,26 +225,11 @@ class ConfigFile:
         self.ext="tif"
     
     def openTiff(self):
-        # print("openTiff")
+
         self.fileNameTiff=self.fileName
 
-        # if self.var=='band1':
-        #     self.band=1
-        # elif self.var=='band2':
-        #     self.band=2
-        # elif self.var=='band3':
-        #     self.band=3
-        # temp=self.var.replace("band", "", 1)
-
-        # print("*****",self.var,"->",temp)
-        # self.var="band"+str(self.band)
-        
-        # tiff_file = xr.open_dataset(self.fileNameTiff)
-        tiff_file = xr.open_dataset(self.fileNameTiff)
-
-        # print("***********",tiff_file.attrs['long_name'])
-        self.bandN=len(tiff_file['band_data'])
-
+        tiff_file = rioxarray.open_rasterio(self.fileNameTiff)
+        self.bandN = tiff_file.band.size
         print("1****",self.var, self.band)
 
         if self.var.isnumeric():
@@ -258,14 +243,43 @@ class ConfigFile:
         self.var=str(self.band)
         print("2****",self.var, self.band)
 
-        # self.var=str(self.band)
         for i in range( self.bandN ):
             self.vars.append( str(i+1) )
             # self.vars.append( 'band'+str(i+1) )
-        self.minRAW = float(tiff_file['band_data'][self.band-1].min())
-        self.maxRAW = float(tiff_file['band_data'][self.band-1].max())
-        self.min=self.minRAW
-        self.max=self.maxRAW
+        scale=tiff_file.attrs["scale_factor"]
+        offset=tiff_file.attrs["add_offset"]
+        self.minRAW = float(tiff_file.variable[self.band-1].min())
+        self.maxRAW = float(tiff_file.variable[self.band-1].max())
+        self.min=self.minRAW*scale+offset
+        self.max=self.maxRAW*scale+offset
+
+
+        # tiff_file = xr.open_dataset(self.fileNameTiff)
+# 
+        ##print("***********",tiff_file.attrs['long_name'])
+        # self.bandN=len(tiff_file['band_data'])
+# 
+        # print("1****",self.var, self.band)
+# 
+        # if self.var.isnumeric():
+            # self.band=int(self.var)
+        # else:
+            # self.band=1
+        # 
+        # if self.band>self.bandN :
+            # self.band=1
+# 
+        # self.var=str(self.band)
+        # print("2****",self.var, self.band)
+# 
+        ##self.var=str(self.band)
+        # for i in range( self.bandN ):
+            # self.vars.append( str(i+1) )
+            ##self.vars.append( 'band'+str(i+1) )
+        # self.minRAW = float(tiff_file['band_data'][self.band-1].min())
+        # self.maxRAW = float(tiff_file['band_data'][self.band-1].max())
+        # self.min=self.minRAW
+        # self.max=self.maxRAW
         
 
 
