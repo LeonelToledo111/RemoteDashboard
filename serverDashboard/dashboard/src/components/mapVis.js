@@ -193,7 +193,7 @@ class MapboxContainerVis extends React.Component {
               // event = { console.log("Hola") }
             /> */}
 
-            <MapInfo childRef={ref => (this.refMapInfo= ref)}/>
+            <MapInfo childRef={ref => (this.refMapInfo= ref)} position="topright"/>
 
             <ScaleControl position="topright" />
 
@@ -213,7 +213,8 @@ class MapboxContainerVis extends React.Component {
                       if(item.ext=='tif')
                         return <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0}/>
                       else
-                        return <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
+                        return <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0}/>
+                        //return <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
                       // <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0}/>
 
                     })

@@ -6,6 +6,9 @@ class MapInfo extends React.Component {
 
   createControl() {
     const MapInfo = L.Control.extend({
+      options:{
+        position: this.props.position || 'bottomleft',
+      },
       onAdd: (map) => {
         const panelDiv = L.DomUtil.create("div", "info");
 
@@ -22,7 +25,8 @@ class MapInfo extends React.Component {
       onRemove: function (map) {
       }
     });
-    return new MapInfo({ position: "bottomleft" });
+    return new MapInfo();
+    //return new MapInfo({ position: "bottomleft" });
   }
   
 

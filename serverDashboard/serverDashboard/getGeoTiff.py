@@ -18,15 +18,12 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
 
-# from osgeo import gdal
 
-
-def toTIFF(dfn, name):
-    dfn.to_csv(name+".xyz", index = False, header = None, sep = " ")
-    # demn = gdal.Translate(name+".tif", name+".xyz", options="-a_srs epsg:4326")
-    # -a_srs epsg:4326
-    # "projwin_srs epsg:4326"
-    demn = None
+def gimme_mesh(xmin,ymin,xmax,ymax,dstep):
+    x=np.arange(xmin,xmax+dstep/2,dstep)
+    y=np.arange(ymax,ymin-dstep/2,-dstep)
+    xm,ym=np.meshgrid(x, y)
+    return x,y,xm,ym
 
 class ConfigFile:
     def __init__(self,bodyJSON):
@@ -172,9 +169,6 @@ class ConfigFile:
         if( self.col >= self.colN ):
             self.col=0
         
-        # print("columns:", columns )
-        # print("***col:", self.col )
-
         if self.var=='':
             self.var=str(columns[self.col])
 
@@ -182,46 +176,36 @@ class ConfigFile:
             self.var=str(columns[0])
         
 
-        # self.var='phase1.trigger'
-        # print("var:", self.var )
         usecols=["lon","lat",self.var]
         df = pd.read_csv(self.fileName,usecols=usecols)
         lon=df.lon
         lat=df.lat
         val=df[self.var]
-        # print("lon: ",lon)
-        # print("lat: ",lat)
-        # print("var: ",val)
         rbfi = Rbf(lon, lat, val, epsilon=0.001)
-        # print("rbfi")
         lon_min=lon.min()
         lon_max=lon.max()
         lat_min=lat.min()
         lat_max=lat.max()
-        # print("lon_min: ",lon_min)
         dstep=0.01
-        lonTiff = np.arange(lon_min,lon_max+dstep/2,dstep)
-        latTiff = np.arange(lat_min,lat_max+dstep/2,dstep)
-        Nlon = len(lonTiff)
-        Nlat = len(latTiff)
-        x = np.tile(lonTiff, Nlat)
-        y = np.repeat(latTiff, Nlon)
-        interpolateXY=rbfi(x, y)
-        # print("interpolate")
+        lonTiff,latTiff,lon_grid,lat_grid=gimme_mesh(lon_min,lat_min,lon_max,lat_max,dstep)
+        interpolateXY=rbfi(lon_grid, lat_grid)
+
+        cs = np.array([interpolateXY])
+        coords = [[0],latTiff.tolist(),lonTiff.tolist()]
+        dims = ["band", "y", "x"]
+        xcs = (
+            xr.DataArray(cs, coords=coords, dims=dims)
+            .astype("float32")
+        )
+        xcs.rio.crs
+        xcs.rio.set_crs("epsg:4326")
+        self.fileNameTiff=self.path+"GeoTIFF_"+str(self.id)+".tif"
+        xcs.rio.to_raster(self.fileNameTiff)
+
         self.min=interpolateXY.min()
         self.minRAW=self.min
         self.max=interpolateXY.max()
         self.maxRAW=self.max
-        # print("self.min: ",self.min)
-        dfn = pd.DataFrame({"x":x, "y":y, "value":interpolateXY})
-        # print("dfn")
-        data = dfn.sort_values(by = ["y", "x"], ascending = [False, True])
-        # print("sort")
-        name=self.path+"GeoTIFF_"+str(self.id)
-        # print("name:",name)
-        toTIFF(data, name)
-        # print("toTIFF")
-        self.fileNameTiff=name+".tif"
         self.ext="tif"
     
     def openTiff(self):
