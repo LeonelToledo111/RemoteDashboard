@@ -47,6 +47,7 @@ class ConfigFile:
         self.minRAW=0
         self.max=0
         self.maxRAW=0
+        self.dataJson={}
 
         # self.path = os.path.expanduser('~')+"/temp/"
         self.path = "/home/temp/"
@@ -90,6 +91,8 @@ class ConfigFile:
             self.openNetCDF()
         elif self.ext=='csv':
             self.openCSV()
+        elif self.ext=='geojson':
+            self.openGeoJson()
 
         
         
@@ -104,10 +107,11 @@ class ConfigFile:
     
     def selectFile(self,root):
         filetypes = (
-            ('netCDF, GeoTiff, CSV', '.nc .tif .csv'),
+            ('netCDF, GeoTiff, CSV, GeoJson', '.nc .tif .csv .json .geojson'),
             ('netCDF', '*.nc'),
             ('GeoTiff', '*.tif'),
             ('CSV', '*.csv'),
+            ('GeoJson', '*.json *.geojson'),
             ('All files', '*.*'))
         self.fileName = fd.askopenfilename(
             title='Select file',
@@ -115,6 +119,14 @@ class ConfigFile:
             initialdir='/home/temp/',
             filetypes=filetypes)
         root.destroy()
+
+    def openGeoJson(self):
+        print("abriendo GeoJson")
+        # self.dataJson = json.load(self.fileName)
+        # https://stackoverflow.com/questions/66021221/how-to-save-json-key-data-to-python-variables
+        with open(self.fileName) as f:
+            #converting json to python dict and stroing it in data variable
+            self.dataJson = json.loads(f.read())
 
     def openNetCDF(self):
         nc_file = xr.open_dataset(self.fileName)
@@ -340,6 +352,15 @@ def handle(request):
                 dataFile['dateIni']=conf.dateIni
                 dataFile['dateEnd']=conf.dateEnd
                 dataFile['datePeriod']=conf.datePeriod
+                # https://stackoverflow.com/questions/23177439/python-checking-if-a-dictionary-is-empty-doesnt-seem-to-work
+                # if bool(conf.dataJson):
+                #     print("Agregando dataJson")
+                #     dataFile['dataJson']=conf.dataJson
+                print("comprueba GeoJson")
+                if bool(conf.dataJson):
+                    print("asignando GeoJson")
+                    dataFile['dataJson']=conf.dataJson
+
                 files.append(dataFile)
             
             # os.system('terracotta ingest /home/temp/GeoTIFF_{id}.tif -o /home/temp/data.sqlite --skip-existing')
@@ -348,39 +369,42 @@ def handle(request):
             allmax=max(file['max'] for file in files)
             
             for file in files:
-                file['min']=allmin
-                file['max']=allmax
-                # file['minRAW']=allminRAW
-                # file['maxRAW']=allmaxRAW
-                # tiff_file = xr.open_rasterio(file['fileNameTiff'])
-                # print("***********",tiff_file.attrs['long_name'])
-                # print("***********",tiff_file.attrs["transform"])
-                # print("***********",tiff_file.attrs["scales"])
-                # print("***********",tiff_file.attrs["offsets"])
-                # print("***********",tiff_file.sizes['x'])
-                # scale=tiff_file.attrs["scales"][0]
-                # offset=tiff_file.attrs["offsets"][0]
+                print("file:",file)
+                if 'dataJson' not in file.keys():
+                    print("No hay dataJson")
+                    file['min']=allmin
+                    file['max']=allmax
+                    # file['minRAW']=allminRAW
+                    # file['maxRAW']=allmaxRAW
+                    # tiff_file = xr.open_rasterio(file['fileNameTiff'])
+                    # print("***********",tiff_file.attrs['long_name'])
+                    # print("***********",tiff_file.attrs["transform"])
+                    # print("***********",tiff_file.attrs["scales"])
+                    # print("***********",tiff_file.attrs["offsets"])
+                    # print("***********",tiff_file.sizes['x'])
+                    # scale=tiff_file.attrs["scales"][0]
+                    # offset=tiff_file.attrs["offsets"][0]
 
-                print("rioxarray.open:",file['fileNameTiff'])
+                    print("rioxarray.open:",file['fileNameTiff'])
 
-                tiff_file = rioxarray.open_rasterio(file['fileNameTiff'])
-                scale=tiff_file.attrs["scale_factor"]
-                offset=tiff_file.attrs["add_offset"]
-                bounds=tiff_file.rio.bounds()
-                file['longitudeE']=bounds[0]
-                file['latitudeS']=bounds[1]
-                file['longitudeW']=bounds[2]
-                file['latitudeN']=bounds[3]
-                print("***********scale:",scale)
-                print("***********offset:",offset)
-                print("***********min:",file['min'])
-                print("***********max:",file['max'])
-                print("***********minRAW:",file['minRAW'])
-                print("***********maxRAW:",file['maxRAW'])
-                file['minRAW']=(file['min']-offset)/scale
-                file['maxRAW']=(file['max']-offset)/scale
-                # bounds=tiff_file.rio.bounds()
-                # print(bounds[0])
+                    tiff_file = rioxarray.open_rasterio(file['fileNameTiff'])
+                    scale=tiff_file.attrs["scale_factor"]
+                    offset=tiff_file.attrs["add_offset"]
+                    bounds=tiff_file.rio.bounds()
+                    file['longitudeE']=bounds[0]
+                    file['latitudeS']=bounds[1]
+                    file['longitudeW']=bounds[2]
+                    file['latitudeN']=bounds[3]
+                    print("***********scale:",scale)
+                    print("***********offset:",offset)
+                    print("***********min:",file['min'])
+                    print("***********max:",file['max'])
+                    print("***********minRAW:",file['minRAW'])
+                    print("***********maxRAW:",file['maxRAW'])
+                    file['minRAW']=(file['min']-offset)/scale
+                    file['maxRAW']=(file['max']-offset)/scale
+                    # bounds=tiff_file.rio.bounds()
+                    # print(bounds[0])
 
 
             response['files']=files

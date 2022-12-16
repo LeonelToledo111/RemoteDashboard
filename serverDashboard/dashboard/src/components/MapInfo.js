@@ -35,14 +35,14 @@ class MapInfo extends React.Component {
     const control = this.createControl();
     control.addTo(map);
 
-    const { childRef } = this.props;
-    childRef(this);
+    // const { childRef } = this.props;
+    // childRef(this);
   }
 
   
   componentWillUnmount() {
-   const { childRef } = this.props;
-    childRef(undefined);
+  //  const { childRef } = this.props;
+  //   childRef(undefined);
   }
 
   render() {
