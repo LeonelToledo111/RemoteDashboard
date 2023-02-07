@@ -155,12 +155,77 @@ class ChartL extends React.Component {
         return new this.ChartL();
     }
 
-
+    
+    // download = function (data) {
+  
+    //     const blob = new Blob([data], { type: 'text/csv' });
+    //     const url = window.URL.createObjectURL(blob)
+    //     const a = document.createElement('a')
+    //     a.setAttribute('href', url)
+    //     a.setAttribute('download', 'download.csv');
+    //     a.click()
+    // }
+   
+    // csvmaker = function(data){
+    
+    //     let csvRows = [];
+    //     const headers = Object.keys(data);
+    //     csvRows.push(headers.join(','));
+    //     const values = Object.values(data).join(',');
+    //     csvRows.push(values)
+    //     return csvRows.join('\n')
+    // }
+   
+    save = async function () {
+    
+        let csvRows = [];
+        let headers="Crop";
+        this.state.data.datasets.forEach(( {label} )=>{
+          headers+=", "+label;
+        });
+        csvRows.push(headers);
+        this.state.data.labels.forEach((label, index)=>{
+          let row=label;
+          this.state.data.datasets.forEach(( {data} )=>{
+            row+=", "+data[index];
+          });
+          csvRows.push(row);
+        });
+        
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.setAttribute('href', url)
+        a.setAttribute('download', 'download.csv');
+        a.click()
+        //this.download(csvdata);
+    }
+   
     makeChart(container){
         // console.log("makeChart");
         const ctx = L.DomUtil.create('canvas', 'myChart',container);
         ctx.setAttribute('width', '1000');
         ctx.setAttribute('height', '800');
+
+        const bttn = L.DomUtil.create('input','bttn_name',container);
+        bttn.setAttribute('width', '1000');
+        //bttn.width="1000";
+        bttn.type="button";
+        //bttn.title="No cat";
+        bttn.value = "Save";
+        // bttn.onclick = () => {this.save};
+        //bttn.addEventListener('click', this.save);
+
+        // this.state.data.label.forEach((num1, index) => {
+        //   console.log("num",index,num1)
+        // });
+
+        bttn.addEventListener('click', ()=>{
+          // this.state.data.label.forEach((num1, index) => {
+          //   console.log("num",index,num1)
+          // });
+          this.save()
+        });
 
         const config = {
           type: 'bar',
@@ -278,9 +343,7 @@ class ChartL extends React.Component {
 
         // console.log("*******new Chart**********");
 
-        const myChart = new Chart(ctx, config
-      
-      );
+        const myChart = new Chart(ctx, config);
         
     }
 

@@ -356,9 +356,9 @@ def handle(request):
                 # if bool(conf.dataJson):
                 #     print("Agregando dataJson")
                 #     dataFile['dataJson']=conf.dataJson
-                print("comprueba GeoJson")
+                #print("comprueba GeoJson")
                 if bool(conf.dataJson):
-                    print("asignando GeoJson")
+                    #print("asignando GeoJson")
                     dataFile['dataJson']=conf.dataJson
 
                 files.append(dataFile)
@@ -369,7 +369,7 @@ def handle(request):
             allmax=max(file['max'] for file in files)
             
             for file in files:
-                print("file:",file)
+                #print("file:",file)
                 if 'dataJson' not in file.keys():
                     print("No hay dataJson")
                     file['min']=allmin
@@ -385,7 +385,7 @@ def handle(request):
                     # scale=tiff_file.attrs["scales"][0]
                     # offset=tiff_file.attrs["offsets"][0]
 
-                    print("rioxarray.open:",file['fileNameTiff'])
+                    #print("rioxarray.open:",file['fileNameTiff'])
 
                     tiff_file = rioxarray.open_rasterio(file['fileNameTiff'])
                     scale=tiff_file.attrs["scale_factor"]

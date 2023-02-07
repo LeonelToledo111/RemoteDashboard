@@ -60,7 +60,8 @@ class MapboxContainerVis extends React.Component {
         show:false
       },
       listGeoJSON:[],
-      // selectedGeoJSON:[],
+      selected:[],
+      //selectedGeoJSON:[],
       //code2index:{},
       onAddChart: false,
 
@@ -74,33 +75,35 @@ class MapboxContainerVis extends React.Component {
     //this.refGeoJson       = React.createRef();
     this.backConfFile =''
     this.var=''
-    this.mapColor={}
+    //this.mapColor={}
     this.properties={}
     this.backDataChart={data:{},show:[]}
     this.boundingBox=[]
+    this.colorMap=[]
     
     
 
     this.serverTiffasy = this.serverTiffasy.bind(this)
     this.setDataChart = this.setDataChart.bind(this)
     this.setShowDataChart =this.setShowDataChart.bind(this)
+    this._onCreated =this._onCreated.bind(this)
     
   }
 
-  getColor = ( code ) => {
-		// if( this.mapColor[id] === undefined ){
-		// 	this.mapColor[id] = "#"+Math.floor(Math.random()*16777215).toString(16);
-		// }
-		// return this.mapColor[id];
-    // if( this.properties[id] === undefined ){
-    //   return "#"+Math.floor(Math.random()*16777215).toString(16);
-    // }
-    return this.properties[code].backgroundColor
-    //return "#"+Math.floor(Math.random()*16777215).toString(16);
-	}
+  // getColor = ( code ) => {
+	// 	// if( this.mapColor[id] === undefined ){
+	// 	// 	this.mapColor[id] = "#"+Math.floor(Math.random()*16777215).toString(16);
+	// 	// }
+	// 	// return this.mapColor[id];
+  //   // if( this.properties[id] === undefined ){
+  //   //   return "#"+Math.floor(Math.random()*16777215).toString(16);
+  //   // }
+  //   return this.properties[code].backgroundColor
+  //   //return "#"+Math.floor(Math.random()*16777215).toString(16);
+	// }
   
   //https://stackoverflow.com/questions/18947892/creating-range-in-javascript-strange-syntax
-  getColorMap = ( N ) => {
+  makeColorMap = ( N ) => {
     const radio=0.9;
     let r=radio*Math.sqrt(2.0)/2.0;
     let g=radio*Math.sqrt(2.0)/2.0;
@@ -114,7 +117,7 @@ class MapboxContainerVis extends React.Component {
     let exv_b=er*g-eg*r;
     let ev=er*r+eg*g+eb*b;
     const theta0=Math.PI/4;
-    const colorMap=Array.apply(null, { length: N }).map((value,index)=>{
+    this.colorMap=Array.apply(null, { length: N }).map((value,index)=>{
       const theta=theta0+index*2.0*Math.PI/N;
       const cos=Math.cos(theta)
       const sin=Math.sin(theta)
@@ -122,27 +125,28 @@ class MapboxContainerVis extends React.Component {
       const G=cos*g+sin*exv_g+(1-cos)*ev*eg;
       const B=cos*b+sin*exv_b+(1-cos)*ev*eb;
       return "rgb("+Math.floor(255*R)+", "+Math.floor(255*G)+", "+Math.floor(255*B)+")";
+      //return "rgba("+Math.floor(255*R)+", "+Math.floor(255*G)+", "+Math.floor(255*B)+", 0.5)";
     })
-    return colorMap
+    //return colorMap
   }
 
-  getDataChart = () => {
-    return {
-      labels: [1,2,3],
-      datasets: [{
-        label: 'Area',
-        data: [11,12,13],
-        backgroundColor: [
-          'rgba(255, 205, 86, 0.6)',
-        ],
-        borderColor: [
-          'rgb(255, 205, 86)',
-        ],
-        borderWidth: 1,
-        // hidden: true,
-      }]
-    }
-  }
+  // getDataChart = () => {
+  //   return {
+  //     labels: [1,2,3],
+  //     datasets: [{
+  //       label: 'Area',
+  //       data: [11,12,13],
+  //       backgroundColor: [
+  //         'rgba(255, 205, 86, 0.6)',
+  //       ],
+  //       borderColor: [
+  //         'rgb(255, 205, 86)',
+  //       ],
+  //       borderWidth: 1,
+  //       // hidden: true,
+  //     }]
+  //   }
+  // }
 
   getbbox = (geometry) => {
     let xmin=geometry.coordinates[0][0][0]
@@ -176,7 +180,7 @@ class MapboxContainerVis extends React.Component {
   //caracteristicas
   setDataChart = ( features ) => {
 
-    console.log("****feature desde setDataChart",features)
+    //console.log("****feature desde setDataChart",features)
     if(features==undefined)return;
 
         //{ "type": "Feature", "properties": {"OBJECTID": 704331, "PARCELID": "31.0000004069425.001", "STARTDATE": "2019/01/01 00:00:00.000", "ENDDATE": "2020/01/01 00:00:00.000", "YIELD": 1.41, "CROPCODE": 5, "SOWDATE": null, "HARVESTDATE": null, "CROPNAME": "Avoine d'hiver", "HOLDINGID": 211471554, "SHAPE_Leng": 48.970081, "SHAPE_Area": 129.5}, "geometry": { "type": "Polygon", "coordinates": [ [ [ -102.287865179837326, 22.416490050491376 ], [ -102.03636367982125, 22.161466140462625 ],  [ -102.057012479676956, 21.806073550617089 ], [ -102.719348020164432, 21.729538340032899 ],[ -102.718493580019796, 22.090839049978253 ], [ -102.46919368955777, 22.333225570181309 ], [ -102.287865179837326, 22.416490050491376 ] ] ] } }
@@ -268,13 +272,13 @@ class MapboxContainerVis extends React.Component {
       }
     })
 
-    console.log("boundingBox:",this.boundingBox)
+    //console.log("boundingBox:",this.boundingBox)
 
     this.backDataChart.data = dataChart.data;
 
-    const colorMap=this.getColorMap(dataChart.data.labels.length)
+    this.makeColorMap(dataChart.data.labels.length)
     // console.log("ColorMap:",this.getColorMap(10))
-    colorMap.forEach((color,index) =>{
+    this.colorMap.forEach((color,index) =>{
       dataChart.data.datasets[0].backgroundColor[index] = color
       dataChart.data.datasets[0].borderColor[index] = color
       dataChart.data.datasets[1].backgroundColor[index] = color
@@ -290,13 +294,6 @@ class MapboxContainerVis extends React.Component {
       
     })
 
-    const BBPolygon={
-      xmin:5.0,
-      xmax:5.4,
-      ymin:46.1,
-      ymax:46.3
-    }
-
     const selectedPolygon={
       BB:{
         xmin:5.0,
@@ -305,14 +302,14 @@ class MapboxContainerVis extends React.Component {
         ymax:46.3
       },
       points:[
-        {x:5.0, y:46.1},
-        {x:5.2, y:46.15},
-        {x:5.4, y:46.1},
-        {x:5.3, y:46.2},
-        {x:5.4, y:46.3},
-        {x:5.2, y:46.25},
+        {lng:5.0, lat:46.1},
+        {lng:5.2, lat:46.15},
+        {lng:5.4, lat:46.1},
+        {lng:5.3, lat:46.2},
+        {lng:5.4, lat:46.3},
+        {lng:5.2, lat:46.25},
         //{x:5.3, y:46.2},
-        {x:5.0, y:46.3}
+        {lng:5.0, lat:46.3}
 
         // {x:5.0, y:46.1},
         // {x:5.2, y:46.3},
@@ -324,6 +321,7 @@ class MapboxContainerVis extends React.Component {
     }
 
     // https://programmerclick.com/article/2166959151/
+    /*
     listGeoJSON2.forEach( ( crop, indexCrop ) => {
       //listGeoJSON2[indexCrop].data.push(item)
       
@@ -344,10 +342,10 @@ class MapboxContainerVis extends React.Component {
                 let zeroState=0;
                 let point1=selectedPolygon.points[selectedPolygon.points.length-1];
                 // console.log("********previo{zeroState",zeroState,", oddNodes:",oddNodes,"}");
-                selectedPolygon.points.forEach((point2,indexPoint)=>{
-                  if (((point2.y > point[1]) != (point1.y > point[1])) && (point[0] < (point1.x - point2.x) * (point[1] - point2.y) / (point1.y - point2.y) + point2.x)) {
+                selectedPolygon.points.forEach((point2)=>{
+                  if (((point2.lat > point[1]) != (point1.lat > point[1])) && (point[0] < (point1.lng - point2.lng) * (point[1] - point2.lat) / (point1.lat - point2.lat) + point2.lng)) {
                     oddNodes = !oddNodes;
-                    if (point2.y > point1.y) {
+                    if (point2.lat > point1.lat ) {
                       zeroState++;
                     }
                     else {
@@ -375,7 +373,7 @@ class MapboxContainerVis extends React.Component {
 
       })
       
-    })
+    })*/
 
     // if( listGeoJSON2[index]. )
 
@@ -507,7 +505,7 @@ class MapboxContainerVis extends React.Component {
     // }
 
     this.setState({
-      ...this.prevState,
+      //PruebaCambio...this.prevState,
       dataChart: dataChart,
       listGeoJSON: listGeoJSON2,
       // selectedGeoJSON: listGeoJSONSelectedPolygon,
@@ -656,7 +654,6 @@ class MapboxContainerVis extends React.Component {
     
     //console.log("remove:",this.state.dataChart)
 	}
-
   
   style = (feature) => {
     //console.log("***features desde style:",prueba, "style:", style)
@@ -843,23 +840,331 @@ class MapboxContainerVis extends React.Component {
 
 
   _onCreated = (e) =>{
+    console.log("_onCreated");
+    //const {layerType, layer}=e;
+    const {layer,layerType,type,target,sourceTarget}=e;
 
-    const {layerType, layer}=e;
+    //let lastAddedPolygonID;
+    console.log("e:"+Object.keys(e));
+    console.log("*layer:"+Object.keys(layer));
+    console.log("*layerType:"+layerType);
+
+    const { _events } = layer;
+    console.log("*layer_events:"+Object.keys(_events) );
+
+    //layer:options,_bounds,_latlngs,_initHooksCalled,_events,editing,_leaflet_id,_eventParents,_mapToAdd,_renderer,_map,_zoomAnimated,_path,_rings,_rawPxBounds,_pxBounds,_parts,_firingCount
+
     if(layerType === "polygon"){
       const { _leaflet_id } = layer;
+      console.log("#### _leaflet_id:", _leaflet_id);
+      // if (lastAddedPolygonID) {
+      //   e.sourceTarget._layers[lastAddedPolygonID].remove();
+      // }
+      // lastAddedPolygonID = _leaflet_id;
+
 
       console.log("#### _leaflet_id:", _leaflet_id);
-      console.log("#### LatLngs:", layer.getLatLngs()[0]);
+      console.log("#### LatLngs:", layer.getLatLngs()[0].length," -> ",layer.getLatLngs()[0]);
+
+      const selectedPolygon={}
+
+      selectedPolygon.points=layer.getLatLngs()[0];
+      let xmin=selectedPolygon.points[0].lng;
+      let xmax=xmin;
+      let ymin=selectedPolygon.points[0].lat;
+      let ymax=ymin;
+      selectedPolygon.points.push(selectedPolygon.points[0])
+      selectedPolygon.points.forEach((point,index)=>{
+        if(xmin>point.lng){xmin=point.lng;}
+        else if(xmax<point.lng){xmax=point.lng;}
+        if(ymin>point.lat){ymin=point.lat;}
+        else if(ymax<point.lat){ymax=point.lat;}
+        console.log(index," -> lat=",point.lat," lng=",point.lng)
+      })
+      
+      
+      selectedPolygon.BB={xmin:xmin,xmax:xmax,ymin:ymin,ymax:ymax}
+
+      console.log("selectedPolygon:", selectedPolygon );
+
+      //console.log("#### LatLngs:", layer.getLatLngs());
 
       // this.state.setMapLayers((layers)=>[
       //   ...layers,
       //   { id: _leaflet_id, latlngs: layer.getLatLngs()[0]},
       // ]);
+      //let listGeoJSON2=[...this.state.listGeoJSON];
+
+
+      let listGeoJSON2 = this.state.listGeoJSON;
+      let selected = [];
+      listGeoJSON2.forEach( ( crop, indexCrop ) => {
+        
+        crop.forEach( ( data, indexData ) => {
+          const bb=this.boundingBox[indexCrop][indexData]
+          if( selectedPolygon.BB.xmin < bb.xmin &&
+              bb.xmax < selectedPolygon.BB.xmax &&
+              selectedPolygon.BB.ymin < bb.ymin &&
+              bb.ymax < selectedPolygon.BB.ymax
+            ){
+              //let noneZeroMode=true;
+              //data.selected=true;
+
+              data.selected=data.geometry.coordinates[0].every( (point)=>{
+                let i;
+                let j;
+                let nvert=selectedPolygon.points.length;
+                //let c=1;
+                let c=0;
+
+                for(i=0, j=nvert-1;i<nvert; j= i++){
+                  if (((selectedPolygon.points[i].lat > point[1]) != (selectedPolygon.points[j].lat > point[1])) &&
+                  (point[0] < (selectedPolygon.points[j].lng - selectedPolygon.points[i].lng) * (point[1] - selectedPolygon.points[i].lat) / (selectedPolygon.points[j].lat - selectedPolygon.points[i].lat) + selectedPolygon.points[i].lng)) {
+                    //c=c*(-1);
+                    c=!c;
+                  }
+                }
+
+                return Boolean(c);
+                })
+              //console.log("poligono"+data.selected)
+                
+
+
+              // data.geometry.coordinates.forEach( (polygon) => {
+              //   data.selected=polygon.every( (point)=>{
+              //     let oddNodes = false;
+              //     let zeroState=0;
+              //     let point1=selectedPolygon.points[selectedPolygon.points.length-1];
+              //     selectedPolygon.points.forEach((point2)=>{
+              //       if (((point2.lat > point[1]) != (point1.lat > point[1])) && (point[0] < (point1.lng - point2.lng) * (point[1] - point2.lat) / (point1.lat - point2.lat) + point2.lng)) {
+              //         oddNodes = !oddNodes;
+              //         if (point2.lat > point1.lat ) {
+              //           zeroState++;
+              //         }
+              //         else {
+              //           zeroState--;
+              //         }
+              //       }
+              //       point1=point2;
+              //     })
+              //     //data.selected=noneZeroMode?zeroState!=0:oddNodes;
+              //     if(zeroState==0){
+              //       //data.selected=false;
+              //       return false;
+
+              //     }
+              //     return true;
+              //     // else{
+              //     //   this.setState(
+              //     //     prevState => {
+              //     //       const listGeoJSON = [ ...prevState.listGeoJSON ];
+              //     //       listGeoJSON[indexCrop] = [ ...listGeoJSON[indexCrop] ];
+              //     //       listGeoJSON[indexCrop][indexCrop] = {...listGeoJSON[indexCrop][indexCrop],["selected"]:true}
+              //     //       return { listGeoJSON };
+              //     //     }
+              //     //   )
+              //     // }
+              //   })
+              // })
+  
+            }
+            else{
+              data.selected=false;
+            }
+          if(data.selected)selected.push({indexCrop: indexCrop, indexData: indexData})
+  
+        })
+        
+      })
+
+      let dataChart = {
+        // xcode: [],
+        data: {
+          
+          labels: [],
+          datasets: [
+            {
+              label: 'Area',
+              data: [],
+              backgroundColor: [],
+              borderColor: [],
+              borderWidth: 1,
+              yAxisID: 'yArea',
+            },
+            {
+              label: 'Yield',
+              data: [],
+              backgroundColor: [],
+              borderColor: [],
+              borderWidth: 1,
+              yAxisID: 'yYield',
+            }
+          ]
+        },
+        show:true
+      }
+
+      selected.forEach((item) => {
+        const data=listGeoJSON2[item.indexCrop][item.indexData]
+        
+
+        const CROPNAME=data.properties.CROPNAME;
+        const CODE=data.properties.CODE;
+
+        if( dataChart.data.labels.includes(CROPNAME) ){
+          const indexCrop=dataChart.data.labels.indexOf(CROPNAME);
+          dataChart.data.datasets[0].data[indexCrop]+=data.properties.SHAPE_Area/100.0;
+          dataChart.data.datasets[1].data[indexCrop]+=data.properties.YIELD;
+        }
+        else{
+          dataChart.data.labels.push(CROPNAME);
+          dataChart.data.datasets[0].data.push(data.properties.SHAPE_Area/100.0);
+          dataChart.data.datasets[0].backgroundColor.push(this.colorMap[item.indexCrop]);
+          dataChart.data.datasets[0].borderColor.push(this.colorMap[item.indexCrop]);
+          dataChart.data.datasets[1].data.push(data.properties.YIELD);
+          dataChart.data.datasets[1].backgroundColor.push(this.colorMap[item.indexCrop]);
+          dataChart.data.datasets[1].borderColor.push(this.colorMap[item.indexCrop]);
+          this.backDataChart.show.push(true);
+        }
+      })
+      //////////
+
+      console.log("selected:vacio");
+      this.setState({
+        //...this.prevState,
+        //dataChart: {},
+        selected: []
+      })
+      
+      console.log("selected:nuevo");
+      this.setState({
+        ...this.prevState,
+        dataChart: dataChart,
+        //...this.prevState,
+        //dataChart: dataChart,
+        selected: selected
+      })
+      console.log("selected:despues");
+
+      //console.log("dataChart: ",dataChart.data);
+      
+      //console.log("this.refChartL.update antes");
+      this.refChartL.update(dataChart.data);
+      console.log("this.refChartL.update despues");
+      //console.log("selected:", this.state.selected );
+
+      //this.setState({listGeoJSON: listGeoJSON2 })
+      //console.log("xxxlistGeoJSON:", this.state.listGeoJSON );
+      
+
+      // this.setState({
+      //   //PruebaCambio...this.prevState,
+      //   listGeoJSON: []
+      // })
+      // //https://stackoverflow.com/questions/71185474/component-not-re-rendering-after-change-in-an-array-state-in-react
+
+      // this.setState({
+      //   listGeoJSON: listGeoJSON2
+      // })
+
+
+
+//https://stackoverflow.com/questions/43040721/how-to-update-nested-state-properties-in-react
+      // let listGeoJSON2=this.state.listGeoJSON;
+      // this.setState({
+      //   listGeoJSON: []
+      // })
+      
+      // this.setState( state => {
+      //   const listGeoJSON = listGeoJSON2.map( ( crop, indexCrop ) => {
+      //     const newcrop=crop.map( ( data, indexData ) => {
+      //       const bb=this.boundingBox[indexCrop][indexData]
+      //       if( selectedPolygon.BB.xmin < bb.xmin &&
+      //           bb.xmax < selectedPolygon.BB.xmax &&
+      //           selectedPolygon.BB.ymin < bb.ymin &&
+      //           bb.ymax < selectedPolygon.BB.ymax
+      //         ){
+      //           //console.log("*****poligono{ cultivo:",indexCrop,", data",indexData,"}");
+      //           let noneZeroMode=true;
+      //           // console.log("*****data:",data.geometry.coordinates);
+      //           data.selected=true;
+      //           data.geometry.coordinates.forEach( (polygon) => {
+      //             polygon.every( (point)=>{
+      //               let oddNodes = false;
+      //               let zeroState=0;
+      //               let point1=selectedPolygon.points[selectedPolygon.points.length-1];
+      //               // console.log("********previo{zeroState",zeroState,", oddNodes:",oddNodes,"}");
+      //               selectedPolygon.points.forEach((point2)=>{
+      //                 if (((point2.lat > point[1]) != (point1.lat > point[1])) && (point[0] < (point1.lng - point2.lng) * (point[1] - point2.lat) / (point1.lat - point2.lat) + point2.lng)) {
+      //                   oddNodes = !oddNodes;
+      //                   if (point2.lat > point1.lat ) {
+      //                     zeroState++;
+      //                   }
+      //                   else {
+      //                     zeroState--;
+      //                   }
+      //                 }
+      //                 //console.log("********(",indexPoint,")",point, point1, point2,"{zeroState",zeroState,", oddNodes:",oddNodes,"}");
+      //                 point1=point2;
+      //               })
+      //               //console.log("********{zeroState",zeroState,", oddNodes:",oddNodes,"}");
+      //               //data.selected=noneZeroMode?zeroState!=0:oddNodes;
+      //               if(zeroState==0){
+      //                 data.selected=false;
+      //               }
+      //             })
+      //           })
+              
+      //         }
+      //         else{
+      //           data.selected=false;
+      //         }
+            
+      //       return data;
+      //     })
+      //     return newcrop;
+
+      //   })
+
+      //   return {
+      //     listGeoJSON,
+      //   };
+      // })
+
+      //this.forceUpdate();
+      //this.forceUpdate();
+
+      //console.log("listGeoJSON:", this.state.listGeoJSON );
+      
+
+      // console.log("listGeoJSON2:", listGeoJSON2 );
+
+      // this.setState({
+      //   //PruebaCambio...this.prevState,
+      //   listGeoJSON: []
+      // })
+      // //https://stackoverflow.com/questions/71185474/component-not-re-rendering-after-change-in-an-array-state-in-react
+
+      // /*
+      // this.setState({
+      //   ...this.prevState,
+      //   listGeoJSON: [...listGeoJSON2]
+      // })*/
+      // this.setState({
+      //   //PruebaCambio */...this.prevState,
+      //   listGeoJSON: listGeoJSON2
+      // })
+
+
+      
     }
     //{JSON.stringify(mapLayers,0,2)}
     // console.log("#### _onCreate ####");
     // console.log("##layerType ",layerType);
     // console.log("##layer", layer);
+    console.log("fin de polygon");
+
   }
 
   
@@ -932,7 +1237,7 @@ class MapboxContainerVis extends React.Component {
               <EditControl
                 position="topright"
                 onCreated={this._onCreated}
-                onEdited={()=>console.log("onEdited")}
+                //onEdited={this._onCreated}
                 onDeleted={()=>console.log("onDeleted")}
                 draw={{
                   polyline: false,
@@ -1017,6 +1322,7 @@ class MapboxContainerVis extends React.Component {
                         
                         <LayerGroup>
                           <GeoJSON
+                            //key={this.state.listGeoJSON.crop.data.selected}
                           //selected
                             //data={item.data.filter(itemData=> itemData.selected)}
                             data={item}
@@ -1055,7 +1361,22 @@ class MapboxContainerVis extends React.Component {
                     )
                   })
 
-
+                }
+                {
+                  /*****************/
+                  this.state.selected.map((item,index) => {
+                    //console.log("index:"+index)
+                    //console.log("index:"+index+" indexCrop:"+item.indexCrop+" indexData:"+item.indexData)
+                    return(
+                      <div>
+                        
+                          <GeoJSON
+                            data={this.state.listGeoJSON[item.indexCrop][item.indexData]}
+                            onEachFeature={this.popup}
+                          />
+                      </div>
+                    )
+                  })
                 }
 
                     {this.state.dataChart.show &&
