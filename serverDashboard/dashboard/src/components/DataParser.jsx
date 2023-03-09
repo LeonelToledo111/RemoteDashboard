@@ -24,7 +24,8 @@ class DataParser extends Component {
         keys: ["a", "b", "c"],
         id: [],
         value:-1,
-        selected: ''
+        selected: '',
+        countryCode: [],
     };
 
     
@@ -45,6 +46,7 @@ class DataParser extends Component {
     console.log("min lat " ,this.state.min_lat[this.state.current])
     console.log("max lon " ,this.state.max_lon[this.state.current])
     console.log("min lon " ,this.state.min_lon[this.state.current])
+    console.log("Country Code",this.state.countryCode[this.state.current])
     
   }
 
@@ -71,12 +73,14 @@ class DataParser extends Component {
         this.state.max_lon[index]=extractedData.max_lon;
         this.state.min_lat[index]=extractedData.min_lat;
         this.state.min_lon[index]=extractedData.min_lon;
+        this.state.countryCode[index] = extractedData.fips_country_code;
         this.state.countriesdict[extractedData.country_name.replace(/_/g, " ")] = index;
         this.state.id[index]=extractedData.id;
         
     })
     
     this.setState({data: data}); // or shorter ES syntax: this.setState({ data });
+   // console.log(data);
   }
 
   
@@ -92,7 +96,7 @@ class DataParser extends Component {
       </div>
 
       <div>
-      {CoordData(this.state.max_lat[this.state.current],this.state.min_lat[this.state.current],this.state.max_lon[this.state.current],this.state.min_lon[this.state.current])} 
+      {CoordData(this.state.max_lat[this.state.current],this.state.min_lat[this.state.current],this.state.max_lon[this.state.current],this.state.min_lon[this.state.current],this.state.countryCode[this.state.current])} 
       </div>
     </div>
   }

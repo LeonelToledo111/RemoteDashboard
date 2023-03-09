@@ -460,373 +460,310 @@ def Vswl4 ():
    global vardir
    vardir = "Vswl4"
 
-def Default_case ():
 
-   global any
-   print("""\
-       Wrong variable! The variable should be any of the following: 
-       ['10m_u_component_of_wind', '10m_v_component_of_wind', '2m_dewpoint_temperature', '2m_temperature', 'surface_net_solar_radiation', 
-        'total_precipitation', 'surface_pressure', 'forecast_albedo', 'evaporation_from_bare_soil', 'evaporation_from_open_water_surfaces_excluding_oceans',
-        'evaporation_from_the_top_of_canopy', 'evaporation_from_vegetation_transpiration', 'lake_bottom_temperature', 'lake_ice_depth',
-        'lake_ice_temperature', 'lake_mix_layer_depth', 'lake_mix_layer_temperature', 'lake_shape_factor', 'lake_total_layer_temperature',
-        'leaf_area_index_high_vegetation', 'leaf_area_index_low_vegetation', 'potential_evaporation', 'runoff', 'skin_reservoir_content',
-        'skin_temperature', 'snow_albedo', 'snow_cover', 'snow_density', 'snow_depth', 'snow_depth_water_equivalent', 'snow_evaporation',
-        'snowfall', 'snowmelt', 'soil_temperature_level_1', 'soil_temperature_level_2', 'soil_temperature_level_3', 'soil_temperature_level_4',
-        'sub_surface_runoff', 'surface_latent_heat_flux', 'surface_net_thermal_radiation', 'surface_runoff', 'surface_sensible_heat_flux',
-        'surface_solar_radiation_downwards', 'surface_thermal_radiation_downwards', 'temperature_of_snow_layer', 'total_evaporation',
-        'volumetric_soil_water_layer_1', 'volumetric_soil_water_layer_2', 'volumetric_soil_water_layer_3', 'volumetric_soil_water_layer_4', ] """)
-#   params['time']=["{:02d}:00".format(i) for i in range(0,24,1)]
-   sys.exit(-1)
-   any = 1
-#   params['variable'] = [args.variable,]
-#   print(params)
 
-#Dictionary containing all possible 'cases'
-Variable_Dict = {
 
-    "temp": Temp,
 
-    "wind": Wind,
 
-    "sp": Sp,
-
-    "tp": Tp,
-
-    "ssr": Ssr,
-
-    "fa": Fa,
-
-    "efbs": Efbs,
-
-    "eowsxo": Eowsxo,
-
-    "eftc": Eftc,
-
-    "efvt": Efvt,
-
-    "lbt": Lbt,
-
-    "lid": Lid,
-
-    "lit": Lit,
-
-    "lmld": Lmld,
-
-    "lmlt": Lmlt,
-
-    "lsf": Lsf,
-
-    "ltlt": Ltlt,
-
-    "laihv": Laihv,
-
-    "lailv": Lailv,
-
-    "pe": Pe,
-
-    "ro": Ro,
-
-    "src": Src,
-
-    "st": St,
-
-    "sa": Sa,
-
-    "sc": Sc,
-
-    "sd": Sd,
-
-    "sdh": Sdh,
-
-    "sdwe": Sdwe,
-
-    "se": Se,
-
-    "sf": Sf,
-
-    "sm": Sm,
-
-    "stl1": Stl1,
-
-    "stl2": Stl2,
-
-    "stl3": Stl3,
-
-    "stl4": Stl4,
-
-    "ssrf": Ssrf,
-
-    "slhf": Slhf,
-
-    "sntr": Sntr,
-
-    "sr": Sr,
-
-    "sshf": Sshf,
-
-    "ssrd": Ssrd,
-
-    "strd": Strd,
-
-    "tsl": Tsl,
-
-    "te": Te,
-
-    "vswl1": Vswl1,
-
-    "vswl2": Vswl2,
-
-    "vswl3": Vswl3,
-
-    "vswl4": Vswl4
-
-}
-
-database = 'reanalysis-era5-land'
-params = { 'format': 'netcdf', }
-params['time']=["{:02d}:00".format(i) for i in range(0,24,1)]
-params['year'] = ['1981',]
-params['month'] = ['1',]
-d=monthrange(int(params['year'][0]), 2)
-params['day'] = d[1]
-params['area'] = ['0/28/-16/41',]   #  example for Tanzania
-params['grid'] = ['0.05/0.05',]
-#variable       ['10m_u_component_of_wind', '10m_v_component_of_wind', '2m_dewpoint_temperature', '2m_temperature', 'surface_net_solar_radiation', 
-#        'total_precipitation', 'surface_pressure', 'forecast_albedo', 'evaporation_from_bare_soil', 'evaporation_from_open_water_surfaces_excluding_oceans',
-#        'evaporation_from_the_top_of_canopy', 'evaporation_from_vegetation_transpiration', 'lake_bottom_temperature', 'lake_ice_depth',
-#        'lake_ice_temperature', 'lake_mix_layer_depth', 'lake_mix_layer_temperature', 'lake_shape_factor', 'lake_total_layer_temperature',
-#        'leaf_area_index_high_vegetation', 'leaf_area_index_low_vegetation', 'potential_evaporation', 'runoff', 'skin_reservoir_content',
-#        'skin_temperature', 'snow_albedo', 'snow_cover', 'snow_density', 'snow_depth', 'snow_depth_water_equivalent', 'snow_evaporation',
-#        'snowfall', 'snowmelt', 'soil_temperature_level_1', 'soil_temperature_level_2', 'soil_temperature_level_3', 'soil_temperature_level_4',
-#        'sub_surface_runoff', 'surface_latent_heat_flux', 'surface_net_thermal_radiation', 'surface_runoff', 'surface_sensible_heat_flux',
-#        'surface_solar_radiation_downwards', 'surface_thermal_radiation_downwards', 'temperature_of_snow_layer', 'total_evaporation',
-#        'volumetric_soil_water_layer_1', 'volumetric_soil_water_layer_2', 'volumetric_soil_water_layer_3', 'volumetric_soil_water_layer_4', ] """)   # all vars 27/10/2020
-#variable = ['10m_u_component_of_wind', '10m_v_component_of_wind', '2m_dewpoint_temperature',
-#            '2m_temperature', 'surface_net_solar_radiation', 'total_precipitation', 'surface_pressure', 'forecast_albedo', ]  # for Utrecht 13/02/2020
-
-##variable = ['10m_u_component_of_wind', '10m_v_component_of_wind', '2m_dewpoint_temperature',
-##            '2m_temperature', 'evapotranspiration', 'surface_net_solar_radiation',       
-##            'surface_net_thermal_radiation', 'surface_thermal_radiation_downwards', 'total_precipitation',]       # original, up to 13/02/2020
-variable = ['10m_v_component_of_wind','10m_v_component_of_wind',]
-
-target ='salida-2dm-t2-198402.nc'
-
-
-
-def meteorologicalVariablesDownload():
-      # Instantiate the parser
-  parser = argparse.ArgumentParser(description='Download viariables from ERA5LandDownload. Positional arguments are: \
-       dir_download, variable, yearStart, yearEnd, monthStart, monthEnd 0 lat_max lon_min lat_min lon_max . For example, to download total_precipitation variable in the current directory since January 1981 for Tanzania type: ./ERA5LandDownload.py . tp 1981 2019 1 12 0 0 28 -16 41 ')
-
-  # Positional argument: path
-  parser.add_argument('dir_download', type=str, nargs='?',
-                            help='A dir_download string mandatory argument')
-  # Positional argument: variable
-  parser.add_argument('variable', type=str, nargs='?',
-                            help='A variable name, string mandatory argument')
-  # Optional positional argument: yearStart
-  parser.add_argument('yearStart', type=int, nargs='?',
-                            help='An optional int yearStart positional argument')
-  # Optional positional argument: yearEnd
-  parser.add_argument('yearEnd', type=int, nargs='?',
-                            help='An optional int yearEnd positional argument')
-  # Optional positional argument: monthStart
-  parser.add_argument('monthStart', type=int, nargs='?',
-                            help='An optional int monthStart positional argument')
-  # Optional positional argument: monthEnd
-  parser.add_argument('monthEnd', type=int, nargs='?',
-                            help='An optional int monthEnd positional argument')
-  # Optional positional argument: either download or update
-  parser.add_argument('update', type=int, nargs='?',
-                            help='An optional int flag positional argument')
-  # Positional argument: either download or update
-  parser.add_argument('latmin', type=float, nargs='?',
-                            help='A latmin float mandatory argument')
-  # Positional argument: either download or update
-  parser.add_argument('lonmin', type=float, nargs='?',
-                            help='A lonmin float mandatory argument')
-  # Positional argument: either download or update
-  parser.add_argument('latmax', type=float, nargs='?',
-                            help='A latmax float mandatory argument')
-  # Positional argument: either download or update
-  parser.add_argument('lonmax', type=float, nargs='?',
-                            help='A lonmax float mandatory argument')
-  # Optional argument:  Provide information names of all the variables to download
-  parser.add_argument('-i', action="store_true", default=None,
-                            help='List all the variable names to download')
-
-  args = parser.parse_args()
-
-  if args.i:
-    print()
-    print(datetime.now())
-    print()
-    print("The available ERA5Land key variable names are:")
-    print()
-    for key, value in sorted(Variable_Dict.items()):
-      print(key, end = '\t, ')
-    print()
-    print()
-    sys.exit(-1)
-
-  print("Argument values:")
-  if ((len(sys.argv) < 3 or len(sys.argv) > 12)): 
-    print("""\
-    At least two arguments must be provided: 
-     1: dir_download where the files should be downloaded
-     2: ERA5LandDownload variable name
-    Usage:  ./ERA5LandDownload.py dir_download variable year_start year_end month_start month_end 0 lat_max lon_min lat_min lon_max
-    Type ./ERA5LandDownload.py  -h  , for an example
-    """)
-    sys.exit(-1)
-
-  args.latmin =-11.7
-  args.latmax = 0.833
-  args.lonmin = 29.58
-  args.lonmax = 40.43
-  args.variable = "tp"
-
-
-  if args.dir_download is None:
-        print ("error parsing stream args.dir_download = ",args.dir_download)
-        #args.dir_download = "./" + "Variable_SSR"
-        args.dir_download = "."
-  else:
-        print(args.dir_download)
-        cmd = "mkdir -p " + args.dir_download
-        pathlib.Path(args.dir_download).mkdir(parents=True, exist_ok=True) 
-        print(cmd)
-        #os.system(cmd)
-
-  if args.variable is None:
-        print ("ERROR!: A variable must be specified ")
-        parser.print_help()
-        sys.exit()
-        #args.variable = "10u10v"
-  else:
-        print(args.variable)
-
-  if args.yearStart is None:
-        print ("missing parsing args.yearStart")
-        args.yearStart = 1981
-  else:
-        print(args.yearStart)
-
-  if args.yearEnd is None:
-        print ("missing parsing args.yearEnd")
-        currentdate = datetime.today()
-        args.yearEnd = currentdate.year
-  else: 
-        print(args.yearEnd)
-
-  if args.monthStart is None:
-        print ("missing parsing args.monthStart")
-        args.monthStart = 1
-  else:
-        print(args.monthStart)
-
-  if args.monthEnd is None:
-        print ("missing parsing args.monthEnd")
-        currentdate = datetime.today()
-        args.monthEnd = currentdate.month
-  else:
-        print(args.monthEnd)
-
-  if args.update is None:
-        print ("missing parsing args.update, so downloading")
-        args.update = 0
-  else:
-        print(args.update)
-        cmd = "mkdir -p " + args.dir_download
-        print(cmd)
-        pathlib.Path(args.dir_download).mkdir(parents=True, exist_ok=True) 
-        #os.system(cmd)
-
-  if args.variable is None:
-        print(args.variable)
-        print ("ERROR!: A variable must be specified ")
-        parser.print_help()
-        sys.exit()
-        #args.variable = "10u10v"
-  else:
-        print(args.variable)
-
-  if args.yearStart is None:
-        print ("missing parsing args.yearStart")
-        args.yearStart = 1981
-  else:
-        print(args.yearStart)
-
-  if args.yearStart > args.yearEnd:
-        print("error years")
-        sys.exit()
-
-  if args.yearStart == args.yearEnd:
-    if args.monthStart > args.monthEnd:
-        print("error months")
-        sys.exit()
-
-  if args.latmin is None:
-        print ("ERROR!: A latmin must be specified ")
-        parser.print_help()
-        sys.exit()
-  else:
-        print(args.latmin)
-
-  if args.lonmin is None:
-        print ("ERROR!: A lonmin must be specified ")
-        parser.print_help()
-        sys.exit()
-  else:
-        print(args.lonmin)
-
-  if args.latmax is None:
-        print ("ERROR!: A latmax must be specified ")
-        parser.print_help()
-        sys.exit()
-  else:
-        print(args.latmax)
-
-  if args.lonmax is None:
-        print ("ERROR!: A lonmax must be specified ")
-        parser.print_help()
-        sys.exit()
-  else:
-        print(args.lonmax)
-
-  bb =  str(args.latmin) + '/' + str(args.lonmin) + '/' + str(args.latmax) + '/' + str(args.lonmax)
-  print(bb)
-  params['area'] = [bb,]
-#The switch alternative
-  Variable_Dict.get(args.variable,Default_case)()
-
-  if args.update == 0:
-    cmd = "mkdir -p " + args.dir_download + '/' + var1 + vardir
-    cmd2 = args.dir_download + '/' + var1 + vardir
-    pathlib.Path(cmd2).mkdir(parents=True, exist_ok=True) 
-    print(cmd)
-    #os.system(cmd)
-
-  c = cdsapi.Client()
-  for year in list(range(args.yearStart, args.yearEnd+1)):
-     for month in list(range(args.monthStart, args.monthEnd + 1)):
-          startDate = '%04d%02d%02d' % (year, month, 1)
-          numberOfDays = calendar.monthrange(year, month)[1]
-          params['day'] = ["{:02d}".format(i) for i in range(1,numberOfDays+1)]
-          lastDate = '%04d%02d%02d' % (year, month, numberOfDays)
-          if args.update == 0:
-            if any == 1:
-              params['variable'] = [args.variable,]
-              target = args.dir_download + '/' + var1 + vardir + "/ERA5-Land_%s_%04d%02d.nc" % (args.variable,year,month)
-            else:
-              target = args.dir_download + '/' + var1 + vardir + "/ERA5-Land_%s_%04d%02d.nc" % (var2,year,month)
-          else:
-            target = args.dir_download + "/ERA5-Land_%s_%04d%02d.nc" % (var2,year,month)
-          params['year'] = [year,]
-          params['month'] = [month,]
-          print(database,params,target)
-          print(" \n")
-          c.retrieve(database,params,target)
+def slurmWrapper(data):
+
+   call = '/home/admin/PRODUCTION/Run/run  -c "me" -l "0" -m "28" -n "-16" -o "41" -v "e" -s "1981" -e "1982" -a "1" -b "12" -u "0" -r ""'
+   base = '/home/admin/PRODUCTION/Run/run -c'
+
+   variableValue=""
+   Region =""
+   Country ="me"
+   Start_year="1981"
+   End_year="1982"
+   Start_month="1"
+   End_month="12"
+   Update = "0"
+   Latitude_min=data['_minLat']
+   Latitude_max =data['_maxLat']
+   Longitude_min=data['_minLon']
+   Longitude_max=data['_maxLon']
+
+   base = '/home/admin/PRODUCTION/Run/run -c ' + '"'+Country+'" ' +'-l ' + '"'+str(Longitude_min)+'" '
+   base += '-m ' + '"'+str(Longitude_max)+'" '
+   base += '-n ' + '"'+str(Latitude_min)+'" '
+   base += '-o ' + '"'+str(Latitude_max)+'" '
+
+   secondPart='-s ' + '"'+Start_year+'" '
+   secondPart+='-e ' + '"'+End_year+'" '
+   secondPart+='-a ' + '"'+Start_month+'" '
+   secondPart+='-b ' + '"'+End_month+'" '
+   secondPart+='-u ' + '"'+Update+'" '
+   secondPart+='-r ' + '"'+Region+'" '
+
+   variableString=""
+
+  # -l Longitude_min
+  # -m Longitude_max
+  # -n Latitude_min
+  # -o Latitude_max
+  # -v variable
+  # -s start year
+  # -e end year
+  # -a Start_month
+  # -b End_month
+  # -u Update
+  # -r region
+
+
+
+   print (call)
+   print (base)
+
+   if(data['m_u_component_of_wind']==True ):
+      variableValue="10u"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['m_v_component_of_wind']==True ):
+      variableValue="10v"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['m_dewpoint_temperature']==True ):
+      variableValue="2d"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['m_temperature']==True ):
+      variableValue="2t"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['evaporation_from_bare_soil']==True ):
+      variableValue="Es"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['evaporation_from_open_water_surfaces_excluding_oceans']==True ):
+      variableValue="Eowsxo"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['evaporation_from_the_top_of_canopy']==True ):
+      variableValue="Eftc"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['evaporation_from_vegetation_transpiration']==True ):
+      variableValue="Efvt"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['forecast_albedo']==True ):
+      variableValue="Fa"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['lake_bottom_temperature']==True ):
+      variableValue="Lbt"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['lake_ice_depth']==True ):
+      variableValue="Lid"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['lake_ice_temperature']==True ):
+      variableValue="Lit"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['lake_mix_layer_depth']==True ):
+      variableValue="Lmld"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['lake_mix_layer_temperature']==True ):
+      variableValue="Lmlt"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['lake_shape_factor']==True ):
+      variableValue="Lsf"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['lake_total_layer_temperature']==True ):
+      variableValue="Ltlt"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['leaf_area_index_high_vegetation']==True ):
+      variableValue="Laihv"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['leaf_area_index_low_vegetation']==True ):
+      variableValue="Lailv"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['potential_evaporation']==True ):
+      variableValue="Pe"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['runoff']==True ):
+      variableValue="Ro"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['skin_reservoir_content']==True ):
+      variableValue="Src"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['skin_temperature']==True ):
+      variableValue="St"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['snow_albedo']==True ):
+      variableValue="Sa"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['snow_cover']==True ):
+      variableValue="Sc"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['snow_density']==True ):
+      variableValue="Sd"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['snow_depth']==True ):
+      variableValue="Sdh"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['snow_depth_water_equivalent']==True ):
+      variableValue="Sdwe"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['snow_evaporation']==True ):
+      variableValue="Se"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['snowfall']==True ):
+      variableValue="Sf"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['snowmelt']==True ):
+      variableValue="Sm"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['soil_temperature_level_1']==True ):
+      variableValue="Stl1"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['soil_temperature_level_2']==True ):
+      variableValue="Stl2"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['soil_temperature_level_3']==True ):
+      variableValue="Stl3"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['soil_temperature_level_4']==True ):
+      variableValue="Stl4"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['sub_surface_runoff']==True ):
+      variableValue="Ssrf"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['surface_latent_heat_flux']==True ):
+      variableValue="Slhf"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['surface_net_thermal_radiation']==True ):
+      variableValue="Sntr"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['surface_pressure']==True ):
+      variableValue="Sp"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['surface_runoff']==True ):
+      variableValue="Sr"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['surface_sensible_heat_flux']==True ):
+      variableValue="Sshf"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['surface_net_solar_radiation']==True ):
+      variableValue="Ssr"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['surface_solar_radiation_downwards']==True ):
+      variableValue="Ssrd"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['surface_thermal_radiation_downwards']==True ):
+      variableValue="Strd"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['temperature_of_snow_layer']==True ):
+      variableValue="Tsl"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['total_evaporation']==True ):
+      variableValue="Te"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['total_precipitation']==True ):
+      variableValue="Tp"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['volumetric_soil_water_layer_1']==True ):
+      variableValue="Vswl1"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['volumetric_soil_water_layer_2']==True ):
+      variableValue="Vswl2"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if(data['volumetric_soil_water_layer_3']==True ):
+      variableValue="Vswl3"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
+   if (data['volumetric_soil_water_layer_4']==True ):
+      variableValue="Vswl4"
+      slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
+      os.system(slurmJob)
+      print(slurmJob)
 
 @csrf_exempt
 def handle(request):
@@ -841,14 +778,13 @@ def handle(request):
            ## name = request.get('firstName')
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
-           # print (body)
+            print (body)
+        #    print (body['volumetric_soil_water_layer_4'])
+            slurmWrapper(body)
          #   print (body['volumetric_soil_water_layer_4'])
          #   meteorologicalVariablesDownload()
            #  os.system("sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm") 
-            subprocess.run([sys.executable, "batch.py"])
-          #  completed = subprocess.call(["sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm"])
-            return HttpResponse('This is POST request from Met Var')
-            
-
-            
+           # subprocess.run([sys.executable, "batch.py"])
+           # completed = subprocess.call(["sbatch  --export='Cty=MX,Var=tp,SY=1981,EY=1982,SM=1,EM=12,U=0,latm=16,lonm=99,LatM=17,LonM=100'    /mnt/SLURM_SCRIPTS/meteo-download.slurm"])
+            return HttpResponse('This is POST request from Met Var')  
       return render(request, "index.html")
