@@ -10,7 +10,7 @@ from tkinter import filedialog as fd
 from sympy import false, true
 
 import xarray as xr 
-#import rioxarray
+import rioxarray
 
 import uuid
 
@@ -18,12 +18,12 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
 
-#from osgeo import gdal
 
-def toTIFF(dfn, name):
-    dfn.to_csv(name+".xyz", index = False, header = None, sep = " ")
- #   demn = gdal.Translate(name+".tif", name+".xyz")
-    demn = None
+def gimme_mesh(xmin,ymin,xmax,ymax,dstep):
+    x=np.arange(xmin,xmax+dstep/2,dstep)
+    y=np.arange(ymax,ymin-dstep/2,-dstep)
+    xm,ym=np.meshgrid(x, y)
+    return x,y,xm,ym
 
 class ConfigFile:
     def __init__(self,bodyJSON):
@@ -39,7 +39,7 @@ class ConfigFile:
         self.vars = []
         self.ext = ''
         self.error = false
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().hex
         self.dateIni = ''
         self.dateEnd = ''
         self.datePeriod= 0
@@ -47,12 +47,18 @@ class ConfigFile:
         self.minRAW=0
         self.max=0
         self.maxRAW=0
+        self.dataJson={}
 
         # self.path = os.path.expanduser('~')+"/temp/"
         self.path = "/home/temp/"
         filePort = open(self.path+"port.json", "r")
         dataPort = json.load(filePort)
         self.port=dataPort['port']
+
+        filePort_terracotta = open(self.path+"port_terracotta.json", "r")
+        dataPort_terracotta = json.load(filePort_terracotta)
+        self.port_terracotta=dataPort_terracotta['port']
+
         self.fileNameTiff = ''
         
         if 'file' in bodyJSON.keys():
@@ -85,6 +91,8 @@ class ConfigFile:
             self.openNetCDF()
         elif self.ext=='csv':
             self.openCSV()
+        elif self.ext=='geojson':
+            self.openGeoJson()
 
         
         
@@ -99,10 +107,11 @@ class ConfigFile:
     
     def selectFile(self,root):
         filetypes = (
-            ('netCDF, GeoTiff, CSV', '.nc .tif .csv'),
+            ('netCDF, GeoTiff, CSV, GeoJson', '.nc .tif .csv .json .geojson'),
             ('netCDF', '*.nc'),
             ('GeoTiff', '*.tif'),
             ('CSV', '*.csv'),
+            ('GeoJson', '*.json *.geojson'),
             ('All files', '*.*'))
         self.fileName = fd.askopenfilename(
             title='Select file',
@@ -110,6 +119,14 @@ class ConfigFile:
             initialdir='/home/temp/',
             filetypes=filetypes)
         root.destroy()
+
+    def openGeoJson(self):
+        print("abriendo GeoJson")
+        # self.dataJson = json.load(self.fileName)
+        # https://stackoverflow.com/questions/66021221/how-to-save-json-key-data-to-python-variables
+        with open(self.fileName) as f:
+            #converting json to python dict and stroing it in data variable
+            self.dataJson = json.loads(f.read())
 
     def openNetCDF(self):
         nc_file = xr.open_dataset(self.fileName)
@@ -144,8 +161,10 @@ class ConfigFile:
         self.max=float(pr.max())
         self.maxRAW=self.max
         pr = pr.rio.set_spatial_dims('longitude', 'latitude')
+        # pr.rio.crs
         pr.rio.crs
-        self.fileNameTiff=self.path+"GeoTIFF"+str(self.id)+".tif"
+        pr.rio.set_crs("epsg:4326")
+        self.fileNameTiff=self.path+"GeoTIFF_"+str(self.id)+".tif"
         pr.rio.to_raster(self.fileNameTiff)
 
         self.dateIni = str(nc_file.time[0].values)
@@ -162,9 +181,6 @@ class ConfigFile:
         if( self.col >= self.colN ):
             self.col=0
         
-        # print("columns:", columns )
-        # print("***col:", self.col )
-
         if self.var=='':
             self.var=str(columns[self.col])
 
@@ -172,69 +188,44 @@ class ConfigFile:
             self.var=str(columns[0])
         
 
-        # self.var='phase1.trigger'
-        # print("var:", self.var )
         usecols=["lon","lat",self.var]
         df = pd.read_csv(self.fileName,usecols=usecols)
         lon=df.lon
         lat=df.lat
         val=df[self.var]
-        # print("lon: ",lon)
-        # print("lat: ",lat)
-        # print("var: ",val)
         rbfi = Rbf(lon, lat, val, epsilon=0.001)
-        # print("rbfi")
         lon_min=lon.min()
         lon_max=lon.max()
         lat_min=lat.min()
         lat_max=lat.max()
-        # print("lon_min: ",lon_min)
         dstep=0.01
-        lonTiff = np.arange(lon_min,lon_max+dstep/2,dstep)
-        latTiff = np.arange(lat_min,lat_max+dstep/2,dstep)
-        Nlon = len(lonTiff)
-        Nlat = len(latTiff)
-        x = np.tile(lonTiff, Nlat)
-        y = np.repeat(latTiff, Nlon)
-        interpolateXY=rbfi(x, y)
-        # print("interpolate")
+        lonTiff,latTiff,lon_grid,lat_grid=gimme_mesh(lon_min,lat_min,lon_max,lat_max,dstep)
+        interpolateXY=rbfi(lon_grid, lat_grid)
+
+        cs = np.array([interpolateXY])
+        coords = [[0],latTiff.tolist(),lonTiff.tolist()]
+        dims = ["band", "y", "x"]
+        xcs = (
+            xr.DataArray(cs, coords=coords, dims=dims)
+            .astype("float32")
+        )
+        xcs.rio.crs
+        xcs.rio.set_crs("epsg:4326")
+        self.fileNameTiff=self.path+"GeoTIFF_"+str(self.id)+".tif"
+        xcs.rio.to_raster(self.fileNameTiff)
+
         self.min=interpolateXY.min()
         self.minRAW=self.min
         self.max=interpolateXY.max()
         self.maxRAW=self.max
-        # print("self.min: ",self.min)
-        dfn = pd.DataFrame({"x":x, "y":y, "value":interpolateXY})
-        # print("dfn")
-        data = dfn.sort_values(by = ["y", "x"], ascending = [False, True])
-        # print("sort")
-        name=self.path+"GeoTIFF"+str(self.id)
-        # print("name:",name)
-        toTIFF(data, name)
-        # print("toTIFF")
-        self.fileNameTiff=name+".tif"
         self.ext="tif"
     
     def openTiff(self):
-        # print("openTiff")
+
         self.fileNameTiff=self.fileName
 
-        # if self.var=='band1':
-        #     self.band=1
-        # elif self.var=='band2':
-        #     self.band=2
-        # elif self.var=='band3':
-        #     self.band=3
-        # temp=self.var.replace("band", "", 1)
-
-        # print("*****",self.var,"->",temp)
-        # self.var="band"+str(self.band)
-        
-        # tiff_file = xr.open_dataset(self.fileNameTiff)
-        tiff_file = xr.open_dataset(self.fileNameTiff)
-
-        # print("***********",tiff_file.attrs['long_name'])
-        self.bandN=len(tiff_file['band_data'])
-
+        tiff_file = rioxarray.open_rasterio(self.fileNameTiff)
+        self.bandN = tiff_file.band.size
         print("1****",self.var, self.band)
 
         if self.var.isnumeric():
@@ -248,14 +239,43 @@ class ConfigFile:
         self.var=str(self.band)
         print("2****",self.var, self.band)
 
-        # self.var=str(self.band)
         for i in range( self.bandN ):
             self.vars.append( str(i+1) )
             # self.vars.append( 'band'+str(i+1) )
-        self.minRAW = float(tiff_file['band_data'][self.band-1].min())
-        self.maxRAW = float(tiff_file['band_data'][self.band-1].max())
-        self.min=self.minRAW
-        self.max=self.maxRAW
+        scale=tiff_file.attrs["scale_factor"]
+        offset=tiff_file.attrs["add_offset"]
+        self.minRAW = float(tiff_file.variable[self.band-1].min())
+        self.maxRAW = float(tiff_file.variable[self.band-1].max())
+        self.min=self.minRAW*scale+offset
+        self.max=self.maxRAW*scale+offset
+
+
+        # tiff_file = xr.open_dataset(self.fileNameTiff)
+# 
+        ##print("***********",tiff_file.attrs['long_name'])
+        # self.bandN=len(tiff_file['band_data'])
+# 
+        # print("1****",self.var, self.band)
+# 
+        # if self.var.isnumeric():
+            # self.band=int(self.var)
+        # else:
+            # self.band=1
+        # 
+        # if self.band>self.bandN :
+            # self.band=1
+# 
+        # self.var=str(self.band)
+        # print("2****",self.var, self.band)
+# 
+        ##self.var=str(self.band)
+        # for i in range( self.bandN ):
+            # self.vars.append( str(i+1) )
+            ##self.vars.append( 'band'+str(i+1) )
+        # self.minRAW = float(tiff_file['band_data'][self.band-1].min())
+        # self.maxRAW = float(tiff_file['band_data'][self.band-1].max())
+        # self.min=self.minRAW
+        # self.max=self.maxRAW
         
 
 
@@ -315,7 +335,9 @@ def handle(request):
                 dataFile={}
                 dataFile['fileName']=conf.fileName
                 dataFile['fileNameTiff']=conf.fileNameTiff
+                dataFile['id']=str(conf.id)
                 dataFile['port']=conf.port
+                dataFile['port_terracotta']=conf.port_terracotta
                 dataFile['timeN']=conf.timeN
                 dataFile['time']=conf.time
                 dataFile['var']=str(conf.var)
@@ -330,39 +352,59 @@ def handle(request):
                 dataFile['dateIni']=conf.dateIni
                 dataFile['dateEnd']=conf.dateEnd
                 dataFile['datePeriod']=conf.datePeriod
+                # https://stackoverflow.com/questions/23177439/python-checking-if-a-dictionary-is-empty-doesnt-seem-to-work
+                # if bool(conf.dataJson):
+                #     print("Agregando dataJson")
+                #     dataFile['dataJson']=conf.dataJson
+                #print("comprueba GeoJson")
+                if bool(conf.dataJson):
+                    #print("asignando GeoJson")
+                    dataFile['dataJson']=conf.dataJson
+
                 files.append(dataFile)
+            
+            # os.system('terracotta ingest /home/temp/GeoTIFF_{id}.tif -o /home/temp/data.sqlite --skip-existing')
 
             allmin=min(file['min'] for file in files)
             allmax=max(file['max'] for file in files)
             
             for file in files:
-                file['min']=allmin
-                file['max']=allmax
-                # file['minRAW']=allminRAW
-                # file['maxRAW']=allmaxRAW
-                # tiff_file = xr.open_rasterio(file['fileNameTiff'])
-                # print("***********",tiff_file.attrs['long_name'])
-                # print("***********",tiff_file.attrs["transform"])
-                # print("***********",tiff_file.attrs["scales"])
-                # print("***********",tiff_file.attrs["offsets"])
-                # print("***********",tiff_file.sizes['x'])
-                # scale=tiff_file.attrs["scales"][0]
-                # offset=tiff_file.attrs["offsets"][0]
+                #print("file:",file)
+                if 'dataJson' not in file.keys():
+                    print("No hay dataJson")
+                    file['min']=allmin
+                    file['max']=allmax
+                    # file['minRAW']=allminRAW
+                    # file['maxRAW']=allmaxRAW
+                    # tiff_file = xr.open_rasterio(file['fileNameTiff'])
+                    # print("***********",tiff_file.attrs['long_name'])
+                    # print("***********",tiff_file.attrs["transform"])
+                    # print("***********",tiff_file.attrs["scales"])
+                    # print("***********",tiff_file.attrs["offsets"])
+                    # print("***********",tiff_file.sizes['x'])
+                    # scale=tiff_file.attrs["scales"][0]
+                    # offset=tiff_file.attrs["offsets"][0]
 
-                tiff_file = rioxarray.open_rasterio(file['fileNameTiff'])
-                scale=tiff_file.attrs["scale_factor"]
-                offset=tiff_file.attrs["add_offset"]
-                bounds=tiff_file.rio.bounds()
-                file['longitudeE']=bounds[0]
-                file['latitudeS']=bounds[1]
-                file['longitudeW']=bounds[2]
-                file['latitudeN']=bounds[3]
-                # print("***********scale:",scale)
-                # print("***********offset:",offset)
-                file['minRAW']=(file['min']-offset)/scale
-                file['maxRAW']=(file['max']-offset)/scale
-                # bounds=tiff_file.rio.bounds()
-                # print(bounds[0])
+                    #print("rioxarray.open:",file['fileNameTiff'])
+
+                    tiff_file = rioxarray.open_rasterio(file['fileNameTiff'])
+                    scale=tiff_file.attrs["scale_factor"]
+                    offset=tiff_file.attrs["add_offset"]
+                    bounds=tiff_file.rio.bounds()
+                    file['longitudeE']=bounds[0]
+                    file['latitudeS']=bounds[1]
+                    file['longitudeW']=bounds[2]
+                    file['latitudeN']=bounds[3]
+                    print("***********scale:",scale)
+                    print("***********offset:",offset)
+                    print("***********min:",file['min'])
+                    print("***********max:",file['max'])
+                    print("***********minRAW:",file['minRAW'])
+                    print("***********maxRAW:",file['maxRAW'])
+                    file['minRAW']=(file['min']-offset)/scale
+                    file['maxRAW']=(file['max']-offset)/scale
+                    # bounds=tiff_file.rio.bounds()
+                    # print(bounds[0])
 
 
             response['files']=files
