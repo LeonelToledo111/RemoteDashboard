@@ -470,13 +470,18 @@ def slurmWrapper(data):
    call = '/home/admin/PRODUCTION/Run/run  -c "me" -l "0" -m "28" -n "-16" -o "41" -v "e" -s "1981" -e "1982" -a "1" -b "12" -u "0" -r ""'
    base = '/home/admin/PRODUCTION/Run/run -c'
 
+   startDate =data['_startDate']
+   start = startDate.split("-")
+   endDate = data ['_endDate']
+   end = endDate.split("-")
+
    variableValue=""
    Region =""
-   Country ="me"
-   Start_year="1981"
-   End_year="1982"
-   Start_month="1"
-   End_month="12"
+   Country =data['_cCode']
+   Start_year=start[0]
+   End_year=end[0]
+   Start_month=start[1]
+   End_month=end[1]
    Update = "0"
    Latitude_min=data['_minLat']
    Latitude_max =data['_maxLat']

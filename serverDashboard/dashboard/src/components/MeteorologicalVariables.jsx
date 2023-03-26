@@ -11,9 +11,15 @@ import DateRange from "./DateRange";
 
 var selectedValue;
 var selectedItem=[];
+var minLonPost;
+var maxLonPost;
+var minLatPost;
+var maxLatPost;
+var CountryCode;
+var startDatePost;
+var endDatePost;
 
 function handleChange(){
-
 }
 
 
@@ -42,11 +48,20 @@ function purr(){
       //  window.alert(status.checked);
         selectedItem[i-1]=status.checked;
     }
+    minLonPost = document.getElementById("MinLon").value;
+    maxLonPost = document.getElementById("MaxLon").value;
+    minLatPost = document.getElementById("MinLat").value;
+    maxLatPost = document.getElementById("MaxLat").value;
+    maxLatPost = document.getElementById("MaxLat").value;
+    CountryCode = document.getElementById("Country").innerHTML;
+    startDatePost = document.getElementById("StartDate").value;
+    endDatePost = document.getElementById("EndDate").value;
+    //window.alert(startDatePost);
     
 }
 
-async function postDataAxios(minLon, maxLon, minLat, maxLat){
-
+//async function postDataAxios(minLon, maxLon, minLat, maxLat, cCode){
+async function postDataAxios(){
     purr();
 
 
@@ -111,15 +126,17 @@ async function postDataAxios(minLon, maxLon, minLat, maxLat){
         volumetric_soil_water_layer_2: selectedItem[47],
         volumetric_soil_water_layer_3: selectedItem[48],
         volumetric_soil_water_layer_4: selectedItem[49],
-        _minLon: minLon,
-        _maxLon: maxLon,
-        _minLat : minLat,
-        _maxLat : maxLat,
-        _cCode : 'placeholder',
+       _minLon: minLonPost,
+       _maxLon: maxLatPost,
+       _minLat : minLatPost,
+        _maxLat : maxLatPost,
+        _cCode : CountryCode,
+        _startDate: startDatePost,
+        _endDate : endDatePost,
       },axiosConfig)
 
       console.log(selectedItem)
-      console.log(response.data)
+      console.log(response.body)
 
 }
 
@@ -245,16 +262,16 @@ function  MeteorologicalVariables() {
                     <form className = "standardForm">
                         <label>
                             Minimum Longitude:  
-                            <input type="text" value={minLon} name="Minimum Longitude" onChange={handleChange} />
+                            <input type="text"  id="MinLon" value={minLon} name="Minimum Longitude" onChange={handleChange} />
                             <br/>
                             Maximum Longitude:  
-                            <input type="text" value={maxLon} name="Minimum Longitude" onChange={handleChange} />
+                            <input type="text" id="MaxLon" value={maxLon} name="Minimum Longitude" onChange={handleChange} />
                             <br/>
                             Minimum Latitude:  
-                            <input type="text" value={minLat} name="Minimum Longitude" onChange={handleChange} />
+                            <input type="text" id="MinLat" value={minLat} name="Minimum Longitude" onChange={handleChange} />
                             <br/>
                             Maximum Latitude:  
-                            <input type="text" value={maxLat} name="Minimum Longitude" onChange={handleChange} />
+                            <input type="text" id="MaxLat" value={maxLat} name="Minimum Longitude" onChange={handleChange} />
                             <br/>
                         </label>
                     </form>
@@ -264,17 +281,18 @@ function  MeteorologicalVariables() {
 
                 <div className = "period"> 
                     <h1>Period</h1>
-                    <p>Start Date: </p>
                     <Divider style={{ margin: "6px 0" }} />
-                    <DateRange/>
+                    <label for="start">Start Date:</label>
+                    <input type="date" id="StartDate"></input>
+
                     <Divider style={{ margin: "6px 0" }} />
-                    <p>End Date: </p>
-                    <DateRange/>
+                    <label for="end">End Date:</label>
+                    <input type="date" id="EndDate"></input>
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div className ="myButton">
-                    <button onClick={postDataAxios(minLon, maxLon,minLat,maxLat, cCode)}> RUN </button>
+                    <button onClick={postDataAxios}> RUN </button>
 
                 </div>
                 

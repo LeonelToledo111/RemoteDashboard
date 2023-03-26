@@ -18,12 +18,13 @@ function Something(maxLatValue,minLatValue,maxLonValue,minLonValue,countryCode){
         dispatch(setMinLon(maxLatValue.minLonValue));
         dispatch(setMinLat(maxLatValue.minLatValue));
         dispatch(setCountryID(maxLatValue.countryCode));
+     //  dispatch(setCountryID(17));
     }
     
 
 
     return(
-        <p></p>
+        <p id ="Country"> {maxLatValue.countryCode}</p>
     );
 }
 

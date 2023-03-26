@@ -1,4 +1,4 @@
-const countryReducer = (state =-10, action) => {
+const countryReducer = (state =-11, action) => {
 
     switch(action.type){
         case 'SET_COUNTRY_ID':
