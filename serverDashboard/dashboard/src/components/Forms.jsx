@@ -8,6 +8,7 @@ import CropModelling from './CropModelling';
 import LossesComputation from './LossesComputation';
 import PayoutOptimization from './PayoutOptimization';
 import Climate from './Climate';
+import Climate6 from './Climate6';
 import ReactShadowScroll from 'react-shadow-scroll';
 import {useSelector, useDispatch} from 'react-redux';
 import Visualization from './Visualization';
@@ -46,28 +47,34 @@ import Visualization from './Visualization';
 
         if(choiceNumber===5){
             return  <div> 
-             <LossesComputation/> 
+             <Climate6/> 
         </div>
         }
 
         if(choiceNumber===6){
             return  <div> 
+             <LossesComputation/> 
+        </div>
+        }
+
+        if(choiceNumber===7){
+            return  <div> 
              <PayoutOptimization/> 
         </div>
         }
-        if(choiceNumber===7){
+        if(choiceNumber===8){
             return  <div> 
              <MetClone1/> 
         </div>
         }
 
-        if(choiceNumber===8){
+        if(choiceNumber===9){
             return  <div> 
              <MetClone2/> 
         </div>
         }
 
-        if(choiceNumber===9){
+        if(choiceNumber===10){
             return  <div> 
              <Visualization refVis={refVis}/> 
         </div>

@@ -36,23 +36,26 @@ function SidebarItem({ depthStep = 10, depth = 0, expanded, item, ...rest }) {
       if(item.name==="climate"){
         dispatch(setValue(4));
       }
-      if(item.name==="losses"){
+      if(item.name==="climate6"){
         dispatch(setValue(5));
       }
-      if(item.name==="payout"){
+      if(item.name==="losses"){
         dispatch(setValue(6));
+      }
+      if(item.name==="payout"){
+        dispatch(setValue(7));
       } 
       
       if(item.name==="metClone1"){
-        dispatch(setValue(7));
-      }  
-
-      if(item.name==="metClone2"){
         dispatch(setValue(8));
       }  
 
-      if(item.name==="Visualization"){
+      if(item.name==="metClone2"){
         dispatch(setValue(9));
+      }  
+
+      if(item.name==="Visualization"){
+        dispatch(setValue(10));
       } 
 
     }

@@ -460,11 +460,6 @@ def Vswl4 ():
    global vardir
    vardir = "Vswl4"
 
-
-
-
-
-
 def slurmWrapper(data):
 
    call = '/home/admin/PRODUCTION/Run/run  -c "me" -l "0" -m "28" -n "-16" -o "41" -v "e" -s "1981" -e "1982" -a "1" -b "12" -u "0" -r ""'
