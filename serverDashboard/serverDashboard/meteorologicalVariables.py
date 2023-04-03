@@ -484,6 +484,7 @@ def slurmWrapper(data):
    Longitude_max=data['_maxLon']
 
    fCountry = Country[1:]
+   print(Country +"Delimiter")
 
    base = '/home/admin/PRODUCTION/Run/run -c ' + '"'+Country+'" ' +'-l ' + '"'+str(Longitude_min)+'" '
    base += '-m ' + '"'+str(Longitude_max)+'" '
