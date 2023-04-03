@@ -496,7 +496,7 @@ def slurmWrapper(data):
    secondPart+='-a ' + '"'+Start_month+'" '
    secondPart+='-b ' + '"'+End_month+'" '
    secondPart+='-u ' + '"'+Update+'" '
-   secondPart+='-r ' + '"'+Region+'" '
+   secondPart+='-r ' + '"'+Region+'"'
 
    variableString=""
 
