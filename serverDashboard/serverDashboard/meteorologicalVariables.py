@@ -483,7 +483,9 @@ def slurmWrapper(data):
    Longitude_min=data['_minLon']
    Longitude_max=data['_maxLon']
 
-   base = '/home/admin/PRODUCTION/Run/run -c' + '"'+Country+'" ' +'-l ' + '"'+str(Longitude_min)+'" '
+   Country.replace(" ", "")
+
+   base = '/home/admin/PRODUCTION/Run/run -c ' + '"'+Country+'" ' +'-l ' + '"'+str(Longitude_min)+'" '
    base += '-m ' + '"'+str(Longitude_max)+'" '
    base += '-n ' + '"'+str(Latitude_min)+'" '
    base += '-o ' + '"'+str(Latitude_max)+'" '
