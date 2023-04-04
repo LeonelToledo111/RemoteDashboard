@@ -518,27 +518,27 @@ def slurmWrapper(data):
    print (base)
 
    if(data['m_u_component_of_wind']==True ):
-      variableValue="10u"
+      variableValue="wind"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['m_v_component_of_wind']==True ):
-      variableValue="10v"
+      variableValue="wind"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['m_dewpoint_temperature']==True ):
-      variableValue="2d"
+      variableValue="temp"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['m_temperature']==True ):
-      variableValue="2t"
+      variableValue="temp"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['evaporation_from_bare_soil']==True ):
-      variableValue="Es"
+      variableValue="evabs"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
@@ -568,7 +568,7 @@ def slurmWrapper(data):
       os.system(slurmJob)
       print(slurmJob)
    if(data['lake_ice_depth']==True ):
-      variableValue="Lid"
+      variableValue="licd"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
