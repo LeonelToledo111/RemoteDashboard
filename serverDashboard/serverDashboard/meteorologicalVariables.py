@@ -543,27 +543,27 @@ def slurmWrapper(data):
       os.system(slurmJob)
       print(slurmJob)
    if(data['evaporation_from_open_water_surfaces_excluding_oceans']==True ):
-      variableValue="Eowsxo"
+      variableValue="evaow"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['evaporation_from_the_top_of_canopy']==True ):
-      variableValue="Eftc"
+      variableValue="evatc"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['evaporation_from_vegetation_transpiration']==True ):
-      variableValue="Efvt"
+      variableValue="evavt"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['forecast_albedo']==True ):
-      variableValue="Fa"
+      variableValue="fal"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['lake_bottom_temperature']==True ):
-      variableValue="Lbt"
+      variableValue="lblt"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
@@ -573,172 +573,172 @@ def slurmWrapper(data):
       os.system(slurmJob)
       print(slurmJob)
    if(data['lake_ice_temperature']==True ):
-      variableValue="Lit"
+      variableValue="lict"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['lake_mix_layer_depth']==True ):
-      variableValue="Lmld"
+      variableValue="lmld"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['lake_mix_layer_temperature']==True ):
-      variableValue="Lmlt"
+      variableValue="lmlt"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['lake_shape_factor']==True ):
-      variableValue="Lsf"
+      variableValue="lshf"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['lake_total_layer_temperature']==True ):
-      variableValue="Ltlt"
+      variableValue="ltlt"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['leaf_area_index_high_vegetation']==True ):
-      variableValue="Laihv"
+      variableValue="lai_hv"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['leaf_area_index_low_vegetation']==True ):
-      variableValue="Lailv"
+      variableValue="lai_lv"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['potential_evaporation']==True ):
-      variableValue="Pe"
+      variableValue="pev"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['runoff']==True ):
-      variableValue="Ro"
+      variableValue="ro"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['skin_reservoir_content']==True ):
-      variableValue="Src"
+      variableValue="src"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['skin_temperature']==True ):
-      variableValue="St"
+      variableValue="skt"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['snow_albedo']==True ):
-      variableValue="Sa"
+      variableValue="asn"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['snow_cover']==True ):
-      variableValue="Sc"
+      variableValue="snowc"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['snow_density']==True ):
-      variableValue="Sd"
+      variableValue="sde"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['snow_depth']==True ):
-      variableValue="Sdh"
+      variableValue="sdh"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['snow_depth_water_equivalent']==True ):
-      variableValue="Sdwe"
+      variableValue="sd"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['snow_evaporation']==True ):
-      variableValue="Se"
+      variableValue="es"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['snowfall']==True ):
-      variableValue="Sf"
+      variableValue="sf"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['snowmelt']==True ):
-      variableValue="Sm"
+      variableValue="smlt"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['soil_temperature_level_1']==True ):
-      variableValue="Stl1"
+      variableValue="stl1"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['soil_temperature_level_2']==True ):
-      variableValue="Stl2"
+      variableValue="stl2"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['soil_temperature_level_3']==True ):
-      variableValue="Stl3"
+      variableValue="stl3"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['soil_temperature_level_4']==True ):
-      variableValue="Stl4"
+      variableValue="stl4"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['sub_surface_runoff']==True ):
-      variableValue="Ssrf"
+      variableValue="ssro"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['surface_latent_heat_flux']==True ):
-      variableValue="Slhf"
+      variableValue="slhf"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['surface_net_thermal_radiation']==True ):
-      variableValue="Sntr"
+      variableValue="str"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['surface_pressure']==True ):
-      variableValue="Sp"
+      variableValue="sp"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['surface_runoff']==True ):
-      variableValue="Sr"
+      variableValue="sro"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['surface_sensible_heat_flux']==True ):
-      variableValue="Sshf"
+      variableValue="sshf"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['surface_net_solar_radiation']==True ):
-      variableValue="Ssr"
+      variableValue="ssr"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['surface_solar_radiation_downwards']==True ):
-      variableValue="Ssrd"
+      variableValue="ssrd"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['surface_thermal_radiation_downwards']==True ):
-      variableValue="Strd"
+      variableValue="strd"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['temperature_of_snow_layer']==True ):
-      variableValue="Tsl"
+      variableValue="tsn"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['total_evaporation']==True ):
-      variableValue="Te"
+      variableValue="e"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
@@ -748,22 +748,22 @@ def slurmWrapper(data):
       os.system(slurmJob)
       print(slurmJob)
    if(data['volumetric_soil_water_layer_1']==True ):
-      variableValue="Vswl1"
+      variableValue="swvl1"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['volumetric_soil_water_layer_2']==True ):
-      variableValue="Vswl2"
+      variableValue="swvl2"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if(data['volumetric_soil_water_layer_3']==True ):
-      variableValue="Vswl3"
+      variableValue="swvl3"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
    if (data['volumetric_soil_water_layer_4']==True ):
-      variableValue="Vswl4"
+      variableValue="swvl4"
       slurmJob = base + '-v ' + '"'+variableValue+'" ' + secondPart
       os.system(slurmJob)
       print(slurmJob)
