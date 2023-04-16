@@ -3,23 +3,13 @@ import Divider from "@material-ui/core/Divider";
 import CheckboxGroup from "./CheckboxGroup";
 import RadioGroup from "./RadioGroup";
 import axios from 'axios';
-import CMIP5Variables from '../CMIP5Data/CMIP5Variables.txt'
+import CMIP5Variables from '../CMIP5Data/CMIP5Variables.js'
 
+
+var array;
 
 function loadVariableData(){
-    console.log("I have been called on load");
-    var array;
-    fetch(CMIP5Variables)
-  .then(row => row.text())
-  .then(text => {
-    array = text.split('\n');
-    console.log('text:', text);
-    console.log('array:', array);
-  });
-
-  return array;
-
-  // console.log(arr);
+    array = CMIP5Variables;
 }
 
 async function postClimateVariables(){
@@ -74,8 +64,7 @@ class Climate extends Component {
 
     render() { 
 
-        const CMPI5VariableInput =loadVariableData();
-        console.log("Returns: " + CMPI5VariableInput);
+        loadVariableData();
 
         const project = [
             { id: 1, label: "CMIP5" },
@@ -318,7 +307,7 @@ class Climate extends Component {
 
                 <div className = "variable"> 
                     
-                        <CheckboxGroup items={variableItems} />
+                        <CheckboxGroup items={array} />
                     <Divider style={{ margin: "6px 0" }} />
 
                     
