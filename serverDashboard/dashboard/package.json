@@ -16,6 +16,7 @@
     "leaflet": "^1.8.0",
     "leaflet-draw": "^1.0.4",
     "mapbox-gl": "^0.39.1",
+    "patternomaly": "^1.3.2",
     "python-shell": "^1.0.8",
     "react": "^16.14.0",
     "react-csv-reader": "^3.1.2",

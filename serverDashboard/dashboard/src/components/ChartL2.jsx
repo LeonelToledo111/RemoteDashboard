@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 import { useMap } from "react-leaflet";
 import L from 'leaflet';
-import pattern from 'patternomaly';
 import {
   Chart,
   ArcElement,
@@ -55,24 +54,24 @@ Chart.register(
   Title,
   Tooltip
 );
-class ChartL extends React.Component {
+class ChartL2 extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
-            min:    this.props.min || 0,
-            max:    this.props.max || 100,
-            value:  this.props.value || 0,
-            step:   this.props.step || 1,
-            title:  this.props.title || '',
-            show:   this.props.show || true,
             width:  this.props.width || 200,
             height: this.props.height || 20,
-            event:  this.props.event,
+            
+            // event:  this.props.event,
             x:      this.props.x || [],
             y:      this.props.y || [],
-            data:   this.props.data || {},
-            options:   this.props.options || {}
+            color:      this.props.color || [],
+            label:      this.props.label || [],
+            type:   this.props.type || "bar",
+            xi: this.props.xi || 0,
+            var: this.props.var || "",
+            // data:   this.props.data || {},
+            // options:   this.props.options || {}
 
         };
 
@@ -80,7 +79,7 @@ class ChartL extends React.Component {
         
     }
 
-    ChartL = L.Control.extend({
+    ChartL2 = L.Control.extend({
       options:{
           position: this.props.position || 'bottomleft',
       },
@@ -95,23 +94,6 @@ class ChartL extends React.Component {
         //container.setAttribute('style', 'height:10vh; width:20vw');
         this.container = container;
         this.makeChart(this.container);
-        
-        this.update=(data)=>{
-          // this.state.data=data
-          this.setState({
-            ...this.prevState,
-            data: data,
-          })
-          if( this.state.show ){
-            this.control.addTo(map);
-          }                    
-          else{
-            this.control.remove(map);
-          }
-          // this.show(map);
-
-          // console.log("********update")
-        };
         
         return this.container;
       },
@@ -153,7 +135,7 @@ class ChartL extends React.Component {
 
     createControl() {
         
-        return new this.ChartL();
+        return new this.ChartL2();
     }
 
     
@@ -204,9 +186,9 @@ class ChartL extends React.Component {
    
     makeChart(container){
         // console.log("makeChart");
-        const ctx = L.DomUtil.create('canvas', 'myChart',container);
-        ctx.setAttribute('width', '1000');
-        ctx.setAttribute('height', '800');
+        const ctxContainer = L.DomUtil.create('canvas', 'myChart',container);
+        ctxContainer.setAttribute('width', '1000');
+        ctxContainer.setAttribute('height', '800');
 
         const bttn = L.DomUtil.create('input','bttn_name',container);
         bttn.setAttribute('width', '1000');
@@ -228,25 +210,29 @@ class ChartL extends React.Component {
           this.save()
         });
 
-        let data2=this.state.data;
+        // let data2=this.state.data;
 
-        // this.state.data.datasets[1].backgroundColor.forEach((bkColor,index)=>{
-        //   data2.datasets[1].backgroundColor[index]=pattern.draw('zigzag', bkColor)
-        // });
-        
-        //[0]=pattern.draw('zigzag', this.state.data.datasets[0].backgroundColor[0])
-        // data2.datasets[0].backgroundColor[
-          // pattern.draw('square', '#1f77b4'),
-          // pattern.draw('circle', '#ff7f0e'),
-          // pattern.draw('diamond', '#2ca02c'),
-          // pattern.draw('zigzag-horizontal', '#17becf'),
-          // pattern.draw('triangle', 'rgb(255, 99, 132, 0.4)')
-        // ]
+        let datasets=[]
+        for (let i = 0; i < this.state.y.length; i++) {
+            datasets.push({
+                label: this.state.label[i],
+                data: this.state.y[i],
+                backgroundColor: [
+                    this.state.color[i],
+                ],
+                borderColor: [
+                    this.state.color[i],
+                ],
+                borderWidth: 1
+              });
+        }
 
         const config = {
-          type: 'bar',
-          data: data2,
-          //options: this.state.options,
+          type: this.state.type,
+          data: {
+              labels: this.state.x,
+              datasets: datasets,
+            },
 
           options: {
             plugins:{
@@ -301,7 +287,8 @@ class ChartL extends React.Component {
                 title:{
                   display:true,
                   align:'center',
-                  text:"Area (hectares)",
+                  text:this.state.var,
+                  // text:"Area (hectares)",
                   font:{
                     size:12
                   }
@@ -312,41 +299,70 @@ class ChartL extends React.Component {
                   }
                 }
               },
-              yYield:{
-                beginAtZero: true,
-                type: 'linear',
-                display: true,
-                position: 'right',
-                title:{
-                  display:true,
-                  align:'center',
-                  text:"Yield",
-                  font:{
-                    size:12
-                  }
-                },
-                ticks:{
-                  font:{
-                    size:10
-                  }
-                }
-              },
+              // yYield:{
+              //   beginAtZero: true,
+              //   type: 'linear',
+              //   display: true,
+              //   position: 'right',
+              //   title:{
+              //     display:true,
+              //     align:'center',
+              //     text:"Yield",
+              //     font:{
+              //       size:12
+              //     }
+              //   },
+              //   ticks:{
+              //     font:{
+              //       size:10
+              //     }
+              //   }
+              // },
+            },
+
+            animation: {
+              duration: 0 // general animation time
+            },
+            hover: {
+              animationDuration: 0 // duration of animations when hovering an item
             },
           },
           
 
           plugins: [
           {
-              afterDraw: chart => {
-              },
-              beforeDraw: (chart) => {
-                const ctx = chart.canvas.getContext('2d');
+              afterDraw: (chart) => {
+                var ctx = chart.ctx;
+                var xAxis = chart.scales.xAxes;
+                var yAxis = chart.scales.yAxes;
+                console.log("chart.scales:",chart.scales)
+                // console.log("xAxis:",xAxis)
+                // const x = xAxis.getPixelForValue(20);
+                // const y_a = yAxis.getPixelForValue(0);
+                // const y_b = yAxis.getPixelForValue(300);
+                const x_a = chart.scales.xAxes.left;
+                const x_b = chart.scales.xAxes.right;
+                const x_c = chart.scales.xAxes.left + (chart.scales.xAxes.right-chart.scales.xAxes.left)*this.state.xi/(this.state.x.length-1)
+                const y_a = chart.scales.yArea.top;
+                const y_b = chart.scales.yArea.bottom;
+                
                 ctx.save();
-                ctx.globalCompositeOperation = 'destination-over';
-                // ctx.fillStyle = '#8591f9';
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.strokeStyle = 'rgba(99, 99, 99,0.5)';
+                ctx.strokeWidth = 6;
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(x_c,y_a);
+                ctx.lineTo(x_c,y_b);
+                ctx.stroke();
                 ctx.restore();
+              },
+              beforeDraw: (chart) => {//antes
+                const ctxCanvas = chart.canvas.getContext('2d');
+                ctxCanvas.save();
+                ctxCanvas.globalCompositeOperation = 'destination-over';
+                ctxCanvas.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctxCanvas.fillRect(0, 0, chart.width, chart.height);
+                ctxCanvas.restore();
               }
           }],
         };
@@ -359,36 +375,23 @@ class ChartL extends React.Component {
 
         // console.log("*******new Chart**********");
 
-        const myChart = new Chart(ctx, config);
+        const myChart = new Chart(ctxContainer, config);
         
     }
 
     componentDidMount() {
-      // console.log("*******componentDidMount Chart**********");
-      const { map } = this.props;
-      const control = this.createControl();
-      this.control=control;
-      this.control.addTo(map);
-      // this.control.remove(map);
-      // this.show( map );
-    
-      const { childRef } = this.props;
-      childRef(this);
+        const { map } = this.props;
+        this.control=this.createControl();
+        this.control.addTo(map)
     }
-
 
     componentWillUnmount() {
-     const { childRef } = this.props;
-      childRef(undefined);
-    }
-
-    componentDidUpdate(prevProps){
-      // console.log("***********componentDidUpdate**************")
-
+        const { map } = this.props;
+        this.control.remove(map);
     }
 
     render() {
-      return null;
+        return null;
     }
 
 }
@@ -400,6 +403,6 @@ function withMap(Component) {
   };
 }
 
-export default withMap(ChartL);
+export default withMap(ChartL2);
 
 
