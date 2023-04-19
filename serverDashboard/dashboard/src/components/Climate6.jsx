@@ -3,14 +3,8 @@ import Divider from "@material-ui/core/Divider";
 import CheckboxGroup from "./CheckboxGroup";
 import RadioGroup from "./RadioGroup";
 import axios from 'axios';
-import CMIP5Variables from '../CMIP5Data/CMIP5Variables.js'
 
 
-var array;
-
-function loadVariableData(){
-    array = CMIP5Variables;
-}
 
 async function postClimateVariables(){
     let axiosConfig = {
@@ -58,13 +52,17 @@ async function postClimateIndices(){
       });*/
 }
 
-class Climate extends Component {
+class Climate6 extends Component {
 
+    testChange(){
+        window.alert("Im a test")
+        console.log("TESTING CHAAANGE")
+    }
 
 
     render() { 
 
-        loadVariableData();
+        
 
         const project = [
             { id: 1, label: "CMIP5" },
@@ -137,10 +135,6 @@ class Climate extends Component {
             {id: 7, label:  "rcp45"},
             {id: 8, label: "rcp60"},
             {id: 9, label: "rcp85"}, 
-        ];
-
-        const arrayTest = [
-            {label: "HAPPY TESTING"},
         ];
 
         const IndicesItems = [
@@ -272,7 +266,7 @@ class Climate extends Component {
         return ( 
         <div>
             <div>
-                <div className = "project" onLoad={loadVariableData}> 
+                <div className = "project"> 
                     <h3>Project</h3>
                     <Divider style={{ margin: "6px 0" }} />
                         <RadioGroup items={project} />
@@ -286,7 +280,7 @@ class Climate extends Component {
 
                 <div className = "model"> 
                     
-                        <CheckboxGroup items={modelItems} />
+                        <CheckboxGroup items={modelItems} onChange={this.testChange} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
@@ -307,7 +301,7 @@ class Climate extends Component {
 
                 <div className = "variable"> 
                     
-                        <CheckboxGroup items={array} />
+                        <CheckboxGroup items={variableItems} />
                     <Divider style={{ margin: "6px 0" }} />
 
                     
@@ -340,4 +334,4 @@ class Climate extends Component {
     }
 }
 
-export default Climate;
+export default Climate6;

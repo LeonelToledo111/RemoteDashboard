@@ -11,9 +11,15 @@ import DateRange from "./DateRange";
 
 var selectedValue;
 var selectedItem=[];
+var minLonPost;
+var maxLonPost;
+var minLatPost;
+var maxLatPost;
+var CountryCode;
+var startDatePost;
+var endDatePost;
 
 function handleChange(){
-
 }
 
 
@@ -36,18 +42,28 @@ async function getDataAxios(){
 function purr(){
     var status;
   //  window.alert("PURR");
-    for(var i=1;i<10;i++){
+    for(var i=1;i<52;i++){
         var idTag="items"+i;
         status = document.getElementById("items"+i);
       //  window.alert(status.checked);
         selectedItem[i-1]=status.checked;
     }
+    minLonPost = document.getElementById("MinLon").value;
+    maxLonPost = document.getElementById("MaxLon").value;
+    minLatPost = document.getElementById("MinLat").value;
+    maxLatPost = document.getElementById("MaxLat").value;
+    maxLatPost = document.getElementById("MaxLat").value;
+    CountryCode = document.getElementById("Country").innerHTML;
+    startDatePost = document.getElementById("StartDate").value;
+    endDatePost = document.getElementById("EndDate").value;
+    //window.alert(startDatePost);
     
 }
 
+//async function postDataAxios(minLon, maxLon, minLat, maxLat, cCode){
 async function postDataAxios(){
-
     purr();
+
 
     let axiosConfig = {
         headers: {
@@ -64,56 +80,63 @@ async function postDataAxios(){
         m_v_component_of_wind : selectedItem[1],
         m_dewpoint_temperature:  selectedItem[2],
         m_temperature : selectedItem[3],
-        surface_net_solar_radiation :selectedItem[4],
-        total_precipitation: selectedItem[5],
-        surface_pressure: selectedItem[6],
-        forecast_albedo: selectedItem[7],
-        evaporation_from_bare_soil: selectedItem[8], 
-        evaporation_from_open_water_surfaces_excluding_oceans: 'value',
-        evaporation_from_the_top_of_canopy: 'value',
-        evaporation_from_vegetation_transpiration: 'value',
-        lake_bottom_temperature: 'value',
-        lake_ice_depth: 'value',
-        lake_ice_temperature: 'value',
-        lake_mix_layer_depth: 'value',
-        lake_mix_layer_temperature: 'value',
-        lake_shape_factor: 'value',
-        lake_total_layer_temperature: 'value',
-        leaf_area_index_high_vegetation: 'value',
-        leaf_area_index_low_vegetation: 'value',
-        potential_evaporation: 'value',
-        runoff: 'value',
-        skin_reservoir_content: 'value',
-        skin_temperature: 'value',
-        snow_albedo: 'value',
-        snow_cover: 'value',
-        snow_density: 'value',
-        snow_depth: 'value',
-        snow_depth_water_equivalent: 'value', 
-        snow_evaporation: 'value',
-        snowfall: 'value',
-        snowmelt: 'value',
-        soil_temperature_level_1: 'value', 
-        soil_temperature_level_2: 'value',
-        soil_temperature_level_3: 'value',
-        soil_temperature_level_4: 'value',
-        sub_surface_runoff: 'value',
-        surface_latent_heat_flux: 'value',
-        surface_net_thermal_radiation: 'value',
-        surface_runoff : 'value',
-        surface_sensible_heat_flux:'value',
-        surface_solar_radiation_downwards: 'value', 
-        surface_thermal_radiation_downwards: 'value',
-        temperature_of_snow_layer: 'value',
-        total_evaporation: 'value',
-        volumetric_soil_water_layer_1: 'value', 
-        volumetric_soil_water_layer_2: 'value',
-        volumetric_soil_water_layer_3: 'value',
-        volumetric_soil_water_layer_4: 'valueFinal',
+        evaporation_from_bare_soil: selectedItem[4], 
+        evaporation_from_open_water_surfaces_excluding_oceans: selectedItem[5],
+        evaporation_from_the_top_of_canopy: selectedItem[6],
+        evaporation_from_vegetation_transpiration: selectedItem[7],
+        forecast_albedo: selectedItem[8],
+        lake_bottom_temperature: selectedItem[9],
+        lake_ice_depth: selectedItem[10],
+        lake_ice_temperature: selectedItem[11],
+        lake_mix_layer_depth: selectedItem[12],
+        lake_mix_layer_temperature: selectedItem[13],
+        lake_shape_factor: selectedItem[14],
+        lake_total_layer_temperature: selectedItem[15],
+        leaf_area_index_high_vegetation: selectedItem[16],
+        leaf_area_index_low_vegetation: selectedItem[17],
+        potential_evaporation: selectedItem[18],
+        runoff: selectedItem[19],
+        skin_reservoir_content: selectedItem[20],
+        skin_temperature: selectedItem[21],
+        snow_albedo: selectedItem[22],
+        snow_cover: selectedItem[23],
+        snow_density: selectedItem[24],
+        snow_depth: selectedItem[25],
+        snow_depth_water_equivalent: selectedItem[26], 
+        snow_evaporation: selectedItem[27],
+        snowfall: selectedItem[28],
+        snowmelt: selectedItem[29],
+        soil_temperature_level_1: selectedItem[30], 
+        soil_temperature_level_2: selectedItem[31],
+        soil_temperature_level_3: selectedItem[32],
+        soil_temperature_level_4: selectedItem[33],
+        sub_surface_runoff: selectedItem[34],
+        surface_latent_heat_flux: selectedItem[35],
+        surface_net_thermal_radiation: selectedItem[36],
+        surface_pressure: selectedItem[37],
+        surface_runoff : selectedItem[38],
+        surface_sensible_heat_flux:selectedItem[39],
+        surface_net_solar_radiation :selectedItem[40],
+        surface_solar_radiation_downwards: selectedItem[41], 
+        surface_thermal_radiation_downwards: selectedItem[42],
+        temperature_of_snow_layer: selectedItem[43],
+        total_evaporation: selectedItem[44],
+        total_precipitation: selectedItem[45],
+        volumetric_soil_water_layer_1: selectedItem[46], 
+        volumetric_soil_water_layer_2: selectedItem[47],
+        volumetric_soil_water_layer_3: selectedItem[48],
+        volumetric_soil_water_layer_4: selectedItem[49],
+       _minLon: minLonPost,
+       _maxLon: maxLatPost,
+       _minLat : minLatPost,
+        _maxLat : maxLatPost,
+        _cCode : CountryCode,
+        _startDate: startDatePost,
+        _endDate : endDatePost,
       },axiosConfig)
 
       console.log(selectedItem)
-      console.log(response.data)
+      console.log(response.body)
 
 }
 
@@ -124,11 +147,12 @@ function  MeteorologicalVariables() {
     const maxLon = useSelector(state=>state.max_lon);
     const minLat = useSelector(state=>state.min_lat);
     const maxLat = useSelector(state=>state.max_lat);
+    const cCode = useSelector(state=>state.countryCode);
 
         const items = [
-            { id: 1, label: "10m u-component of wind", value: "caca" },
+            { id: 1, label: "10m u-component of wind", value: "false" },
             { id: 2, label: "10m v-component of wind", value: "false" },
-            { id: 3, label: "2m dewpoint temperature", value: "true"},
+            { id: 3, label: "2m dewpoint temperature", value: "false"},
             { id: 4, label: "2m temperature", value: "false" },
             { id: 5, label: "Evaporation from bare soil", value: "false" },
             { id: 6, label: "Evaporation from open water surfaces excluding oceans", value: "false" },
@@ -238,16 +262,16 @@ function  MeteorologicalVariables() {
                     <form className = "standardForm">
                         <label>
                             Minimum Longitude:  
-                            <input type="text" value={minLon} name="Minimum Longitude" onChange={handleChange} />
+                            <input type="text"  id="MinLon" value={minLon} name="Minimum Longitude" onChange={handleChange} />
                             <br/>
                             Maximum Longitude:  
-                            <input type="text" value={maxLon} name="Minimum Longitude" onChange={handleChange} />
+                            <input type="text" id="MaxLon" value={maxLon} name="Minimum Longitude" onChange={handleChange} />
                             <br/>
                             Minimum Latitude:  
-                            <input type="text" value={minLat} name="Minimum Longitude" onChange={handleChange} />
+                            <input type="text" id="MinLat" value={minLat} name="Minimum Longitude" onChange={handleChange} />
                             <br/>
                             Maximum Latitude:  
-                            <input type="text" value={maxLat} name="Minimum Longitude" onChange={handleChange} />
+                            <input type="text" id="MaxLat" value={maxLat} name="Minimum Longitude" onChange={handleChange} />
                             <br/>
                         </label>
                     </form>
@@ -257,12 +281,13 @@ function  MeteorologicalVariables() {
 
                 <div className = "period"> 
                     <h1>Period</h1>
-                    <p>Start Date: </p>
                     <Divider style={{ margin: "6px 0" }} />
-                    <DateRange/>
+                    <label for="start">Start Date:</label>
+                    <input type="date" id="StartDate"></input>
+
                     <Divider style={{ margin: "6px 0" }} />
-                    <p>End Date: </p>
-                    <DateRange/>
+                    <label for="end">End Date:</label>
+                    <input type="date" id="EndDate"></input>
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 

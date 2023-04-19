@@ -41,6 +41,15 @@ export const setMaxLat = (value) =>{
    
 };
 
+export const setCountryID = (value) =>{
+
+    return {
+        type: 'SET_COUNTRY_ID',
+        payload: value
+    };
+   
+};
+
 export const set_met_10m_u_component_of_wind = (value) =>{
 
     return {
