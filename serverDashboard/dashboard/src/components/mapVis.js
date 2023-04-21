@@ -1357,74 +1357,70 @@ class MapboxContainerVis extends React.Component {
     
     if(layer || layers){//create polygon
       if(layer){
-      console.log("***layer",layer);
-      //let lastAddedPolygonID;
-    // console.log("e:"+Object.keys(e));
-    // console.log("*layer Object.keys:"+Object.keys(layer));
-    // console.log("*layer:",layer);
-    // console.log("*layerType:"+layerType);
+        console.log("***layer",layer);
+        //let lastAddedPolygonID;
+        // console.log("e:"+Object.keys(e));
+        // console.log("*layer Object.keys:"+Object.keys(layer));
+        // console.log("*layer:",layer);
+        // console.log("*layerType:"+layerType);
 
-    const { _events } = layer;
-    // console.log("*layer_events:"+Object.keys(_events) );
+        const { _events } = layer;
+        // console.log("*layer_events:"+Object.keys(_events) );
 
-    //layer:options,_bounds,_latlngs,_initHooksCalled,_events,editing,_leaflet_id,_eventParents,_mapToAdd,_renderer,_map,_zoomAnimated,_path,_rings,_rawPxBounds,_pxBounds,_parts,_firingCount
+        //layer:options,_bounds,_latlngs,_initHooksCalled,_events,editing,_leaflet_id,_eventParents,_mapToAdd,_renderer,_map,_zoomAnimated,_path,_rings,_rawPxBounds,_pxBounds,_parts,_firingCount
 
-    if(layerType === "polygon"){
-      const { _leaflet_id } = layer;
+        if(layerType === "polygon"){
+          const { _leaflet_id } = layer;
+
+          // console.log("#### _leaflet_id:", _leaflet_id);
+
+          // console.log("#### _leaflet_id:", _leaflet_id);
+          // console.log("#### LatLngs:", layer.getLatLngs()[0].length," -> ",layer.getLatLngs()[0]);
+
+          // this.setState({
+          //   polygon: layer.getLatLngs()[0];
+          // })
+          this.polygon=[...layer.getLatLngs()[0]]
+
+          // this.selectedPolygon.points=layer.getLatLngs()[0];
+          let xmin=this.polygon[0].lng;
+          let xmax=xmin;
+          let ymin=this.polygon[0].lat;
+          let ymax=ymin;
+          this.polygon.push(this.polygon[0])
+          this.polygon.forEach((point,index)=>{
+            if(xmin>point.lng){xmin=point.lng;}
+            else if(xmax<point.lng){xmax=point.lng;}
+            if(ymin>point.lat){ymin=point.lat;}
+            else if(ymax<point.lat){ymax=point.lat;}
+            // console.log(index," -> lat=",point.lat," lng=",point.lng)
+          })
+
+          // this.newPolygon=true;
 
 
-      
-
-
-      // console.log("#### _leaflet_id:", _leaflet_id);
-
-      // console.log("#### _leaflet_id:", _leaflet_id);
-      // console.log("#### LatLngs:", layer.getLatLngs()[0].length," -> ",layer.getLatLngs()[0]);
-
-      // this.setState({
-      //   polygon: layer.getLatLngs()[0];
-      // })
-      this.polygon=[...layer.getLatLngs()[0]]
-
-      // this.selectedPolygon.points=layer.getLatLngs()[0];
-      let xmin=this.polygon[0].lng;
-      let xmax=xmin;
-      let ymin=this.polygon[0].lat;
-      let ymax=ymin;
-      this.polygon.push(this.polygon[0])
-      this.polygon.forEach((point,index)=>{
-        if(xmin>point.lng){xmin=point.lng;}
-        else if(xmax<point.lng){xmax=point.lng;}
-        if(ymin>point.lat){ymin=point.lat;}
-        else if(ymax<point.lat){ymax=point.lat;}
-        // console.log(index," -> lat=",point.lat," lng=",point.lng)
-      })
-
-      // this.newPolygon=true;
-      
-
-      if (this.lastAddedPolygonID) {
-        e.sourceTarget._layers[this.lastAddedPolygonID].remove();
+          if (this.lastAddedPolygonID) {
+            e.sourceTarget._layers[this.lastAddedPolygonID].remove();
+          }
+          this.lastAddedPolygonID = _leaflet_id;
+        }
+      }else if(layers){//edited polygon
+        console.log("***layers",layers);
+        // let nuevoArreglo1=[];
+        console.log("print layers:")
+        layers.eachLayer(a => {
+          // this.props.updatePlot({
+          //     id: id,
+          //     feature: a.toGeoJSON()
+          // });
+          // console.log("id:",id)
+          console.log("array:",a._latlngs[0])
+          this.polygon=[...a._latlngs[0]]
+        });
+        this.polygon.push(this.polygon[0])
       }
-      this.lastAddedPolygonID = _leaflet_id;
 
-    }}else if(layers){//edited polygon
-      console.log("***layers",layers);
-      // let nuevoArreglo1=[];
-      console.log("print layers:")
-      layers.eachLayer(a => {
-        // this.props.updatePlot({
-        //     id: id,
-        //     feature: a.toGeoJSON()
-        // });
-        // console.log("id:",id)
-        console.log("array:",a._latlngs[0])
-        this.polygon=[...a._latlngs[0]]
-      });
-      this.polygon.push(this.polygon[0])
-    }
-
-    console.log("this.polygon:",this.polygon);
+      console.log("this.polygon:",this.polygon);
 
       this.serverTiffasy2({
         selectedOption:"",
@@ -1603,7 +1599,7 @@ class MapboxContainerVis extends React.Component {
 
       //const selectedPolygon={}
 
-      this.selectedPolygon.points=layer.getLatLngs()[0];
+      this.selectedPolygon.points=[...layer.getLatLngs()[0]];
       let xmin=this.selectedPolygon.points[0].lng;
       let xmax=xmin;
       let ymin=this.selectedPolygon.points[0].lat;
@@ -2064,10 +2060,11 @@ class MapboxContainerVis extends React.Component {
                 // }
 
                 onCreated={this.onCreated}
+                onEdited={this.onCreated}
 
                 // onCreated={this.onCreatedPolygon}
                 // onEdited={this.onCreatedPolygon}
-                //onEdited={this.onEditPolygon}
+                // onEdited={this.onEditPolygon}
                 // onCreated={()=>this.serverTiffasy2({
                 //   selectedOption:"",
                 //   var:this.state.var,

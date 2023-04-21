@@ -14,7 +14,7 @@ from sympy import false, true
 import xarray as xr 
 import rioxarray
 import rasterio
-import rasterstats as rstats
+# import rasterstats as rstats
 
 import uuid
 
@@ -272,13 +272,14 @@ def netCDFs2Tiffs(filesPath, var='', timei=0, polygon=""):
     # print(files["filesNameTiff"])
     return files
 
-def netCDF2Tiff(filePath, var='',id=0, polygon="", timei=0):
+#def netCDF2Tiff(filePath, var='',id=0, polygon="", timei=0):
+def netCDF2Tiff(filePath, var='',id=0, polygon=[], timei=0):
     print("netCDF2Tiff:",filePath)
     fileNetCDF = {"fileNameTiff":''}
     try:
-        xrFile = xr.open_dataset(filePath)
+        xrFile = xr.open_dataset(filePath, decode_coords="all")
     except:
-        xrFile = xr.open_dataset(filePath, decode_times=False)
+        xrFile = xr.open_dataset(filePath, decode_times=False, decode_coords="all")
     
     lon=['longitude','lon']
     lat=['latitude','lat']
@@ -341,7 +342,8 @@ def netCDF2Tiff(filePath, var='',id=0, polygon="", timei=0):
     else:
         datePeriod = -1 # int(np.timedelta64(1, "h"))
     fileNetCDF["newPolygon"]=False
-    if polygon!="":
+    #if polygon!="":
+    if len(polygon)>0:
         #src=rasterio.open(self.fileName)
         #affine = src.transform
         #nodata = src.nodata
@@ -372,7 +374,7 @@ def netCDF2Tiff(filePath, var='',id=0, polygon="", timei=0):
         nodata = xrFile[ var ].rio.encoded_nodata
         # print("**********nodata:",nodata)
         #times=nc_file.time.values[:3]
-        times=xrFile.time.values
+        #times=xrFile.time.values
         # print("*********affine",affine)
         # print("*********nodata",nodata)
         # print("*****is None:", nodata==None)
@@ -382,20 +384,33 @@ def netCDF2Tiff(filePath, var='',id=0, polygon="", timei=0):
         statsPolygonMax=[]
         statsPolygonMin=[]
         stats="mean min max"
+        if xrFile.rio.crs is None:
+            xrFile.rio.write_crs(4326, inplace=True)
+        xrFile = xrFile.rio.set_spatial_dims(lon_str, lat_str, inplace=True)
+        clipped = xrFile.rio.clip(polygon, xrFile.rio.crs)
+        clippedVar=clipped[var]
+        times=clippedVar.time.values
+
         for time in times:
             #print(time)
-            nc_arr = xrFile[ var ].sel(time=time)
-            nc_arr_vals = nc_arr.values
-            if inv_lat:
-                nc_arr_vals=np.flip(nc_arr_vals,axis=0)
-            if inv_lon:
-                nc_arr_vals=np.flip(nc_arr_vals,axis=1)
-            zonal_stats = rstats.zonal_stats(polygon, nc_arr_vals,
-            affine=affine, nodata=nodata, stats=stats)
+            # nc_arr = xrFile[ var ].sel(time=time)
+            # nc_arr_vals = nc_arr.values
+            # if inv_lat:
+            #     nc_arr_vals=np.flip(nc_arr_vals,axis=0)
+            # if inv_lon:
+            #     nc_arr_vals=np.flip(nc_arr_vals,axis=1)
+            #zonal_stats = rstats.zonal_stats(polygon, nc_arr_vals,affine=affine, nodata=nodata, stats=stats)
+
+            # statsPolygonTime.append(str(time))
+            # statsPolygonMean.append(zonal_stats[0]["mean"])
+            # statsPolygonMin.append(zonal_stats[0]["min"])
+            # statsPolygonMax.append(zonal_stats[0]["max"])
+
             statsPolygonTime.append(str(time))
-            statsPolygonMean.append(zonal_stats[0]["mean"])
-            statsPolygonMin.append(zonal_stats[0]["min"])
-            statsPolygonMax.append(zonal_stats[0]["max"])
+            # print("time:",time,"values:",clippedVar.sel(time=time).mean().values)
+            statsPolygonMean.append(clippedVar.sel(time=time).mean().values.item())
+            statsPolygonMin.append(clippedVar.sel(time=time).min().values.item())
+            statsPolygonMax.append(clippedVar.sel(time=time).max().values.item())
         fileNetCDF["statsPolygonTime"]=statsPolygonTime
         fileNetCDF["statsPolygonMean"]=statsPolygonMean
         fileNetCDF["statsPolygonMin"]=statsPolygonMin
@@ -806,7 +821,8 @@ def handle(request):
         var=bodyJSON['var']
         band=bodyJSON['band']
         timei=bodyJSON['timei']
-        polygon=""
+        # polygon=""
+        polygon=[]
         print("selectedOption:")
         print(selectedOption)
         print("--------------------")
@@ -819,16 +835,23 @@ def handle(request):
         else:
             print("*********polygon inicio**********")
             if "polygon" in bodyJSON.keys() and len(bodyJSON["polygon"])>0:
-                print("polygon:",bodyJSON["polygon"][0]["lat"])
-                polygon="POLYGON (("+str(bodyJSON["polygon"][0]['lng'])
-                polygon+=" "+str(bodyJSON["polygon"][0]['lat'])
-                for i in range( 1,len(bodyJSON["polygon"]) ):
-                    polygon+=", "
-                    polygon+=str(bodyJSON["polygon"][i]['lng'])
-                    polygon+=" "
-                    polygon+=str(bodyJSON["polygon"][i]['lat'])
-                polygon+="))"
+                # print("polygon:",bodyJSON["polygon"][0]["lat"])
+                # polygon="POLYGON (("+str(bodyJSON["polygon"][0]['lng'])
+                # polygon+=" "+str(bodyJSON["polygon"][0]['lat'])
+                # for i in range( 1,len(bodyJSON["polygon"]) ):
+                #     polygon+=", "
+                #     polygon+=str(bodyJSON["polygon"][i]['lng'])
+                #     polygon+=" "
+                #     polygon+=str(bodyJSON["polygon"][i]['lat'])
+                # polygon+="))"
+                polygon = [{
+                    'type': 'Polygon',
+                    'coordinates': [[]]
+	            }]
+                for i in range( 0,len(bodyJSON["polygon"]) ):
+                    polygon[0]['coordinates'][0].append([bodyJSON["polygon"][i]['lng'],bodyJSON["polygon"][i]['lat']])
             print("*********polygon final**********")
+            print(polygon)
             list_files=bodyJSON["filesIn"]
 
         if list_files:
