@@ -10,6 +10,10 @@ import ColorBar from './ColorBar';
 import SliderL from './SliderL';
 import MapInfo from "./MapInfo";
 import ChartL from './ChartL';
+import ChartL2 from './ChartL2';
+import pattern from 'patternomaly';
+import ControlTiff from './ControlTiff'
+
 // import {Map, TileLayer, FeatureGroup, Circle} from "react-leaflet"
 import {EditControl} from "react-leaflet-draw"
 
@@ -66,7 +70,28 @@ class MapboxContainerVis extends React.Component {
       onAddChart: false,
 
       mapLayers: [],
+      tiffLayers: [],
+      tiffMin: 0,
+      tiffMax: 0,
+      timeN:0,
+      timei:0,
+      datei:'',
+      port:0,
+      filesIn:[],
+      vars:[],
+      bandN:0,
+      var:'',
+      band:1,
+      ext:'',
+      statsPolygonTime:[],
+      statsPolygonMean:[],
+      statsPolygonMin:[],
+      statsPolygonMax:[],
+      newPolygon:false,
+      listGeoJSONX:[],
     };
+
+    // this.vars=[];
     
     this.refColorBar      = React.createRef();
     this.refSliderL       = React.createRef();
@@ -80,13 +105,23 @@ class MapboxContainerVis extends React.Component {
     this.backDataChart={data:{},show:[]}
     this.boundingBox=[]
     this.colorMap=[]
+    this.selectedPolygon={}
+
+    // this.newPolygon=false;
+    this.polygon=[];
+
+    this.lastAddedPolygonID=0;
     
     
 
     this.serverTiffasy = this.serverTiffasy.bind(this)
+    this.serverTiffasy2 = this.serverTiffasy2.bind(this)
     this.setDataChart = this.setDataChart.bind(this)
+    this.setDataChart2 = this.setDataChart2.bind(this)
     this.setShowDataChart =this.setShowDataChart.bind(this)
-    this._onCreated =this._onCreated.bind(this)
+    this.onCreatedShapefile =this.onCreatedShapefile.bind(this)
+    this.onCreatedPolygon =this.onCreatedPolygon.bind(this)
+    this.onCreated =this.onCreated.bind(this)
     
   }
 
@@ -176,6 +211,126 @@ class MapboxContainerVis extends React.Component {
       ymax: ymax,
     }
   }
+
+  //////////////////////////////////////////////
+  setDataChart2 = ( labels, dataMin, dataMean, dataMax ) => {
+    console.log("***********setDataChart2***************")
+    if(labels==undefined)return;
+
+    let dataChart = {
+      // xcode: [],
+      data: {
+        
+        labels: [],
+        datasets: [
+          {
+            label: 'Min',
+            data: [],
+            backgroundColor: [],
+            borderColor: [],
+            borderWidth: 1,
+            yAxisID: 'yMin',
+          },
+          {
+            label: 'Mead',
+            data: [],
+            backgroundColor: [],
+            borderColor: [],
+            borderWidth: 1,
+            yAxisID: 'yMead',
+          },
+          {
+            label: 'Max',
+            data: [],
+            backgroundColor: [],
+            borderColor: [],
+            borderWidth: 1,
+            yAxisID: 'yMax',
+          }
+        ]
+      },
+      show:true
+    }
+    
+    dataChart.data.labels=labels;
+    dataChart.data.datasets[0].data=dataMin;
+    dataChart.data.datasets[1].data=dataMean;
+    dataChart.data.datasets[2].data=dataMax;
+
+    labels.forEach((label)=>{
+      console.log(label);
+    })
+
+
+
+    /*
+    let listGeoJSON2=[]
+    features.forEach((item,index)=>{
+      const CROPNAME=item.properties.CROPNAME;
+      const CODE=item.properties.CODE;
+
+      if( dataChart.data.labels.includes(CROPNAME) ){
+        const indexCrop=dataChart.data.labels.indexOf(CROPNAME);
+        dataChart.data.datasets[0].data[indexCrop]+=item.properties.SHAPE_Area/100.0;
+        dataChart.data.datasets[1].data[indexCrop]+=item.properties.YIELD;
+        item.selected=false;
+        item.style={
+          type: "Style",
+          fillColor: '', 
+          weight: 1, 
+          opacity: 1, 
+          color: 'black', 
+          dashArray: '3', 
+          fillOpacity: 0.7 
+        }
+        listGeoJSON2[indexCrop].push(item)
+        this.boundingBox[indexCrop].push( this.getbbox(item.geometry) )
+      }
+      else{
+        dataChart.data.labels.push(CROPNAME);
+        dataChart.data.datasets[0].data.push(item.properties.SHAPE_Area/100.0);
+        dataChart.data.datasets[0].backgroundColor.push("");
+        dataChart.data.datasets[0].borderColor.push("");
+        dataChart.data.datasets[1].data.push(item.properties.YIELD);
+        dataChart.data.datasets[1].backgroundColor.push("");
+        dataChart.data.datasets[1].borderColor.push("");
+        item.selected=false;
+        item.style={
+          type: "Style",
+          fillColor: '', 
+          weight: 1, 
+          opacity: 1, 
+          color: 'black', 
+          dashArray: '3', 
+          fillOpacity: 0.7 
+        }
+
+        listGeoJSON2.push([item]);
+        this.backDataChart.show.push(true);
+        this.boundingBox.push([ this.getbbox(item.geometry) ])
+      }
+    })
+
+    this.backDataChart.data = dataChart.data;
+    this.makeColorMap(dataChart.data.labels.length)
+    this.colorMap.forEach((color,index) =>{
+      dataChart.data.datasets[0].backgroundColor[index] = color
+      dataChart.data.datasets[0].borderColor[index] = color
+      dataChart.data.datasets[1].backgroundColor[index] = pattern.draw('line', color)
+      dataChart.data.datasets[1].borderColor[index] = color
+      listGeoJSON2[index].forEach((data)=>{
+        data.style.fillColor = color
+      })
+    })*/
+
+    this.setState({
+      dataChart: dataChart,
+      //listGeoJSON: listGeoJSON2,
+    })
+    console.log("final:",this.state.dataChart)
+	}
+  //////////////////////////////////////////////
+
 
   //caracteristicas
   setDataChart = ( features ) => {
@@ -281,7 +436,7 @@ class MapboxContainerVis extends React.Component {
     this.colorMap.forEach((color,index) =>{
       dataChart.data.datasets[0].backgroundColor[index] = color
       dataChart.data.datasets[0].borderColor[index] = color
-      dataChart.data.datasets[1].backgroundColor[index] = color
+      dataChart.data.datasets[1].backgroundColor[index] = pattern.draw('line', color)
       dataChart.data.datasets[1].borderColor[index] = color
       // listGeoJSON2[index].style.fillColor = color
       listGeoJSON2[index].forEach((data)=>{
@@ -293,7 +448,7 @@ class MapboxContainerVis extends React.Component {
       // })
       
     })
-
+/*
     const selectedPolygon={
       BB:{
         xmin:5.0,
@@ -319,7 +474,7 @@ class MapboxContainerVis extends React.Component {
         // {x:5.0, y:46.3}
       ]
     }
-
+*/
     // https://programmerclick.com/article/2166959151/
     /*
     listGeoJSON2.forEach( ( crop, indexCrop ) => {
@@ -690,6 +845,7 @@ class MapboxContainerVis extends React.Component {
       confFile=this.backConfFile;
       confFile.time=this.refSliderL.state.value;
       confFile.var=this.var;
+      confFile.selectedPolygon=this.selectedPolygon;
     }
     else{
       if( confFile.time == undefined ){
@@ -699,6 +855,8 @@ class MapboxContainerVis extends React.Component {
         this.refSliderL.state.value=confFile.time;
       }
     }
+
+    
     let axiosConfig = {
       headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -708,7 +866,7 @@ class MapboxContainerVis extends React.Component {
     };
     
     // confFile.path="/media/alex/Datos/netcdf/u_10m"
-
+    confFile.selectedOption="setPolygon";
     console.log("***2serverTiffasy***:",confFile);
 
     const response = await axios.post('http://127.0.0.1:8000/getGeoTiffHandle', confFile ,axiosConfig)
@@ -762,6 +920,11 @@ class MapboxContainerVis extends React.Component {
     // this.setDataChart(rawGeoJSON[0].features)
     this.setDataChart(rawGeoJSON.features)
 
+    this.setDataChart2( response.data.files[0]['statsPolygonTime'],
+    response.data.files[0]['statsPolygonMin'],
+    response.data.files[0]['statsPolygonMean'],
+    response.data.files[0]['statsPolygonMax'])
+
     console.log("despues de setDataChart:",rawGeoJSON)
 
     this.setState({
@@ -798,8 +961,18 @@ class MapboxContainerVis extends React.Component {
     if(response.data.files[0]['ext']=='nc'){
       this.refSliderL.state.show=true;
       this.refSliderL.state.min=0
+      console.log("response.data.files[0]['dateIni']",response.data.files[0]['dateIni'])
+
       var date = new Date(response.data.files[0]['dateIni']);
-      date.setTime(date.getTime() + parseInt(this.refSliderL.state.value) * parseInt(response.data.files[0]['datePeriod']) );//horas
+      //date.setTime(date.getTime() + parseInt(this.refSliderL.state.value) * parseInt(response.data.files[0]['datePeriod']) );//horas
+
+      if(parseInt(response.data.files[0]['datePeriod'])==-1){
+        date.setFullYear(date.getFullYear() + parseInt(this.refSliderL.state.value))
+      }
+      else{
+        date.setTime(date.getTime() + parseInt(this.refSliderL.state.value) * parseInt(response.data.files[0]['datePeriod']) );//horas
+      }
+
 
       this.refSliderL.state.title=date.toString();
       this.refSliderL.state.max=response.data.files[0]['timeN']-1
@@ -814,6 +987,268 @@ class MapboxContainerVis extends React.Component {
     this.backConfFile=confFile;
     return {vars:response.data.files[0].vars, var:response.data.files[0].var}
     
+  }
+
+  serverTiffasy2 = async (confFile) => {
+
+
+    console.log("***1serverTiffasy2***:",confFile);
+
+    let axiosConfig = {
+      headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          "Access-Control-Allow-Origin": "*",
+          "proxy" : "false",
+      }
+    };
+
+    let response = await axios.post('http://127.0.0.1:8000/getGeoTiffHandle', confFile ,axiosConfig)
+
+    console.log("response:",response.data)
+    console.log("response time:",response.data.timei,"/",response.data.timeN)
+    // let pruebaJson=response.data.filesGeoJson[0].dataGeoJson.features
+    // console.log("response.data.filesGeoJson[0].dataGeoJson:",pruebaJson)
+
+
+    // pruebaJson.map((item) => {
+    //   console.log("GeoJson:",item)
+    // })
+
+    console.log("despues de map")
+
+    this.setState({
+      port: response.data.port,
+      tiffMin: response.data.min,
+      tiffMax: response.data.max,
+      timeN: response.data.timeN,
+      timei: parseInt(response.data.timei),
+      datei: response.data.datei,
+      filesIn: response.data.filesIn,
+      var:response.data.var,
+      vars:response.data.vars,
+      band:response.data.band,
+      bandN:response.data.bandN,
+      ext:response.data.ext,
+      newPolygon:response.data.newPolygon,
+      // listGeoJSONX:response.data.filesGeoJson[0].dataGeoJson.features,
+    })
+
+    console.log("despues de this.setState")
+    console.log("****response.data.filesGeoJson",response.data.filesGeoJson)
+    console.log("****2response.data.filesGeoJson",response.data.filesGeoJson)
+    if(response.data.filesGeoJson && response.data.filesGeoJson.length>0){
+      console.log("****response.data.filesGeoJson")
+      this.setDataChart(response.data.filesGeoJson[0].dataGeoJson.features)
+    }else{
+      console.log("****BORRANDO")
+      this.setState({
+        dataChart: {},
+        filesGeoJson:[]
+      })
+    }
+      
+    
+
+    // if( this.state.listGeoJSON ){
+    //   console.log("this.state.listGeoJSON",this.state.listGeoJSON)
+    // }
+    
+
+    // console.log("newPolygon:",this.newPolygon)
+    // console.log("newPolygon:",this.newPolygon)
+
+    
+    if( this.state.newPolygon ){
+      this.setState({
+        statsPolygonTime:response.data.statsPolygonTime,
+        statsPolygonMean:response.data.statsPolygonMean,
+        statsPolygonMin:response.data.statsPolygonMin,
+        statsPolygonMax:response.data.statsPolygonMax,
+        newPolygon:false,
+      })
+      // this.newPolygon=false;
+    }
+
+    console.log("despues de this.state.newPolygon")
+
+    this.setState({
+      tiffLayers: [],
+    })
+
+    console.log("antes de response.data.files:",response.data.files)
+
+    this.setState({
+      tiffLayers: response.data.files,
+    })
+
+    console.log("despues de response.data.files")
+
+    if ('statsPolygonTime' in response.data){
+      console.log("statsPolygonTime",response.data.statsPolygonTime)
+    }
+
+    console.log("despues de statsPolygonTime")
+
+    
+
+    if(response.data.var!=undefined && response.data.min!=undefined && response.data.max!=undefined){
+      this.refColorBar.state.title=response.data.var;
+      this.refColorBar.state.min=response.data.min.toFixed(2);
+      this.refColorBar.state.max=response.data.max.toFixed(2);
+      this.refColorBar.update();
+    }
+    
+    
+    console.log("despues de this.refColorBar.update()")
+    return {vars:[''], var:''}
+
+/*
+    if( confFile == undefined ){
+      confFile=this.backConfFile;
+      confFile.time=this.refSliderL.state.value;
+      confFile.var=this.var;
+      confFile.selectedPolygon=this.selectedPolygon;
+    }
+    else{
+      if( confFile.time == undefined ){
+        this.refSliderL.state.value=0;
+      }
+      else{
+        this.refSliderL.state.value=confFile.time;
+      }
+    }
+
+    
+    let axiosConfig = {
+      headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          "Access-Control-Allow-Origin": "*",
+          "proxy" : "false",
+      }
+    };
+    
+    // confFile.path="/media/alex/Datos/netcdf/u_10m"
+    confFile.selectedOption="setPolygon";
+    console.log("***2serverTiffasy2***:",confFile);
+
+    const response = await axios.post('http://127.0.0.1:8000/getGeoTiffHandle', confFile ,axiosConfig)
+
+    console.log("response:",response.data)
+
+    const layers=[]
+    let rawGeoJSON={}//this.state.rawGeoJSON
+
+     console.log("antes pruebaJSON",this.state.rawGeoJSON)
+    response.data.files.forEach( file=>{
+      console.log("file['dataJson']:",file['dataJson'])
+      if( !(typeof file['dataJson']=='object')){
+        console.log("*****",file.fileNameTiff)
+        let item={};
+        item.url="http://localhost:"+file.port+"/tiles/{z}/{x}/{y}.png";
+        item.url_terracotta="http://localhost:"+file.port_terracotta+"/singleband/"+file.id+"/{z}/{x}/{y}.png";
+        item.filename=file.fileNameTiff;
+        item.projection="EPSG:3857";
+        item.band=String(file.band);
+        item.palette="colorbrewer.diverging.RdYlGn_11";
+        item.min=String(file['minRAW']);
+        item.max=String(file['maxRAW']);
+        const corner1 = L.latLng(file['latitudeS'], file['longitudeE'])
+        const corner2 = L.latLng(file['latitudeN'], file['longitudeW'])
+        item.bounds = L.latLngBounds(corner1, corner2);
+        item.ext=file.ext;
+        // LatLngBoundsExpression
+        // const bounds = new LatLngBounds([40.712216, -74.22655], [40.773941, -74.12544])
+        // item.bounds = bounds
+        layers.push(item)
+      }
+      else{
+        //this.state.pruebaJSON=file['dataJson']
+        file['dataJson']['name']=file.fileName
+        // rawGeoJSON.push(file['dataJson'])
+        rawGeoJSON=file['dataJson']
+        //console.log("despues pruebaJSON",this.state.rawGeoJSON)
+      }
+      
+      
+    });
+
+    layers.map((item) => (
+      //<TileLayer url={item.url_terracotta+"?colormap=rdylgn&stretch_range=["+item.min+","+item.max+"]"} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
+      console.log("url:",item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette)
+      // <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
+    ))
+
+    console.log("antes de setDataChart:",rawGeoJSON)
+    // this.setDataChart(rawGeoJSON[0].features)
+    this.setDataChart(rawGeoJSON.features)
+
+    this.setDataChart2( response.data.files[0]['statsPolygonTime'],
+    response.data.files[0]['statsPolygonMin'],
+    response.data.files[0]['statsPolygonMean'],
+    response.data.files[0]['statsPolygonMax'])
+
+    console.log("despues de setDataChart:",rawGeoJSON)
+
+    this.setState({
+      ...this.prevState,
+      layers: [],
+      pruebaJSON: []
+    })
+
+    console.log("entres setState")
+
+    this.setState({
+      ...this.prevState,
+      layers: layers,
+      pruebaJSON: rawGeoJSON
+    })
+
+    console.log("***************layers:",this.state.layers.length);
+
+
+
+    Object.entries(response.data.files[0]).forEach(([key,value]) => {
+      console.log(key+' '+value);
+    });
+
+    // this.refTileLayerTiff.current.setUrl(link);
+
+    
+
+    this.refColorBar.state.title=response.data.files[0]['var'];
+    this.refColorBar.state.min=response.data.files[0]['min'].toFixed(2);
+    this.refColorBar.state.max=response.data.files[0]['max'].toFixed(2);
+    this.refColorBar.update();
+
+    if(response.data.files[0]['ext']=='nc'){
+      this.refSliderL.state.show=true;
+      this.refSliderL.state.min=0
+      console.log("response.data.files[0]['dateIni']",response.data.files[0]['dateIni'])
+
+      var date = new Date(response.data.files[0]['dateIni']);
+      //date.setTime(date.getTime() + parseInt(this.refSliderL.state.value) * parseInt(response.data.files[0]['datePeriod']) );//horas
+
+      if(parseInt(response.data.files[0]['datePeriod'])==-1){
+        date.setFullYear(date.getFullYear() + parseInt(this.refSliderL.state.value))
+      }
+      else{
+        date.setTime(date.getTime() + parseInt(this.refSliderL.state.value) * parseInt(response.data.files[0]['datePeriod']) );//horas
+      }
+
+
+      this.refSliderL.state.title=date.toString();
+      this.refSliderL.state.max=response.data.files[0]['timeN']-1
+    }
+    else{
+      this.refSliderL.state.show=false;
+    }
+    this.refSliderL.update();
+    //this.refGeoJson.update();
+
+    confFile.file=response.data.files[0].fileName;
+    this.backConfFile=confFile;
+    return {vars:response.data.files[0].vars, var:response.data.files[0].var}
+    */
   }
 
   INITIAL_VIEW_STATE = {
@@ -837,10 +1272,306 @@ class MapboxContainerVis extends React.Component {
   }
 
   //const [mapLayers, setMapLayers] = useState([]);
+  
+  onEditPolygon = (e) =>{
+    console.log("onEditPolygon");
+    //this.serverTiffasy();
+    //const {layerType, layer}=e;
+    const {layer,layers,type,target,sourceTarget}=e;
+    console.log("layer",layer);
+    console.log("layers",layers);
+
+    if(layer){
+      console.log("***layer",layer);
+    }else if(layers){
+      console.log("***layers",layers);
+    }
 
 
-  _onCreated = (e) =>{
-    console.log("_onCreated");
+    let nuevoArreglo1=[];
+    console.log("print layers:")
+    layers.eachLayer(a => {
+      // this.props.updatePlot({
+      //     id: id,
+      //     feature: a.toGeoJSON()
+      // });
+      // console.log("id:",id)
+      console.log("array:",a._latlngs[0])
+      nuevoArreglo1=[...a._latlngs[0]]
+    });
+    console.log("fin print layers:")
+    console.log("nuevoArreglo1:",nuevoArreglo1)
+
+    // let nuevoArreglo=[];
+
+    // const {layers: {_layers}} = e;
+    //         Object.values(_layers).map((
+    //             {_leaflet_id, editing}) => {
+    //               nuevoArreglo=(layers) => layers.map((l)  => l.id === _leaflet_id? {...l, latlngs: {...editing.latlngs[0]}
+    //             } : l)
+                
+    //         });
+
+    // console.log("nuevoArreglo:",nuevoArreglo)
+
+    //let lastAddedPolygonID;
+    // console.log("e:"+Object.keys(e));
+    // console.log("type:",type);
+    // console.log("layers Object.keys(e):",Object.keys(layers));
+    // console.log("layers:",layers);
+    // const {_layers}=layers;
+    // console.log("*_layers:",_layers );
+    // console.log("*_layers Object.keys:"+Object.keys(_layers) );
+    // // const {_latlngs}=_layers;
+    // // console.log("_latlngs:",_latlngs);
+    // const {_latlngs}=layers;
+    // console.log("_latlngs:",_latlngs);
+
+    
+    // const { _events } = layers;
+    // console.log("*layers_events:"+Object.keys(_events) );
+  }
+
+  onCreated = (e) =>{
+    console.log("this.onCreated")
+    if(this.state.listGeoJSON && this.state.listGeoJSON.length>0){
+      console.log("this.onCreatedShapefile")
+      this.onCreatedShapefile(e)
+    }
+    if(this.state.tiffLayers && this.state.tiffLayers.length>0){
+      console.log("this.onCreatedPolygon")
+      return this.onCreatedPolygon(e)
+    }
+  }
+  
+
+  onCreatedPolygon = (e) =>{
+    console.log("onCreatedPolygon");
+    //this.serverTiffasy();
+    //const {layerType, layer}=e;
+    const {layer,layers,layerType,type,target,sourceTarget}=e;
+
+    console.log("********************layer",layer);
+    console.log("********************layers",layers);
+    
+    
+    if(layer || layers){//create polygon
+      if(layer){
+        console.log("***layer",layer);
+        //let lastAddedPolygonID;
+        // console.log("e:"+Object.keys(e));
+        // console.log("*layer Object.keys:"+Object.keys(layer));
+        // console.log("*layer:",layer);
+        // console.log("*layerType:"+layerType);
+
+        const { _events } = layer;
+        // console.log("*layer_events:"+Object.keys(_events) );
+
+        //layer:options,_bounds,_latlngs,_initHooksCalled,_events,editing,_leaflet_id,_eventParents,_mapToAdd,_renderer,_map,_zoomAnimated,_path,_rings,_rawPxBounds,_pxBounds,_parts,_firingCount
+
+        if(layerType === "polygon"){
+          const { _leaflet_id } = layer;
+
+          // console.log("#### _leaflet_id:", _leaflet_id);
+
+          // console.log("#### _leaflet_id:", _leaflet_id);
+          // console.log("#### LatLngs:", layer.getLatLngs()[0].length," -> ",layer.getLatLngs()[0]);
+
+          // this.setState({
+          //   polygon: layer.getLatLngs()[0];
+          // })
+          this.polygon=[...layer.getLatLngs()[0]]
+
+          // this.selectedPolygon.points=layer.getLatLngs()[0];
+          let xmin=this.polygon[0].lng;
+          let xmax=xmin;
+          let ymin=this.polygon[0].lat;
+          let ymax=ymin;
+          this.polygon.push(this.polygon[0])
+          this.polygon.forEach((point,index)=>{
+            if(xmin>point.lng){xmin=point.lng;}
+            else if(xmax<point.lng){xmax=point.lng;}
+            if(ymin>point.lat){ymin=point.lat;}
+            else if(ymax<point.lat){ymax=point.lat;}
+            // console.log(index," -> lat=",point.lat," lng=",point.lng)
+          })
+
+          // this.newPolygon=true;
+
+
+          if (this.lastAddedPolygonID) {
+            e.sourceTarget._layers[this.lastAddedPolygonID].remove();
+          }
+          this.lastAddedPolygonID = _leaflet_id;
+        }
+      }else if(layers){//edited polygon
+        console.log("***layers",layers);
+        // let nuevoArreglo1=[];
+        console.log("print layers:")
+        layers.eachLayer(a => {
+          // this.props.updatePlot({
+          //     id: id,
+          //     feature: a.toGeoJSON()
+          // });
+          // console.log("id:",id)
+          console.log("array:",a._latlngs[0])
+          this.polygon=[...a._latlngs[0]]
+        });
+        this.polygon.push(this.polygon[0])
+      }
+
+      console.log("this.polygon:",this.polygon);
+
+      this.serverTiffasy2({
+        selectedOption:"",
+        var:this.state.var,
+        band:this.state.band,
+        timei:this.state.timei,
+        filesIn:this.state.filesIn,
+        polygon:this.polygon
+      })
+      
+      
+      // this.selectedPolygon.BB={xmin:xmin,xmax:xmax,ymin:ymin,ymax:ymax}
+
+      // console.log("this.selectedPolygon:", this.selectedPolygon );
+
+
+
+      // let listGeoJSON2 = this.state.listGeoJSON;
+      // let selected = [];
+      // listGeoJSON2.forEach( ( crop, indexCrop ) => {
+        
+      //   crop.forEach( ( data, indexData ) => {
+      //     const bb=this.boundingBox[indexCrop][indexData]
+      //     if( this.selectedPolygon.BB.xmin < bb.xmin &&
+      //         bb.xmax < this.selectedPolygon.BB.xmax &&
+      //         this.selectedPolygon.BB.ymin < bb.ymin &&
+      //         bb.ymax < this.selectedPolygon.BB.ymax
+      //       ){
+      //         //let noneZeroMode=true;
+      //         //data.selected=true;
+
+      //         data.selected=data.geometry.coordinates[0].every( (point)=>{
+      //           let i;
+      //           let j;
+      //           let nvert=this.selectedPolygon.points.length;
+      //           //let c=1;
+      //           let c=0;
+
+      //           for(i=0, j=nvert-1;i<nvert; j= i++){
+      //             if (((this.selectedPolygon.points[i].lat > point[1]) != (this.selectedPolygon.points[j].lat > point[1])) &&
+      //             (point[0] < (this.selectedPolygon.points[j].lng - this.selectedPolygon.points[i].lng) * (point[1] - this.selectedPolygon.points[i].lat) / (this.selectedPolygon.points[j].lat - this.selectedPolygon.points[i].lat) + this.selectedPolygon.points[i].lng)) {
+      //               //c=c*(-1);
+      //               c=!c;
+      //             }
+      //           }
+
+      //           return Boolean(c);
+      //           })
+              
+  
+      //       }
+      //       else{
+      //         data.selected=false;
+      //       }
+      //     if(data.selected)selected.push({indexCrop: indexCrop, indexData: indexData})
+  
+      //   })
+        
+      // })
+
+      // let dataChart = {
+      //   // xcode: [],
+      //   data: {
+          
+      //     labels: [],
+      //     datasets: [
+      //       {
+      //         label: 'Area',
+      //         data: [],
+      //         backgroundColor: [],
+      //         borderColor: [],
+      //         borderWidth: 1,
+      //         yAxisID: 'yArea',
+      //       },
+      //       {
+      //         label: 'Yield',
+      //         data: [],
+      //         backgroundColor: [],
+      //         borderColor: [],
+      //         borderWidth: 1,
+      //         yAxisID: 'yYield',
+      //       }
+      //     ]
+      //   },
+      //   show:true
+      // }
+
+      // selected.forEach((item) => {
+      //   const data=listGeoJSON2[item.indexCrop][item.indexData]
+        
+
+      //   const CROPNAME=data.properties.CROPNAME;
+      //   const CODE=data.properties.CODE;
+
+      //   if( dataChart.data.labels.includes(CROPNAME) ){
+      //     const indexCrop=dataChart.data.labels.indexOf(CROPNAME);
+      //     dataChart.data.datasets[0].data[indexCrop]+=data.properties.SHAPE_Area/100.0;
+      //     dataChart.data.datasets[1].data[indexCrop]+=data.properties.YIELD;
+      //   }
+      //   else{
+      //     dataChart.data.labels.push(CROPNAME);
+      //     dataChart.data.datasets[0].data.push(data.properties.SHAPE_Area/100.0);
+      //     dataChart.data.datasets[0].backgroundColor.push(this.colorMap[item.indexCrop]);
+      //     dataChart.data.datasets[0].borderColor.push(this.colorMap[item.indexCrop]);
+      //     dataChart.data.datasets[1].data.push(data.properties.YIELD);
+      //     dataChart.data.datasets[1].backgroundColor.push(this.colorMap[item.indexCrop]);
+      //     dataChart.data.datasets[1].borderColor.push(this.colorMap[item.indexCrop]);
+      //     this.backDataChart.show.push(true);
+      //   }
+      // })
+      // //////////
+
+      // console.log("selected:vacio");
+      // this.setState({
+      //   //...this.prevState,
+      //   //dataChart: {},
+      //   selected: []
+      // })
+      
+      // console.log("selected:nuevo");
+      // this.setState({
+      //   ...this.prevState,
+      //   dataChart: dataChart,
+      //   //...this.prevState,
+      //   //dataChart: dataChart,
+      //   selected: selected
+      // })
+      // console.log("selected:despues");
+
+      // //console.log("dataChart: ",dataChart.data);
+      
+      // //console.log("this.refChartL.update antes");
+      // this.refChartL.update(dataChart.data);
+      // console.log("this.refChartL.update despues");
+
+
+      
+     
+
+
+      
+    }
+ 
+    console.log("fin de polygon");
+
+  }
+
+
+  onCreatedShapefile = (e) =>{
+    console.log("onCreatedShapefile");
+    //this.serverTiffasy();
     //const {layerType, layer}=e;
     const {layer,layerType,type,target,sourceTarget}=e;
 
@@ -866,15 +1597,15 @@ class MapboxContainerVis extends React.Component {
       console.log("#### _leaflet_id:", _leaflet_id);
       console.log("#### LatLngs:", layer.getLatLngs()[0].length," -> ",layer.getLatLngs()[0]);
 
-      const selectedPolygon={}
+      //const selectedPolygon={}
 
-      selectedPolygon.points=layer.getLatLngs()[0];
-      let xmin=selectedPolygon.points[0].lng;
+      this.selectedPolygon.points=[...layer.getLatLngs()[0]];
+      let xmin=this.selectedPolygon.points[0].lng;
       let xmax=xmin;
-      let ymin=selectedPolygon.points[0].lat;
+      let ymin=this.selectedPolygon.points[0].lat;
       let ymax=ymin;
-      selectedPolygon.points.push(selectedPolygon.points[0])
-      selectedPolygon.points.forEach((point,index)=>{
+      this.selectedPolygon.points.push(this.selectedPolygon.points[0])
+      this.selectedPolygon.points.forEach((point,index)=>{
         if(xmin>point.lng){xmin=point.lng;}
         else if(xmax<point.lng){xmax=point.lng;}
         if(ymin>point.lat){ymin=point.lat;}
@@ -883,9 +1614,9 @@ class MapboxContainerVis extends React.Component {
       })
       
       
-      selectedPolygon.BB={xmin:xmin,xmax:xmax,ymin:ymin,ymax:ymax}
+      this.selectedPolygon.BB={xmin:xmin,xmax:xmax,ymin:ymin,ymax:ymax}
 
-      console.log("selectedPolygon:", selectedPolygon );
+      console.log("this.selectedPolygon:", this.selectedPolygon );
 
       //console.log("#### LatLngs:", layer.getLatLngs());
 
@@ -902,10 +1633,10 @@ class MapboxContainerVis extends React.Component {
         
         crop.forEach( ( data, indexData ) => {
           const bb=this.boundingBox[indexCrop][indexData]
-          if( selectedPolygon.BB.xmin < bb.xmin &&
-              bb.xmax < selectedPolygon.BB.xmax &&
-              selectedPolygon.BB.ymin < bb.ymin &&
-              bb.ymax < selectedPolygon.BB.ymax
+          if( this.selectedPolygon.BB.xmin < bb.xmin &&
+              bb.xmax < this.selectedPolygon.BB.xmax &&
+              this.selectedPolygon.BB.ymin < bb.ymin &&
+              bb.ymax < this.selectedPolygon.BB.ymax
             ){
               //let noneZeroMode=true;
               //data.selected=true;
@@ -913,13 +1644,13 @@ class MapboxContainerVis extends React.Component {
               data.selected=data.geometry.coordinates[0].every( (point)=>{
                 let i;
                 let j;
-                let nvert=selectedPolygon.points.length;
+                let nvert=this.selectedPolygon.points.length;
                 //let c=1;
                 let c=0;
 
                 for(i=0, j=nvert-1;i<nvert; j= i++){
-                  if (((selectedPolygon.points[i].lat > point[1]) != (selectedPolygon.points[j].lat > point[1])) &&
-                  (point[0] < (selectedPolygon.points[j].lng - selectedPolygon.points[i].lng) * (point[1] - selectedPolygon.points[i].lat) / (selectedPolygon.points[j].lat - selectedPolygon.points[i].lat) + selectedPolygon.points[i].lng)) {
+                  if (((this.selectedPolygon.points[i].lat > point[1]) != (this.selectedPolygon.points[j].lat > point[1])) &&
+                  (point[0] < (this.selectedPolygon.points[j].lng - this.selectedPolygon.points[i].lng) * (point[1] - this.selectedPolygon.points[i].lat) / (this.selectedPolygon.points[j].lat - this.selectedPolygon.points[i].lat) + this.selectedPolygon.points[i].lng)) {
                     //c=c*(-1);
                     c=!c;
                   }
@@ -1159,6 +1890,7 @@ class MapboxContainerVis extends React.Component {
 
       
     }
+    
     //{JSON.stringify(mapLayers,0,2)}
     // console.log("#### _onCreate ####");
     // console.log("##layerType ",layerType);
@@ -1193,12 +1925,90 @@ class MapboxContainerVis extends React.Component {
               position="bottomright"
             />
 
-            <SliderL
+            {/* <SliderL
               childRef={ref => (this.refSliderL= ref)}
-              show={false}
+              show={true}
               position="topright"
               event = { this.serverTiffasy }
-            />
+            /> */}
+
+            {
+              this.state.tiffLayers && this.state.tiffLayers.length &&
+              <ControlTiff
+                // childRef={ref => (this.refSliderL= ref)}
+                position="topright"
+                title={this.state.datei}
+                max={this.state.timeN}
+                value={this.state.timei}
+
+                var={this.state.var}
+                vars={this.state.vars}
+                band={parseInt(this.state.band)}
+                bandN={parseInt(this.state.bandN)}
+                ext={this.state.ext}
+
+                
+
+                // event = {(value)=>console.log("*******Hola",value)}
+                eventSlider = { (value)=>this.serverTiffasy2(
+                  {
+                    selectedOption:"",
+                    var:this.state.var,
+                    band:1,
+                    timei:parseInt(value),
+                    filesIn:this.state.filesIn,
+                  }
+                )}
+                eventSelect = { (value)=>{
+                  // this.newPolygon=true;
+                  return this.serverTiffasy2({
+                    selectedOption:"",
+                    var:value,
+                    band:parseInt(value),
+                    timei:this.state.timei,
+                    filesIn:this.state.filesIn,
+                    polygon:this.polygon,
+                  })
+                }
+              }
+              />
+            }
+
+            
+              {this.state.tiffLayers && this.state.tiffLayers.length &&
+              this.state.statsPolygonTime &&
+              this.state.statsPolygonTime.length &&
+              <ChartL2
+                childRef={ref => (this.refChartL= ref)}
+                show={true}
+                position="topright"
+                x={this.state.statsPolygonTime}
+                y={[this.state.statsPolygonMean,this.state.statsPolygonMin,this.state.statsPolygonMax]}
+                color={['rgb(255, 0, 0)','rgb(0,255, 0)','rgb(0,0,255)']}
+                label={["Mean","Min","Max"]}
+                type="line"
+                xi={this.state.timei}
+                var={this.state.var}
+                // type="scatter"
+
+                // data={this.state.dataChart.data}
+                // options={{
+                //   filter: function(legendItem, data) {
+                //     /* filter already loops throw legendItem & data (console.log) to see this idea */
+                //     //var index = legendItem.index;
+                //     //var currentDataValue =  data.datasets[0].data[index];
+                //     //console.log("current value is: " + currentDataValue)
+                //       return true;
+                //   }
+                // }}
+              />}
+            
+
+                      
+
+            
+
+
 
             {/* <MapInfo childRef={ref => (this.refMapInfo= ref)} position="topright" /> */}
             <MapInfo position="topright" />
@@ -1236,7 +2046,33 @@ class MapboxContainerVis extends React.Component {
             <FeatureGroup>
               <EditControl
                 position="topright"
-                onCreated={this._onCreated}
+                // onCreated={
+                //   ()=>{
+                //     if(this.state.listGeoJSON){
+                //       console.log("this.onCreatedShapefile")
+                //       return this.onCreatedShapefile
+                //     }
+                //     if(this.state.tiffLayers){
+                //       console.log("this.onCreatedPolygon")
+                //       return this.onCreatedPolygon
+                //     }
+                //   }
+                // }
+
+                onCreated={this.onCreated}
+                onEdited={this.onCreated}
+
+                // onCreated={this.onCreatedPolygon}
+                // onEdited={this.onCreatedPolygon}
+                // onEdited={this.onEditPolygon}
+                // onCreated={()=>this.serverTiffasy2({
+                //   selectedOption:"",
+                //   var:this.state.var,
+                //   band:this.state.band,
+                //   timei:this.state.timei,
+                //   filesIn:this.state.filesIn,
+                // })}
+                
                 //onEdited={this._onCreated}
                 onDeleted={()=>console.log("onDeleted")}
                 draw={{
@@ -1270,6 +2106,23 @@ class MapboxContainerVis extends React.Component {
                         //return <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0} bounds={item.bounds}/>
                       // <TileLayer url={item.url+"?filename="+item.filename+"&projection="+item.projection+"&band="+item.band+"&min="+item.min+"&max="+item.max+"&palette="+item.palette} format="image/png" transparency={true} opacity={1.0}/>
 
+                    })
+
+                  }
+                  
+                  { this.state.tiffLayers && this.state.tiffLayers.length &&
+                    this.state.tiffLayers.map((tiff) => {
+                        return <TileLayer url={
+                        "http://localhost:"+this.state.port+"/tiles/{z}/{x}/{y}.png"+
+                        "?filename="+tiff.filename+
+                        // "&projection="+tiff.projection+
+                        "&band="+tiff.band+
+                        "&min="+tiff.minRasterG+
+                        "&max="+tiff.maxRasterG+
+                        // "&min="+this.state.tiffMin+
+                        // "&max="+this.state.tiffMax+
+                        "&palette="+tiff.palette
+                        } format="image/png" transparency={true} opacity={1.0}/>
                     })
 
                   }
@@ -1308,6 +2161,7 @@ class MapboxContainerVis extends React.Component {
 
                   // Object.entries(geo2).map( ([key,val])=>val)
                   //Object.entries(this.state.listGeoJSON).map(([code,data]) => {
+                  this.state.listGeoJSON && this.state.listGeoJSON.length>0 &&
                   this.state.listGeoJSON.map((item,index) => {
                     // console.log("GeoJson:",item)
                     //console.log("item.properties.name",code)
@@ -1319,7 +2173,7 @@ class MapboxContainerVis extends React.Component {
                         {/* <LayersControl.Overlay checked name={code+" "+this.properties[code].label}> */}
                         <LayersControl.Overlay checked name={name}>
 
-                        
+                        {/* https://stackoverflow.com/questions/61881474/how-do-i-programatically-show-hide-a-layer-in-react-leaflet */}
                         <LayerGroup>
                           <GeoJSON
                             //key={this.state.listGeoJSON.crop.data.selected}
@@ -1364,6 +2218,7 @@ class MapboxContainerVis extends React.Component {
                 }
                 {
                   /*****************/
+                  this.state.selected && this.state.selected.length>0 &&
                   this.state.selected.map((item,index) => {
                     //console.log("index:"+index)
                     //console.log("index:"+index+" indexCrop:"+item.indexCrop+" indexData:"+item.indexData)
@@ -1373,6 +2228,19 @@ class MapboxContainerVis extends React.Component {
                           <GeoJSON
                             data={this.state.listGeoJSON[item.indexCrop][item.indexData]}
                             onEachFeature={this.popup}
+                          />
+                      </div>
+                    )
+                  })
+                }
+                {
+                  this.state.listGeoJSONX.map((item,index) => {
+                    // console.log("GeoJson:",item)
+                    return(
+                      <div>
+                        <GeoJSON
+                            data={item}
+                            // onEachFeature={this.popup}
                           />
                       </div>
                     )

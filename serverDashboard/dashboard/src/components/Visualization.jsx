@@ -34,7 +34,7 @@ class Visualization extends Component {
                     <Divider style={{ margin: "6px 0" }} />
             </div>
 
-            <div className ="myButton">
+            {/* <div className ="myButton">
                 <button onClick={
                     async ()=>{
                         this.setState({
@@ -45,8 +45,26 @@ class Visualization extends Component {
                         })
 
                     }}> Select File</button>
+
             </div>
-            <br/>
+            <br/> */}
+            <div className ="myButton">
+                <button onClick={
+                    async ()=>{
+                        this.setState({
+                            ...this.prevState,
+                            data:await this.state.refVis().serverTiffasy2({
+                                selectedOption:"selectFile",
+                                var:'',
+                                band:1,
+                                timei:0,
+                            })
+                        })
+
+                    }}> Select File </button>
+
+            </div>
+            {/* <br/>
 
             {
                 this.state.data.vars.length>0  &&
@@ -73,7 +91,7 @@ class Visualization extends Component {
                         })
 
                     }}>v10</button>
-            </div>
+            </div> */}
 
             
 
