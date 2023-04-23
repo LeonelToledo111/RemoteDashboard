@@ -86,6 +86,10 @@ def ClimateVariablesCX1():
     print("")
     print("7th command answer  ( executing CLIMATE downloading script) = ", ssh_stdout.readlines(), ssh_stderr.readlines())
 
+
+def climateVariablesScript():
+      print()
+
 @csrf_exempt
 def handle(request):
       if request.method == 'GET':
@@ -100,7 +104,7 @@ def handle(request):
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
             print (body['lastName'])
-            ClimateVariablesCX1()
+            climateVariablesScript()
             return HttpResponse('This is POST request')
             
 

@@ -60,6 +60,11 @@ def ClimateIndicesCX1():
     print("")
     print("7th command answer  ( executing CLIMATE downloading script) = ", ssh_stdout.readlines(), ssh_stderr.readlines())
 
+
+def ExecuteClimateIndices():
+      debug = "sbatch --export='idx=18,rcp=3,mdl=1' cdo-climate.slurm"
+      os.system(debug)
+
 @csrf_exempt
 def handle(request):
       if request.method == 'GET':
