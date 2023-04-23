@@ -63,8 +63,9 @@ def ClimateIndicesCX1():
 
 def ExecuteClimateIndices():
       debug = "sbatch --export='idx=18,rcp=3,mdl=1' cdo-climate.slurm"
-      os.system(debug)
+      #os.system(debug)
       print ("Enqueueing:" + debug)
+      
 
 @csrf_exempt
 def handle(request1):
