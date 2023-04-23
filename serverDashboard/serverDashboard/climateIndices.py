@@ -64,9 +64,10 @@ def ClimateIndicesCX1():
 def ExecuteClimateIndices():
       debug = "sbatch --export='idx=18,rcp=3,mdl=1' cdo-climate.slurm"
       os.system(debug)
+      print ("Enqueueing:" + debug)
 
 @csrf_exempt
-def handle(request):
+def handle(request1):
       if request.method == 'GET':
             print("CLICKED GET")
             return render(request, "scpTest.html")
@@ -78,7 +79,7 @@ def handle(request):
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
             print (body['lastName'])
-            ClimateIndicesCX1()
+            ExecuteClimateIndices()
             return HttpResponse('This is POST request')
             
 
