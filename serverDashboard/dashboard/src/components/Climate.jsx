@@ -44,7 +44,7 @@ async function postClimateIndices(){
         }
       };
 
-    const response = await axios.post('http://192.168.1.134:8000/climateIndicesHandler', {
+    const response = await axios.post('http://127.0.0.1:8000/climateIndicesHandler', {
         firstName: 'Fred',
         lastName: 'Flintstone'
       },axiosConfig)
