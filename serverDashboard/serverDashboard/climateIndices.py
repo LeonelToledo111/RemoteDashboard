@@ -68,7 +68,7 @@ def ExecuteClimateIndices():
       
 
 @csrf_exempt
-def handle(request1):
+def handle(request):
       if request.method == 'GET':
             print("CLICKED GET")
             return render(request, "scpTest.html")
