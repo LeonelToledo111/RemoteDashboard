@@ -62,7 +62,7 @@ def ClimateIndicesCX1():
 
 
 def ExecuteClimateIndices():
-      debug = "sbatch --export='idx=18,rcp=3,mdl=1' /home/admin/PRODUCTION/Climate/scripts/cdo-climate.slurm"
+      debug = "sbatch -p sen2agri --export='idx=18,rcp=3,mdl=1' /home/admin/PRODUCTION/Climate/scripts/cdo-climate.slurm"
       os.system(debug)
       print ("Enqueueing:" + debug)
       
