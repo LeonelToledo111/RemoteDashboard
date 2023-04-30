@@ -34,7 +34,7 @@ import Visualization from './Visualization';
         }
 
         if(choiceNumber===3){
-            return  <div> 
+            return  <div className = "ClimateCMIP5"> 
              <PolicyComputation/> 
         </div>
         }

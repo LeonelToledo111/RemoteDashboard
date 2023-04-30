@@ -3,7 +3,12 @@ import Divider from "@material-ui/core/Divider";
 import CheckboxGroup from "./CheckboxGroup";
 import RadioGroup from "./RadioGroup";
 import axios from 'axios';
-import CMIP5Variables from '../CMIP5Data/CMIP5Variables.js'
+import CMIP5Variables from '../CMIP5Data/CMIP5Variables.js';
+import CMIP5Ensemble from '../CMIP5Data/CMIP5Ensemble.js';
+import CMIP5Table from '../CMIP5Data/CMIP5Table.js';
+import CMIP5TimeFrequency from '../CMIP5Data/CMIP5TimeFrequency.js';
+import CMIP5Experiment from '../CMIP5Data/CMIP5Experiment.js';
+import CMIP5Model from '../CMIP5Data/CMIP5Model.js';
 
 
 var array;
@@ -272,22 +277,44 @@ class Climate extends Component {
         return ( 
         <div>
             <div>
-                <div className = "project" onLoad={loadVariableData}> 
-                    <h3>Project</h3>
+                <div className = "CMIP5Variables" onLoad={loadVariableData}> 
+                    <h3>Variable</h3>
                     <Divider style={{ margin: "6px 0" }} />
-                        <RadioGroup items={project} />
+                        <CheckboxGroup items={CMIP5Variables} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
-                    <h3>Model</h3>
+                    <h3>Ensemble</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "model"> 
-                    
-                        <CheckboxGroup items={modelItems} />
+                <div className = "CMIP5Ensemble"> 
+                        <CheckboxGroup items={CMIP5Ensemble} />
                     <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>CMIP Table</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP5Table"> 
+                        <CheckboxGroup items={CMIP5Table} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Time Frequency</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP5TimeFrequency"> 
+                    
+                        <CheckboxGroup items={CMIP5TimeFrequency} />
+                    <Divider style={{ margin: "6px 0" }} />
+
+                    
                 </div>
 
                 <div>
@@ -295,19 +322,22 @@ class Climate extends Component {
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "experiment"> 
-                        <CheckboxGroup items={experimentItems} />
+                <div className = "CMIP5Experiment"> 
+                    
+                        <CheckboxGroup items={CMIP5Experiment} />
                     <Divider style={{ margin: "6px 0" }} />
+
+                    
                 </div>
 
                 <div>
-                    <h3>Variables</h3>
+                    <h3>Model</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "variable"> 
+                <div className = "CMIP5Model"> 
                     
-                        <CheckboxGroup items={array} />
+                        <CheckboxGroup items={CMIP5Model} />
                     <Divider style={{ margin: "6px 0" }} />
 
                     
