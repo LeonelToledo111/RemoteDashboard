@@ -4,6 +4,15 @@ import CheckboxGroup from "./CheckboxGroup";
 import RadioGroup from "./RadioGroup";
 import axios from 'axios';
 
+import CMIP6Variable from '../CMIP6Data/CMIP6Variable';
+import CMIP6Frequency from '../CMIP6Data/CMIP6Frequency';
+import CMIP6GridLabel from '../CMIP6Data/CMIP6GridLabel';
+import CMIP6SubExperiment from '../CMIP6Data/CMIP6SubExperiment';
+import CMIP6VariantLabel from '../CMIP6Data/CMIP6VariantLabel';
+import CMIP6NominalResolution from '../CMIP6Data/CMIP6NominalResolution.js';
+import CMIP6ExperimentID from '../CMIP6Data/CMIP6ExperimentID';
+import CMIP6SourceID from '../CMIP6Data/CMIP6SourceID';
+import CMIP6Activity from '../CMIP6Data/CMIP6Activity';
 
 
 async function postClimateVariables(){
@@ -38,7 +47,7 @@ async function postClimateIndices(){
         }
       };
 
-    const response = await axios.post('http://192.168.1.134:8000/climateIndicesHandler', {
+    const response = await axios.post('http://http://127.0.0.1:8000/climateIndicesHandler', {
         firstName: 'Fred',
         lastName: 'Flintstone'
       },axiosConfig)
@@ -266,56 +275,98 @@ class Climate6 extends Component {
         return ( 
         <div>
             <div>
-                <div className = "project"> 
-                    <h3>Project</h3>
-                    <Divider style={{ margin: "6px 0" }} />
-                        <RadioGroup items={project} />
+                <div>
+                    <h3>Variable</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6Variable"> 
+                        <CheckboxGroup items={CMIP6Variable} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
-                    <h3>Model</h3>
+                    <h3>Frequency</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "model"> 
+                <div className = "CMIP6Frequency"> 
+                        <CheckboxGroup items={CMIP6Frequency} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Grid Label</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6GridLabel"> 
                     
-                        <CheckboxGroup items={modelItems} onChange={this.testChange} />
+                        <CheckboxGroup items={CMIP6GridLabel} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
-                    <h3>Experiment</h3>
+                    <h3>Variant Label</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "experiment"> 
-                        <CheckboxGroup items={experimentItems} />
+                <div className = "CMIP6VariantLabel"> 
+                       <CheckboxGroup items={CMIP6VariantLabel} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
-                    <h3>Variables</h3>
+                    <h3>Sub-Experiment</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "variable"> 
-                    
-                        <CheckboxGroup items={variableItems} />
+                <div className = "CMIP6SubExperiment"> 
+                       <CheckboxGroup items={CMIP6SubExperiment} />
                     <Divider style={{ margin: "6px 0" }} />
-
-                    
                 </div>
 
                 <div>
-                    <h3>Climate Indices</h3>
+                    <h3>Experiment ID</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "variable"> 
-                       <CheckboxGroup items={IndicesItems} />
+                <div className = "CMIP6ExperimentID"> 
+                       <CheckboxGroup items={CMIP6ExperimentID} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
+
+                <div>
+                    <h3>Nominal Resolution</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6NominalResolution"> 
+                       <CheckboxGroup items={CMIP6NominalResolution} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Source ID</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6SourceID"> 
+                       <CheckboxGroup items={CMIP6SourceID} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Activity</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6Activity"> 
+                       <CheckboxGroup items={CMIP6Activity} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+
 
                 <div className ="myButton">
                     <div><button onClick={postClimateIndices}> INDICES </button></div>

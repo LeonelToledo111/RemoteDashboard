@@ -211,7 +211,52 @@ h3 {
 }
 
 .CMIP5Model{
-  height: 10vh;
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6Variable{
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6Frequency{
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6GridLabel{
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6VariantLabel{
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6SubExperiment{
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6ExperimentID{
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6NominalResolution{
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6SourceID{
+  height: 13vh;
+  overflow-y: auto;
+}
+
+.CMIP6Activity{
+  height: 13vh;
   overflow-y: auto;
 }
 
