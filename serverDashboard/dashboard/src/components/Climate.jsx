@@ -12,12 +12,29 @@ import CMIP5Model from '../CMIP5Data/CMIP5Model.js';
 
 
 var array;
+var selectedItem=[];
 
 function loadVariableData(){
     array = CMIP5Variables;
 }
 
+function gatherData(){
+    var status;
+    window.alert("Gathering");
+    for(var i=1;i<10;i++){
+        var idTag="items"+i;
+        status = document.getElementById("CMIP5Variable"+i);
+        window.alert(status.checked);
+        selectedItem[i-1]=status.checked;
+    }
+    //window.alert(startDatePost);
+    
+}
+
 async function postClimateVariables(){
+
+    gatherData();
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -27,8 +44,7 @@ async function postClimateVariables(){
       };
 
     const response = await axios.post('http://127.0.0.1:8000/climateVariablesHandler', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+        project: 'CMIP5',
       },axiosConfig)
 
       console.log(response.data)
@@ -280,7 +296,7 @@ class Climate extends Component {
                 <div className = "CMIP5Variables" onLoad={loadVariableData}> 
                     <h3>Variable</h3>
                     <Divider style={{ margin: "6px 0" }} />
-                        <CheckboxGroup items={CMIP5Variables} />
+                        <CheckboxGroup id="CMIP5Variable" items={CMIP5Variables} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
@@ -290,7 +306,7 @@ class Climate extends Component {
                 </div>
 
                 <div className = "CMIP5Ensemble"> 
-                        <CheckboxGroup items={CMIP5Ensemble} />
+                        <CheckboxGroup id="Ensemble" items={CMIP5Ensemble} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
@@ -349,7 +365,7 @@ class Climate extends Component {
                 </div>
 
                 <div className = "variable"> 
-                       <CheckboxGroup items={IndicesItems} />
+                       <CheckboxGroup id ='test' items={IndicesItems} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 

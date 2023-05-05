@@ -1,5 +1,5 @@
 const CMIP5Variables =[
-{label: "BrOx"},
+{id: "CMIP5Variables1", label: "BrOx"},
 {label: "BrOxday"},
 {label: "Bry"},
 {label: "Bryday"},

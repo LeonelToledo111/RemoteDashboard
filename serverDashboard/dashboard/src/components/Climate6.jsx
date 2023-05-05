@@ -48,8 +48,7 @@ async function postClimateIndices(){
       };
 
     const response = await axios.post('http://http://127.0.0.1:8000/climateIndicesHandler', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+        project: 'CMIP6',
       },axiosConfig)
 
       console.log(response.data)
@@ -363,6 +362,16 @@ class Climate6 extends Component {
 
                 <div className = "CMIP6Activity"> 
                        <CheckboxGroup items={CMIP6Activity} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Climate Indices</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "variable"> 
+                       <CheckboxGroup id ='test' items={IndicesItems} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 

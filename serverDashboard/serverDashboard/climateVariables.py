@@ -90,6 +90,17 @@ def ClimateVariablesCX1():
 def climateVariablesScript():
       print()
 
+def climateVariablesCMIP5():
+      print("Download From CMIP5 starting")
+      call = 'wget "https://esgf-data.dkrz.de/esg-search/wget?variable=tas,tos,ps,rlut,sfcWind,psl,ua,va,uas,vas,wap&project=CMIP5&model=MIROC4h,distrib=true&time_frequency=day&experiment=rcp26,rcp45,rcp85&limit=10000&download_structure=project,model,experiment,variable"  -O out.sh'
+
+
+      print("Download From CMIP5 was successful")
+
+def climateVariablesCMIP6():
+      print("Download From CMIP6 starting")
+      print("Download From CMIP6 was successful")
+
 @csrf_exempt
 def handle(request):
       if request.method == 'GET':
@@ -103,8 +114,13 @@ def handle(request):
            ## name = request.get('firstName')
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
-            print (body['lastName'])
-            climateVariablesScript()
+            project=body['project']
+            print (project)
+
+            if (project=='CMIP5'):
+                  climateVariablesCMIP5()
+            if (project=='CMIP6')
+                  climateVariablesCMIP6()
             return HttpResponse('This is POST request')
             
 
