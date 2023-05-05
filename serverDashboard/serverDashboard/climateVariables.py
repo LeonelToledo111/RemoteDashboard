@@ -119,7 +119,7 @@ def handle(request):
 
             if (project=='CMIP5'):
                   climateVariablesCMIP5()
-            if (project=='CMIP6')
+            if (project=='CMIP6'):
                   climateVariablesCMIP6()
             return HttpResponse('This is POST request')
             
