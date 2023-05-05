@@ -96,7 +96,7 @@ def climateVariablesCMIP5():
       os.system(call)
       permissions = 'chmod +x out.sh'
       os.system(permissions)
-      slurmJob = "sudo -u admin sbatch  --export='script=out.sh'  ~/PRODUCTION/Climate/download-climate.slurm" 
+      slurmJob = "sudo -u admin sbatch  --export='script=out.sh'  /home/admin/PRODUCTION/Climate/download-climate.slurm" 
       os.system(slurmJob)
 
       print("Download From CMIP5 was successful")
