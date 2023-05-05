@@ -33,7 +33,7 @@ function gatherData(){
 
 async function postClimateVariables(){
 
-    gatherData();
+   // gatherData();
 
     let axiosConfig = {
         headers: {
