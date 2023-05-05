@@ -103,6 +103,12 @@ def climateVariablesCMIP5():
 
 def climateVariablesCMIP6():
       print("Download From CMIP6 starting")
+      call = 'wget  "https://esgf-node.llnl.gov/esg-search/wget?distrib=true&query=precipitation_flux&facets=project,experiment_id,variable_id,activity_id,grid,frequency,cf_standard_name,realm,frequency,grid_label,variant_label,source_id&project=CMIP6&cf_standard_name=precipitation_flux&frequency=day&realm=atmos&activity_id=CMIP&grid_label=gn&download_structure=project,source_id,experiment_id,variable_id&limit=10000" -O out.sh'
+      os.system(call)
+      permissions = 'chmod +x out.sh'
+      os.system(permissions)
+      slurmJob = "sudo -u admin sbatch  --export='script=out.sh'  /home/admin/PRODUCTION/Climate/download-climate.slurm" 
+      os.system(slurmJob)
       print("Download From CMIP6 was successful")
 
 @csrf_exempt
