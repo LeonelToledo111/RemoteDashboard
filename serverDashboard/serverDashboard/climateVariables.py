@@ -94,6 +94,10 @@ def climateVariablesCMIP5():
       print("Download From CMIP5 starting")
       call = 'wget "https://esgf-data.dkrz.de/esg-search/wget?variable=tas,tos,ps,rlut,sfcWind,psl,ua,va,uas,vas,wap&project=CMIP5&model=MIROC4h,distrib=true&time_frequency=day&experiment=rcp26,rcp45,rcp85&limit=10000&download_structure=project,model,experiment,variable"  -O out.sh'
       os.system(call)
+      permissions = 'chmod +x out.sh'
+      os.system(permissions)
+      slurmJob = "sudo -u admin sbatch  --export='script=out.sh'  ~/PRODUCTION/Climate/download-climate.slurm" 
+      os.system(slurmJob)
 
       print("Download From CMIP5 was successful")
 
