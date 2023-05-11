@@ -98,6 +98,11 @@ async function postClimateVariables(){
        // project: 'CMIP5',
        projectPost,
        VariablesDictionary,
+       EnsembleDictionary,
+       TableDictionary,
+       TimeFrequencyDictionary,
+       ExperimentDictionary,
+       ModelDictionary,
       },axiosConfig)
 
       console.log(response.data)
