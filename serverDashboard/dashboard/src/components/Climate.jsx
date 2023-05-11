@@ -83,6 +83,7 @@ function createDictionary(){
 async function postClimateVariables(){
 
     createDictionary();
+    //const backendPost = PostData
 
     let axiosConfig = {
         headers: {
@@ -94,7 +95,7 @@ async function postClimateVariables(){
 
     const response = await axios.post('http://127.0.0.1:8000/climateVariablesHandler', {
        // project: 'CMIP5',
-        data: PostData,
+        PostData,
       },axiosConfig)
 
       console.log(response.data)
