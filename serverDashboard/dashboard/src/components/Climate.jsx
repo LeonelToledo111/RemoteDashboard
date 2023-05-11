@@ -9,31 +9,80 @@ import CMIP5Table from '../CMIP5Data/CMIP5Table.js';
 import CMIP5TimeFrequency from '../CMIP5Data/CMIP5TimeFrequency.js';
 import CMIP5Experiment from '../CMIP5Data/CMIP5Experiment.js';
 import CMIP5Model from '../CMIP5Data/CMIP5Model.js';
+import { Tab } from '@material-ui/core';
 
 
 var array;
 var selectedItem=[];
+var VariablesDictionary={};
+var EnsembleDictionary={};
+var TableDictionary={};
+var TimeFrequencyDictionary={};
+var ExperimentDictionary={};
+var ModelDictionary={};
+var PostData ={};
 
 function loadVariableData(){
     array = CMIP5Variables;
 }
 
-function gatherData(){
+function createDictionary(){
     var status;
-    window.alert("Gathering");
-    for(var i=1;i<10;i++){
-        var idTag="items"+i;
-        status = document.getElementById("CMIP5Variable"+i);
-        window.alert(status.checked);
-        selectedItem[i-1]=status.checked;
+    //window.alert("Gathering");
+    for(var i=1;i<=CMIP5Variables.length;i++){
+        status = document.getElementById("CMIP5Variables"+i);
+        var name=CMIP5Variables[i-1].label;
+      //  console.log(name);
+        VariablesDictionary[name]=status.checked;
     }
-    //window.alert(startDatePost);
-    
+
+    for(var i=1;i<=CMIP5Ensemble.length;i++){
+        status = document.getElementById("CMIP5Ensemble"+i);
+        var name=CMIP5Ensemble[i-1].label;
+      //  console.log(name);
+        EnsembleDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5Table.length;i++){
+        status = document.getElementById("CMIP5Table"+i);
+        var name=CMIP5Table[i-1].label;
+      //  console.log(name);
+         TableDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5TimeFrequency.length;i++){
+        status = document.getElementById("CMIP5Frequency"+i);
+        var name=CMIP5TimeFrequency[i-1].label;
+      //  console.log(name);
+        TimeFrequencyDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5Experiment.length;i++){
+        status = document.getElementById("CMIP5Experiment"+i);
+        var name=CMIP5Experiment[i-1].label;
+      //  console.log(name);
+        ExperimentDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5Model.length;i++){
+        status = document.getElementById("CMIP5Model"+i);
+        var name=CMIP5Model[i-1].label;
+      //  console.log(name);
+        ModelDictionary[name]=status.checked;
+    }
+
+    var projectPost ={};
+    projectPost["project"] = "CMIP5";
+
+    PostData = Object.assign({},projectPost, VariablesDictionary, EnsembleDictionary,TableDictionary,TimeFrequencyDictionary,ExperimentDictionary,ModelDictionary);
+
+    console.log(PostData);
+  
 }
 
 async function postClimateVariables(){
 
-   // gatherData();
+    createDictionary();
 
     let axiosConfig = {
         headers: {
@@ -44,7 +93,8 @@ async function postClimateVariables(){
       };
 
     const response = await axios.post('http://127.0.0.1:8000/climateVariablesHandler', {
-        project: 'CMIP5',
+       // project: 'CMIP5',
+        data: PostData,
       },axiosConfig)
 
       console.log(response.data)
@@ -166,19 +216,19 @@ class Climate extends Component {
 
         const IndicesItems = [
 
-            {id: 1, label: "AEJ"},
-            {id: 2, label: "DCI"},
-            {id: 3, label: "IOD"},
-            {id: 4, label: "E5w"},
-            {id: 5, label: "NAO"},
-            {id: 6, label: "NINO3/4/1-2/3-4"},
-            {id: 7, label:  "PWE"},
-            {id: 8, label: "SIW"},
-            {id: 9, label: "SOI"}, 
-            {id: 10, label: "STA"},
-            {id: 11, label: "UEQ"},
-            {id: 12, label: "W5w"},
-            {id: 13, label: "WAMI"}, 
+            {id: "CMIP5Indices1", label: "AEJ"},
+            {id: "CMIP5Indices2", label: "DCI"},
+            {id: "CMIP5Indices3", label: "IOD"},
+            {id: "CMIP5Indices4", label: "E5w"},
+            {id: "CMIP5Indices5", label: "NAO"},
+            {id: "CMIP5Indices6", label: "NINO3/4/1-2/3-4"},
+            {id: "CMIP5Indices7", label:  "PWE"},
+            {id: "CMIP5Indices8", label: "SIW"},
+            {id: "CMIP5Indices9", label: "SOI"}, 
+            {id: "CMIP5Indices10", label: "STA"},
+            {id: "CMIP5Indices11", label: "UEQ"},
+            {id: "CMIP5Indices12", label: "W5w"},
+            {id: "CMIP5Indices13", label: "WAMI"}, 
         ];
 
         const variableItems = [
