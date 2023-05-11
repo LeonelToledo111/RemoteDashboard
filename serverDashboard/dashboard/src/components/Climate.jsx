@@ -21,6 +21,7 @@ var TimeFrequencyDictionary={};
 var ExperimentDictionary={};
 var ModelDictionary={};
 var PostData ={};
+var projectPost ={};
 
 function loadVariableData(){
     array = CMIP5Variables;
@@ -71,7 +72,7 @@ function createDictionary(){
         ModelDictionary[name]=status.checked;
     }
 
-    var projectPost ={};
+    
     projectPost["project"] = "CMIP5";
 
     PostData = Object.assign({},projectPost, VariablesDictionary, EnsembleDictionary,TableDictionary,TimeFrequencyDictionary,ExperimentDictionary,ModelDictionary);
