@@ -124,6 +124,7 @@ def handle(request):
            ## name = request.get('firstName')
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
+            print (body)
             project=body['project']
             print (project)
 
