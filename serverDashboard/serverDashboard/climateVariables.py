@@ -124,8 +124,9 @@ def handle(request):
            ## name = request.get('firstName')
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
+            projectName=body['projectPost']
             print (body)
-            project=body['project']
+            project=projectName['project']
             print (project)
 
             if (project=='CMIP5'):
