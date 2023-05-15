@@ -121,7 +121,7 @@ def climateVariablesCMIP5(data):
       
       secondPart=',distrib=true&time_frequency='+timeFrequency
       secondPart+='&experiment='+CMIP5Experiment
-      secondPart+='&limit=10000&download_structure=project,model,experiment,variable"  -O out.sh'
+      secondPart+='&limit=10000&download_structure=project,model,experiment,variable" -O out.sh'
      
       wGetCall=base+model+secondPart
       
@@ -130,6 +130,8 @@ def climateVariablesCMIP5(data):
       os.system(wGetCall)
       permissions = 'chmod +x out.sh'
       os.system(permissions)
+      copy='cp out.sh /home/admin/PRODUCTION/Climate/out.sh'
+      os.system(copy)
       slurmJob = "sudo -u admin sbatch  --export='script=out.sh'  /home/admin/PRODUCTION/Climate/download-climate.slurm" 
       os.system(slurmJob)
 
@@ -141,6 +143,8 @@ def climateVariablesCMIP6(data):
       os.system(call)
       permissions = 'chmod +x out.sh'
       os.system(permissions)
+      copy='cp out.sh /home/admin/PRODUCTION/Climate/out.sh'
+      os.system(copy)
       slurmJob = "sudo -u admin sbatch  --export='script=out.sh'  /home/admin/PRODUCTION/Climate/download-climate.slurm" 
       os.system(slurmJob)
       print("Download From CMIP6 was successful")
