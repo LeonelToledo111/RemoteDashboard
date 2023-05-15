@@ -15,7 +15,27 @@ import CMIP6SourceID from '../CMIP6Data/CMIP6SourceID';
 import CMIP6Activity from '../CMIP6Data/CMIP6Activity';
 
 
+var ActivityDictionary={};
+var ExperimentDictionary={};
+var TimeFrequencyDictionary={};
+var VariablesDictionary={};
+var GridDictionary={};
+var VariantDictionary={};
+var SubExperimentDictionary ={};
+var NominalDictionary={};
+var ExperimentDictionary={};
+var SourceDictionary={};
+
+
+var ModelDictionary={};
+var PostData ={};
+var projectPost ={};
+
+
 async function postClimateVariables(){
+
+    collectPostData();
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -25,19 +45,100 @@ async function postClimateVariables(){
       };
 
     const response = await axios.post('http://127.0.0.1:8000/climateVariablesHandler', {
-        project: 'CMIP6',
+        projectPost, 
+        VariablesDictionary, 
+        TimeFrequencyDictionary,
+        GridDictionary,
+        VariantDictionary,
+        SubExperimentDictionary,
+        ExperimentDictionary,
+        NominalDictionary,
+        SourceDictionary,
+        ActivityDictionary,
       },axiosConfig)
 
       console.log(response.data)
-    /*  .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });*/
+
+}
+
+function collectPostData(){
+    var status;
+    //window.alert("Gathering");
+    for(var i=1;i<=CMIP6Variable.length;i++){
+        status = document.getElementById("CMIP6Variable"+i);
+        var name=CMIP6Variable[i-1].label;
+      //  console.log(name);
+        VariablesDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6Frequency.length;i++){
+        status = document.getElementById("CMIP6Frequency"+i);
+        var name=CMIP6Frequency[i-1].label;
+      //  console.log(name);
+        TimeFrequencyDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6GridLabel.length;i++){
+        status = document.getElementById("CMIP6GridLabel"+i);
+        var name=CMIP6GridLabel[i-1].label;
+      //  console.log(name);
+        GridDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6VariantLabel.length;i++){
+        status = document.getElementById("CMIP6VariantLabel"+i);
+        var name=CMIP6VariantLabel[i-1].label;
+      //  console.log(name);
+        VariantDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6SubExperiment.length;i++){
+        status = document.getElementById("CMIP6SubExperiment"+i);
+        var name=CMIP6SubExperiment[i-1].label;
+      //  console.log(name);
+        SubExperimentDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6ExperimentID.length;i++){
+        status = document.getElementById("CMIP6ExperimentID"+i);
+        var name=CMIP6ExperimentID[i-1].label;
+      //  console.log(name);
+        ExperimentDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6NominalResolution.length;i++){
+        status = document.getElementById("CMIP6NominalResolution"+i);
+        var name=CMIP6NominalResolution[i-1].label;
+      //  console.log(name);
+        NominalDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6SourceID.length;i++){
+        status = document.getElementById("CMIP6SourceID"+i);
+        var name=CMIP6SourceID[i-1].label;
+      //  console.log(name);
+        SourceDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6Activity.length;i++){
+        status = document.getElementById("CMIP6Activity"+i);
+        var name=CMIP6Activity[i-1].label;
+      //  console.log(name);
+        ActivityDictionary[name]=status.checked;
+    }
+
+    
+    projectPost["project"] = "CMIP6";
+
+    PostData = Object.assign({},projectPost, VariablesDictionary, TimeFrequencyDictionary,GridDictionary,VariantDictionary,SubExperimentDictionary,ExperimentDictionary,NominalDictionary,SourceDictionary,ActivityDictionary);
+
+    console.log(PostData)
 }
 
 async function postClimateIndices(){
+
+  
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',

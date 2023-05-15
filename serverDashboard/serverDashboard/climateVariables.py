@@ -90,10 +90,44 @@ def ClimateVariablesCX1():
 def climateVariablesScript():
       print()
 
-def climateVariablesCMIP5():
+def parseDictionary(postDict):
+      parsedString = ''
+      for key in postDict:
+            if(postDict[key]==True):
+                  parsedString+=key +','
+
+      parsedString = parsedString[:-1]
+      return parsedString
+
+def climateVariablesCMIP5(data):
       print("Download From CMIP5 starting")
+      VariableDict = data['VariablesDictionary']
+      CMIP5Variables=parseDictionary(VariableDict)
+
+      EnsembleDict = data['EnsembleDictionary']
+      TableDict = data['TableDictionary']
+      TimeDict = data['TimeFrequencyDictionary']
+      ExperimentDict=data['ExperimentDictionary']
+      CMIP5Experiment = parseDictionary(ExperimentDict)
+
+      ModelDict= data['ExperimentDictionary']
+      model='model=MIROC4h'
+      timeFrequency ='day'
       call = 'wget "https://esgf-data.dkrz.de/esg-search/wget?variable=tas,tos,ps,rlut,sfcWind,psl,ua,va,uas,vas,wap&project=CMIP5&model=MIROC4h,distrib=true&time_frequency=day&experiment=rcp26,rcp45,rcp85&limit=10000&download_structure=project,model,experiment,variable"  -O out.sh'
-      os.system(call)
+      
+      base = 'wget "https://esgf-data.dkrz.de/esg-search/wget?variable='
+      base += CMIP5Variables
+      base += '&project=CMIP5&'
+      
+      secondPart=',distrib=true&time_frequency='+timeFrequency
+      secondPart+='&experiment='+CMIP5Experiment
+      secondPart+='&limit=10000&download_structure=project,model,experiment,variable"  -O out.sh'
+     
+      wGetCall=base+model+secondPart
+      
+      print(wGetCall)
+
+      os.system(wGetCall)
       permissions = 'chmod +x out.sh'
       os.system(permissions)
       slurmJob = "sudo -u admin sbatch  --export='script=out.sh'  /home/admin/PRODUCTION/Climate/download-climate.slurm" 
@@ -101,7 +135,7 @@ def climateVariablesCMIP5():
 
       print("Download From CMIP5 was successful")
 
-def climateVariablesCMIP6():
+def climateVariablesCMIP6(data):
       print("Download From CMIP6 starting")
       call = 'wget  "https://esgf-node.llnl.gov/esg-search/wget?distrib=true&query=precipitation_flux&facets=project,experiment_id,variable_id,activity_id,grid,frequency,cf_standard_name,realm,frequency,grid_label,variant_label,source_id&project=CMIP6&cf_standard_name=precipitation_flux&frequency=day&realm=atmos&activity_id=CMIP&grid_label=gn&download_structure=project,source_id,experiment_id,variable_id&limit=10000" -O out.sh'
       os.system(call)
@@ -125,14 +159,14 @@ def handle(request):
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
             projectName=body['projectPost']
-            print (body)
+            #print (body)
             project=projectName['project']
             print (project)
 
             if (project=='CMIP5'):
-                  climateVariablesCMIP5()
+                  climateVariablesCMIP5(body)
             if (project=='CMIP6'):
-                  climateVariablesCMIP6()
+                  climateVariablesCMIP6(body)
             return HttpResponse('This is POST request')
             
 
