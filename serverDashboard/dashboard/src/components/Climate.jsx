@@ -22,6 +22,29 @@ var ExperimentDictionary={};
 var ModelDictionary={};
 var PostData ={};
 var projectPost ={};
+var IndicesDictionary = {};
+
+const IndicesItems = [
+
+    {id: "CMIP5Indices1", label: "AEJ"},
+    {id: "CMIP5Indices2", label: "DCI"},
+    {id: "CMIP5Indices3", label: "IOD"},
+    {id: "CMIP5Indices4", label: "E5w"},
+    {id: "CMIP5Indices5", label: "MJO"},
+    {id: "CMIP5Indices6", label: "NAO"},
+    {id: "CMIP5Indices7", label: "NINO1+2"},
+    {id: "CMIP5Indices8", label: "NINO3+4"},
+    {id: "CMIP5Indices9", label: "NINO3"},
+    {id: "CMIP5Indices10", label: "NINO4"},
+    {id: "CMIP5Indices11", label:  "PWE"},
+    {id: "CMIP5Indices12", label: "SIW"},
+    {id: "CMIP5Indices13", label: "SOI"}, 
+    {id: "CMIP5Indices14", label: "STA"},
+    {id: "CMIP5Indices15", label: "UEQ"},
+    {id: "CMIP5Indices16", label: "W5w"},
+    {id: "CMIP5Indices17", label: "WAMI"}, 
+    {id: "CMIP5Indices18", label: "ALL"}, 
+];
 
 function loadVariableData(){
     array = CMIP5Variables;
@@ -73,12 +96,26 @@ function createDictionary(){
     }
 
     
+
+    
     projectPost["project"] = "CMIP5";
 
     PostData = Object.assign({},projectPost, VariablesDictionary, EnsembleDictionary,TableDictionary,TimeFrequencyDictionary,ExperimentDictionary,ModelDictionary);
 
     console.log(PostData);
   
+}
+
+function createIndicesDictionary(){
+    var status;
+    for(var i=1;i<=IndicesItems.length;i++){
+        status = document.getElementById("CMIP5Indices"+i);
+        var name=IndicesItems[i-1].label;
+      //  console.log(name);
+         IndicesDictionary[i]=status.checked;
+    }
+
+    console.log(IndicesDictionary);
 }
 
 async function postClimateVariables(){
@@ -115,6 +152,9 @@ async function postClimateVariables(){
 }
 
 async function postClimateIndices(){
+
+    createIndicesDictionary();
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -124,8 +164,7 @@ async function postClimateIndices(){
       };
 
     const response = await axios.post('http://127.0.0.1:8000/climateIndicesHandler', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+        IndicesDictionary,
       },axiosConfig)
 
       console.log(response.data)
@@ -222,22 +261,7 @@ class Climate extends Component {
             {label: "HAPPY TESTING"},
         ];
 
-        const IndicesItems = [
-
-            {id: "CMIP5Indices1", label: "AEJ"},
-            {id: "CMIP5Indices2", label: "DCI"},
-            {id: "CMIP5Indices3", label: "IOD"},
-            {id: "CMIP5Indices4", label: "E5w"},
-            {id: "CMIP5Indices5", label: "NAO"},
-            {id: "CMIP5Indices6", label: "NINO3/4/1-2/3-4"},
-            {id: "CMIP5Indices7", label:  "PWE"},
-            {id: "CMIP5Indices8", label: "SIW"},
-            {id: "CMIP5Indices9", label: "SOI"}, 
-            {id: "CMIP5Indices10", label: "STA"},
-            {id: "CMIP5Indices11", label: "UEQ"},
-            {id: "CMIP5Indices12", label: "W5w"},
-            {id: "CMIP5Indices13", label: "WAMI"}, 
-        ];
+        
 
         const variableItems = [
             {id: 1, label: "albisccp"},

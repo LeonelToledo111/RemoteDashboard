@@ -25,6 +25,29 @@ var SubExperimentDictionary ={};
 var NominalDictionary={};
 var ExperimentDictionary={};
 var SourceDictionary={};
+var IndicesDictionary = {};
+
+const IndicesItems = [
+
+    {id: "CMIP6Indices1", label: "AEJ"},
+    {id: "CMIP6Indices2", label: "DCI"},
+    {id: "CMIP6Indices3", label: "IOD"},
+    {id: "CMIP6Indices4", label: "E5w"},
+    {id: "CMIP6Indices5", label: "MJO"},
+    {id: "CMIP6Indices6", label: "NAO"},
+    {id: "CMIP6Indices7", label: "NINO1+2"},
+    {id: "CMIP6Indices8", label: "NINO3+4"},
+    {id: "CMIP6Indices9", label: "NINO3"},
+    {id: "CMIP6Indices10", label: "NINO4"},
+    {id: "CMIP6Indices11", label:  "PWE"},
+    {id: "CMIP6Indices12", label: "SIW"},
+    {id: "CMIP6Indices13", label: "SOI"}, 
+    {id: "CMIP6Indices14", label: "STA"},
+    {id: "CMIP6Indices15", label: "UEQ"},
+    {id: "CMIP6Indices16", label: "W5w"},
+    {id: "CMIP6Indices17", label: "WAMI"}, 
+    {id: "CMIP6Indices18", label: "ALL"}, 
+];
 
 
 var ModelDictionary={};
@@ -135,9 +158,21 @@ function collectPostData(){
     console.log(PostData)
 }
 
+function createIndicesDictionary(){
+    var status;
+    for(var i=1;i<=IndicesItems.length;i++){
+        status = document.getElementById("CMIP6Indices"+i);
+        var name=IndicesItems[i-1].label;
+      //  console.log(name);
+         IndicesDictionary[i]=status.checked;
+    }
+
+    console.log(IndicesDictionary);
+}
+
 async function postClimateIndices(){
 
-  
+    createIndicesDictionary();
 
     let axiosConfig = {
         headers: {
@@ -147,8 +182,8 @@ async function postClimateIndices(){
         }
       };
 
-    const response = await axios.post('http://http://127.0.0.1:8000/climateIndicesHandler', {
-        project: 'CMIP6',
+      const response = await axios.post('http://127.0.0.1:8000/climateIndicesHandler', {
+        IndicesDictionary,
       },axiosConfig)
 
       console.log(response.data)
@@ -243,23 +278,6 @@ class Climate6 extends Component {
             {id: 7, label:  "rcp45"},
             {id: 8, label: "rcp60"},
             {id: 9, label: "rcp85"}, 
-        ];
-
-        const IndicesItems = [
-
-            {id: 1, label: "AEJ"},
-            {id: 2, label: "DCI"},
-            {id: 3, label: "IOD"},
-            {id: 4, label: "E5w"},
-            {id: 5, label: "NAO"},
-            {id: 6, label: "NINO3/4/1-2/3-4"},
-            {id: 7, label:  "PWE"},
-            {id: 8, label: "SIW"},
-            {id: 9, label: "SOI"}, 
-            {id: 10, label: "STA"},
-            {id: 11, label: "UEQ"},
-            {id: 12, label: "W5w"},
-            {id: 13, label: "WAMI"}, 
         ];
 
         const variableItems = [
