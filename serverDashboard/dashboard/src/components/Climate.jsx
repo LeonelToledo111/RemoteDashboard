@@ -364,7 +364,7 @@ class Climate extends Component {
                 </div>
 
                 <div className = "CMIP5Ensemble"> 
-                        <RadioGroup id="Ensemble" items={CMIP5Ensemble} />
+                        <CheckboxGroup id="Ensemble" items={CMIP5Ensemble} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
@@ -385,7 +385,7 @@ class Climate extends Component {
 
                 <div className = "CMIP5TimeFrequency"> 
                     
-                        <RadioGroup items={CMIP5TimeFrequency} />
+                        <CheckboxGroup items={CMIP5TimeFrequency} />
                     <Divider style={{ margin: "6px 0" }} />
 
                     
