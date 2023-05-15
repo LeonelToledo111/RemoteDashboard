@@ -143,11 +143,29 @@ def climateVariablesCMIP6(data):
       print("Download From CMIP6 starting")
       call = 'wget  "https://esgf-node.llnl.gov/esg-search/wget?distrib=true&query=precipitation_flux&facets=project,experiment_id,variable_id,activity_id,grid,frequency,cf_standard_name,realm,frequency,grid_label,variant_label,source_id&project=CMIP6&cf_standard_name=precipitation_flux&frequency=day&realm=atmos&activity_id=CMIP&grid_label=gn&download_structure=project,source_id,experiment_id,variable_id&limit=10000" -O out.sh'
       
-      base ='wget  "https://esgf-node.llnl.gov/esg-search/wget?distrib=true&query=precipitation_flux&facets=project,experiment_id,variable_id,activity_id,grid,frequency,cf_standard_name,realm,frequency,grid_label,variant_label,source_id&project=CMIP6&cf_standard_name=precipitation_flux&frequency=day&realm=atmos&activity_id=CMIP&grid_label=gn&download_structure=project,source_id,experiment_id,variable_id&limit=10000" -O out.sh'
+      VariablesDict = data['VariablesDictionary'] 
+      TimeDict = data['TimeFrequencyDictionary'] 
+      GridDict = data['GridDictionary'] 
+      VariantDict = data['VariantDictionary'] 
+      SubExpDict = data['SubExperimentDictionary'] 
+      ExperimentsDict = data['ExperimentDictionary'] 
+      NominalDict = data['NominalDictionary'] 
+      SourceDict = data['SourceDictionary'] 
+      ActivityDict = data['ActivityDictionary'] 
+
+      timeFrequencyValue = parseDictionary(TimeDict)
+      activityValue = parseDictionary(ActivityDict)
+      gridValue = parseDictionary(GridDict)
+
+      base ='wget  "https://esgf-node.llnl.gov/esg-search/wget?distrib=true&query=precipitation_flux&facets=project,experiment_id,variable_id,activity_id,grid,frequency,cf_standard_name,realm,frequency,grid_label,variant_label,source_id&project=CMIP6&cf_standard_name=precipitation_flux&'
+      base += 'frequency='+timeFrequencyValue
+      base += '&realm=atmos&'
+      base += 'activity_id=' + activityValue
+      base += '&grid_label=' +gridValue
+      base += '&download_structure=project,source_id,experiment_id,variable_id&limit=10000" -O out.sh'
       
-      
-      
-      os.system(call)
+      os.system(base)
+      print(base)
       permissions = 'chmod +x out.sh'
       os.system(permissions)
       copy='cp out.sh /home/admin/PRODUCTION/Climate/out.sh'
