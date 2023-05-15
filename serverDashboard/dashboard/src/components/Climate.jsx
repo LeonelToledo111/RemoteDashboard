@@ -451,6 +451,8 @@ class Climate extends Component {
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
+                <div className ="Buttons">
+                <Divider style={{ margin: "6px 0" }} />
                 <div className ="myButton">
                     <div><button onClick={postClimateIndices}> INDICES </button></div>
                 </div>
@@ -460,7 +462,7 @@ class Climate extends Component {
                 <div className ="myButton">
                     <button onClick={postClimateVariables}> RANK </button>
                 </div>
-                
+                </div>
             </div>
         
         </div> );
