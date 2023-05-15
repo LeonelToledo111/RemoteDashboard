@@ -165,7 +165,7 @@ def climateVariablesCMIP6(data):
       base += '&download_structure=project,source_id,experiment_id,variable_id&limit=10000" -O out.sh'
       
       os.system(base)
-      print(base)
+      #print(base)
       permissions = 'chmod +x out.sh'
       os.system(permissions)
       copy='cp out.sh /home/admin/PRODUCTION/Climate/out.sh'
