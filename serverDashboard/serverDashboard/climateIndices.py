@@ -60,6 +60,27 @@ def ClimateIndicesCX1():
     print("")
     print("7th command answer  ( executing CLIMATE downloading script) = ", ssh_stdout.readlines(), ssh_stderr.readlines())
 
+
+def parseDictionary(postDict):
+      parsedString = ''
+      for key in postDict:
+            if(postDict[key]==True):
+                  parsedString+=key +','
+
+      parsedString = parsedString[:-1]
+      return parsedString
+
+def ExecuteClimateIndices(data):
+      indices=data['IndicesDictionary']
+      indicesValue =parseDictionary(indices)
+      debug = "sudo -u admin sbatch -p sen2agri --export='idx=18,rcp=3,mdl=1' /home/admin/PRODUCTION/Climate/scripts/cdo-climate.slurm"
+      call = "sudo -u admin sbatch -p sen2agri --export='idx=" + indicesValue
+      call += ",rcp=3,mdl=1' /home/admin/PRODUCTION/Climate/scripts/cdo-climate.slurm"
+
+      os.system(call)
+      print ("Enqueueing:" + call)
+      
+
 @csrf_exempt
 def handle(request):
       if request.method == 'GET':
@@ -72,8 +93,8 @@ def handle(request):
             
             body_u = request.body.decode('utf-8')
             body = json.loads(body_u)
-            print (body['lastName'])
-            ClimateIndicesCX1()
+            print (body)
+            ExecuteClimateIndices(body)
             return HttpResponse('This is POST request')
             
 

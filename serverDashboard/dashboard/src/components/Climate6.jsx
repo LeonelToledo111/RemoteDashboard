@@ -4,9 +4,61 @@ import CheckboxGroup from "./CheckboxGroup";
 import RadioGroup from "./RadioGroup";
 import axios from 'axios';
 
+import CMIP6Variable from '../CMIP6Data/CMIP6Variable';
+import CMIP6Frequency from '../CMIP6Data/CMIP6Frequency';
+import CMIP6GridLabel from '../CMIP6Data/CMIP6GridLabel';
+import CMIP6SubExperiment from '../CMIP6Data/CMIP6SubExperiment';
+import CMIP6VariantLabel from '../CMIP6Data/CMIP6VariantLabel';
+import CMIP6NominalResolution from '../CMIP6Data/CMIP6NominalResolution.js';
+import CMIP6ExperimentID from '../CMIP6Data/CMIP6ExperimentID';
+import CMIP6SourceID from '../CMIP6Data/CMIP6SourceID';
+import CMIP6Activity from '../CMIP6Data/CMIP6Activity';
+
+
+var ActivityDictionary={};
+var ExperimentDictionary={};
+var TimeFrequencyDictionary={};
+var VariablesDictionary={};
+var GridDictionary={};
+var VariantDictionary={};
+var SubExperimentDictionary ={};
+var NominalDictionary={};
+var ExperimentDictionary={};
+var SourceDictionary={};
+var IndicesDictionary = {};
+
+const IndicesItems = [
+
+    {id: "CMIP6Indices1", label: "AEJ"},
+    {id: "CMIP6Indices2", label: "DCI"},
+    {id: "CMIP6Indices3", label: "IOD"},
+    {id: "CMIP6Indices4", label: "E5w"},
+    {id: "CMIP6Indices5", label: "MJO"},
+    {id: "CMIP6Indices6", label: "NAO"},
+    {id: "CMIP6Indices7", label: "NINO1+2"},
+    {id: "CMIP6Indices8", label: "NINO3+4"},
+    {id: "CMIP6Indices9", label: "NINO3"},
+    {id: "CMIP6Indices10", label: "NINO4"},
+    {id: "CMIP6Indices11", label:  "PWE"},
+    {id: "CMIP6Indices12", label: "SIW"},
+    {id: "CMIP6Indices13", label: "SOI"}, 
+    {id: "CMIP6Indices14", label: "STA"},
+    {id: "CMIP6Indices15", label: "UEQ"},
+    {id: "CMIP6Indices16", label: "W5w"},
+    {id: "CMIP6Indices17", label: "WAMI"}, 
+    {id: "CMIP6Indices18", label: "ALL"}, 
+];
+
+
+var ModelDictionary={};
+var PostData ={};
+var projectPost ={};
 
 
 async function postClimateVariables(){
+
+    collectPostData();
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -16,20 +68,112 @@ async function postClimateVariables(){
       };
 
     const response = await axios.post('http://127.0.0.1:8000/climateVariablesHandler', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+        projectPost, 
+        VariablesDictionary, 
+        TimeFrequencyDictionary,
+        GridDictionary,
+        VariantDictionary,
+        SubExperimentDictionary,
+        ExperimentDictionary,
+        NominalDictionary,
+        SourceDictionary,
+        ActivityDictionary,
       },axiosConfig)
 
       console.log(response.data)
-    /*  .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });*/
+
+}
+
+function collectPostData(){
+    var status;
+    //window.alert("Gathering");
+    for(var i=1;i<=CMIP6Variable.length;i++){
+        status = document.getElementById("CMIP6Variable"+i);
+        var name=CMIP6Variable[i-1].label;
+      //  console.log(name);
+        VariablesDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6Frequency.length;i++){
+        status = document.getElementById("CMIP6Frequency"+i);
+        var name=CMIP6Frequency[i-1].label;
+      //  console.log(name);
+        TimeFrequencyDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6GridLabel.length;i++){
+        status = document.getElementById("CMIP6GridLabel"+i);
+        var name=CMIP6GridLabel[i-1].label;
+      //  console.log(name);
+        GridDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6VariantLabel.length;i++){
+        status = document.getElementById("CMIP6VariantLabel"+i);
+        var name=CMIP6VariantLabel[i-1].label;
+      //  console.log(name);
+        VariantDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6SubExperiment.length;i++){
+        status = document.getElementById("CMIP6SubExperiment"+i);
+        var name=CMIP6SubExperiment[i-1].label;
+      //  console.log(name);
+        SubExperimentDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6ExperimentID.length;i++){
+        status = document.getElementById("CMIP6ExperimentID"+i);
+        var name=CMIP6ExperimentID[i-1].label;
+      //  console.log(name);
+        ExperimentDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6NominalResolution.length;i++){
+        status = document.getElementById("CMIP6NominalResolution"+i);
+        var name=CMIP6NominalResolution[i-1].label;
+      //  console.log(name);
+        NominalDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6SourceID.length;i++){
+        status = document.getElementById("CMIP6SourceID"+i);
+        var name=CMIP6SourceID[i-1].label;
+      //  console.log(name);
+        SourceDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP6Activity.length;i++){
+        status = document.getElementById("CMIP6Activity"+i);
+        var name=CMIP6Activity[i-1].label;
+      //  console.log(name);
+        ActivityDictionary[name]=status.checked;
+    }
+
+    
+    projectPost["project"] = "CMIP6";
+
+    PostData = Object.assign({},projectPost, VariablesDictionary, TimeFrequencyDictionary,GridDictionary,VariantDictionary,SubExperimentDictionary,ExperimentDictionary,NominalDictionary,SourceDictionary,ActivityDictionary);
+
+    console.log(PostData)
+}
+
+function createIndicesDictionary(){
+    var status;
+    for(var i=1;i<=IndicesItems.length;i++){
+        status = document.getElementById("CMIP6Indices"+i);
+        var name=IndicesItems[i-1].label;
+      //  console.log(name);
+         IndicesDictionary[i]=status.checked;
+    }
+
+    console.log(IndicesDictionary);
 }
 
 async function postClimateIndices(){
+
+    createIndicesDictionary();
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -38,9 +182,8 @@ async function postClimateIndices(){
         }
       };
 
-    const response = await axios.post('http://192.168.1.134:8000/climateIndicesHandler', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+      const response = await axios.post('http://127.0.0.1:8000/climateIndicesHandler', {
+        IndicesDictionary,
       },axiosConfig)
 
       console.log(response.data)
@@ -135,23 +278,6 @@ class Climate6 extends Component {
             {id: 7, label:  "rcp45"},
             {id: 8, label: "rcp60"},
             {id: 9, label: "rcp85"}, 
-        ];
-
-        const IndicesItems = [
-
-            {id: 1, label: "AEJ"},
-            {id: 2, label: "DCI"},
-            {id: 3, label: "IOD"},
-            {id: 4, label: "E5w"},
-            {id: 5, label: "NAO"},
-            {id: 6, label: "NINO3/4/1-2/3-4"},
-            {id: 7, label:  "PWE"},
-            {id: 8, label: "SIW"},
-            {id: 9, label: "SOI"}, 
-            {id: 10, label: "STA"},
-            {id: 11, label: "UEQ"},
-            {id: 12, label: "W5w"},
-            {id: 13, label: "WAMI"}, 
         ];
 
         const variableItems = [
@@ -266,45 +392,95 @@ class Climate6 extends Component {
         return ( 
         <div>
             <div>
-                <div className = "project"> 
-                    <h3>Project</h3>
-                    <Divider style={{ margin: "6px 0" }} />
-                        <RadioGroup items={project} />
+                <div>
+                    <h3>Variable</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6Variable"> 
+                        <CheckboxGroup items={CMIP6Variable} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
-                    <h3>Model</h3>
+                    <h3>Frequency</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "model"> 
-                    
-                        <CheckboxGroup items={modelItems} onChange={this.testChange} />
+                <div className = "CMIP6Frequency"> 
+                        <CheckboxGroup items={CMIP6Frequency} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
-                    <h3>Experiment</h3>
+                    <h3>Grid Label</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "experiment"> 
-                        <CheckboxGroup items={experimentItems} />
+                <div className = "CMIP6GridLabel"> 
+                    
+                        <CheckboxGroup items={CMIP6GridLabel} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
-                    <h3>Variables</h3>
+                    <h3>Variant Label</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "variable"> 
-                    
-                        <CheckboxGroup items={variableItems} />
+                <div className = "CMIP6VariantLabel"> 
+                       <CheckboxGroup items={CMIP6VariantLabel} />
                     <Divider style={{ margin: "6px 0" }} />
+                </div>
 
-                    
+                <div>
+                    <h3>Sub-Experiment</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6SubExperiment"> 
+                       <CheckboxGroup items={CMIP6SubExperiment} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Experiment ID</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6ExperimentID"> 
+                       <CheckboxGroup items={CMIP6ExperimentID} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Nominal Resolution</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6NominalResolution"> 
+                       <CheckboxGroup items={CMIP6NominalResolution} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Source ID</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6SourceID"> 
+                       <CheckboxGroup items={CMIP6SourceID} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Activity</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP6Activity"> 
+                       <CheckboxGroup items={CMIP6Activity} />
+                    <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
@@ -313,10 +489,13 @@ class Climate6 extends Component {
                 </div>
 
                 <div className = "variable"> 
-                       <CheckboxGroup items={IndicesItems} />
+                       <CheckboxGroup id ='test' items={IndicesItems} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
+
+                <div className ="Buttons">
+                <Divider style={{ margin: "6px 0" }} />
                 <div className ="myButton">
                     <div><button onClick={postClimateIndices}> INDICES </button></div>
                 </div>
@@ -326,7 +505,7 @@ class Climate6 extends Component {
                 <div className ="myButton">
                     <button onClick={postClimateVariables}> RANK </button>
                 </div>
-                
+                </div>
             </div>
         
         </div> );

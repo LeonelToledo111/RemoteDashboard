@@ -34,7 +34,8 @@ export default class Checkbox extends React.PureComponent {
           {//id, value}
   }
         <input
-          id={"items"+id}
+          //id={"items"+id}
+          id={id}
           ref={node => (this.myRef = node)}
           type="checkbox"
           checked={checked}

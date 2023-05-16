@@ -3,16 +3,126 @@ import Divider from "@material-ui/core/Divider";
 import CheckboxGroup from "./CheckboxGroup";
 import RadioGroup from "./RadioGroup";
 import axios from 'axios';
-import CMIP5Variables from '../CMIP5Data/CMIP5Variables.js'
+import CMIP5Variables from '../CMIP5Data/CMIP5Variables.js';
+import CMIP5Ensemble from '../CMIP5Data/CMIP5Ensemble.js';
+import CMIP5Table from '../CMIP5Data/CMIP5Table.js';
+import CMIP5TimeFrequency from '../CMIP5Data/CMIP5TimeFrequency.js';
+import CMIP5Experiment from '../CMIP5Data/CMIP5Experiment.js';
+import CMIP5Model from '../CMIP5Data/CMIP5Model.js';
+import { Tab } from '@material-ui/core';
 
 
 var array;
+var selectedItem=[];
+var VariablesDictionary={};
+var EnsembleDictionary={};
+var TableDictionary={};
+var TimeFrequencyDictionary={};
+var ExperimentDictionary={};
+var ModelDictionary={};
+var PostData ={};
+var projectPost ={};
+var IndicesDictionary = {};
+
+const IndicesItems = [
+
+    {id: "CMIP5Indices1", label: "AEJ"},
+    {id: "CMIP5Indices2", label: "DCI"},
+    {id: "CMIP5Indices3", label: "IOD"},
+    {id: "CMIP5Indices4", label: "E5w"},
+    {id: "CMIP5Indices5", label: "MJO"},
+    {id: "CMIP5Indices6", label: "NAO"},
+    {id: "CMIP5Indices7", label: "NINO1+2"},
+    {id: "CMIP5Indices8", label: "NINO3+4"},
+    {id: "CMIP5Indices9", label: "NINO3"},
+    {id: "CMIP5Indices10", label: "NINO4"},
+    {id: "CMIP5Indices11", label:  "PWE"},
+    {id: "CMIP5Indices12", label: "SIW"},
+    {id: "CMIP5Indices13", label: "SOI"}, 
+    {id: "CMIP5Indices14", label: "STA"},
+    {id: "CMIP5Indices15", label: "UEQ"},
+    {id: "CMIP5Indices16", label: "W5w"},
+    {id: "CMIP5Indices17", label: "WAMI"}, 
+    {id: "CMIP5Indices18", label: "ALL"}, 
+];
 
 function loadVariableData(){
     array = CMIP5Variables;
 }
 
+function createDictionary(){
+    var status;
+    //window.alert("Gathering");
+    for(var i=1;i<=CMIP5Variables.length;i++){
+        status = document.getElementById("CMIP5Variables"+i);
+        var name=CMIP5Variables[i-1].label;
+      //  console.log(name);
+        VariablesDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5Ensemble.length;i++){
+        status = document.getElementById("CMIP5Ensemble"+i);
+        var name=CMIP5Ensemble[i-1].label;
+      //  console.log(name);
+        EnsembleDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5Table.length;i++){
+        status = document.getElementById("CMIP5Table"+i);
+        var name=CMIP5Table[i-1].label;
+      //  console.log(name);
+         TableDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5TimeFrequency.length;i++){
+        status = document.getElementById("CMIP5Frequency"+i);
+        var name=CMIP5TimeFrequency[i-1].label;
+      //  console.log(name);
+        TimeFrequencyDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5Experiment.length;i++){
+        status = document.getElementById("CMIP5Experiment"+i);
+        var name=CMIP5Experiment[i-1].label;
+      //  console.log(name);
+        ExperimentDictionary[name]=status.checked;
+    }
+
+    for(var i=1;i<=CMIP5Model.length;i++){
+        status = document.getElementById("CMIP5Model"+i);
+        var name=CMIP5Model[i-1].label;
+      //  console.log(name);
+        ModelDictionary[name]=status.checked;
+    }
+
+    
+
+    
+    projectPost["project"] = "CMIP5";
+
+    PostData = Object.assign({},projectPost, VariablesDictionary, EnsembleDictionary,TableDictionary,TimeFrequencyDictionary,ExperimentDictionary,ModelDictionary);
+
+    console.log(PostData);
+  
+}
+
+function createIndicesDictionary(){
+    var status;
+    for(var i=1;i<=IndicesItems.length;i++){
+        status = document.getElementById("CMIP5Indices"+i);
+        var name=IndicesItems[i-1].label;
+      //  console.log(name);
+         IndicesDictionary[i]=status.checked;
+    }
+
+    console.log(IndicesDictionary);
+}
+
 async function postClimateVariables(){
+
+    createDictionary();
+    //const backendPost = PostData
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -22,8 +132,14 @@ async function postClimateVariables(){
       };
 
     const response = await axios.post('http://127.0.0.1:8000/climateVariablesHandler', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+       // project: 'CMIP5',
+       projectPost,
+       VariablesDictionary,
+       EnsembleDictionary,
+       TableDictionary,
+       TimeFrequencyDictionary,
+       ExperimentDictionary,
+       ModelDictionary,
       },axiosConfig)
 
       console.log(response.data)
@@ -36,6 +152,9 @@ async function postClimateVariables(){
 }
 
 async function postClimateIndices(){
+
+    createIndicesDictionary();
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -44,9 +163,8 @@ async function postClimateIndices(){
         }
       };
 
-    const response = await axios.post('http://192.168.1.134:8000/climateIndicesHandler', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+    const response = await axios.post('http://127.0.0.1:8000/climateIndicesHandler', {
+        IndicesDictionary,
       },axiosConfig)
 
       console.log(response.data)
@@ -143,22 +261,7 @@ class Climate extends Component {
             {label: "HAPPY TESTING"},
         ];
 
-        const IndicesItems = [
-
-            {id: 1, label: "AEJ"},
-            {id: 2, label: "DCI"},
-            {id: 3, label: "IOD"},
-            {id: 4, label: "E5w"},
-            {id: 5, label: "NAO"},
-            {id: 6, label: "NINO3/4/1-2/3-4"},
-            {id: 7, label:  "PWE"},
-            {id: 8, label: "SIW"},
-            {id: 9, label: "SOI"}, 
-            {id: 10, label: "STA"},
-            {id: 11, label: "UEQ"},
-            {id: 12, label: "W5w"},
-            {id: 13, label: "WAMI"}, 
-        ];
+        
 
         const variableItems = [
             {id: 1, label: "albisccp"},
@@ -272,22 +375,44 @@ class Climate extends Component {
         return ( 
         <div>
             <div>
-                <div className = "project" onLoad={loadVariableData}> 
-                    <h3>Project</h3>
+                <div className = "CMIP5Variables" onLoad={loadVariableData}> 
+                    <h3>Variable</h3>
                     <Divider style={{ margin: "6px 0" }} />
-                        <RadioGroup items={project} />
+                        <CheckboxGroup id="CMIP5Variable" items={CMIP5Variables} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
                 <div>
-                    <h3>Model</h3>
+                    <h3>Ensemble</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "model"> 
-                    
-                        <CheckboxGroup items={modelItems} />
+                <div className = "CMIP5Ensemble"> 
+                        <CheckboxGroup id="Ensemble" items={CMIP5Ensemble} />
                     <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>CMIP Table</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP5Table"> 
+                        <CheckboxGroup items={CMIP5Table} />
+                    <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div>
+                    <h3>Time Frequency</h3>
+                        <Divider style={{ margin: "6px 0" }} />
+                </div>
+
+                <div className = "CMIP5TimeFrequency"> 
+                    
+                        <CheckboxGroup items={CMIP5TimeFrequency} />
+                    <Divider style={{ margin: "6px 0" }} />
+
+                    
                 </div>
 
                 <div>
@@ -295,19 +420,22 @@ class Climate extends Component {
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "experiment"> 
-                        <CheckboxGroup items={experimentItems} />
+                <div className = "CMIP5Experiment"> 
+                    
+                        <CheckboxGroup items={CMIP5Experiment} />
                     <Divider style={{ margin: "6px 0" }} />
+
+                    
                 </div>
 
                 <div>
-                    <h3>Variables</h3>
+                    <h3>Model</h3>
                         <Divider style={{ margin: "6px 0" }} />
                 </div>
 
-                <div className = "variable"> 
+                <div className = "CMIP5Model"> 
                     
-                        <CheckboxGroup items={array} />
+                        <CheckboxGroup items={CMIP5Model} />
                     <Divider style={{ margin: "6px 0" }} />
 
                     
@@ -319,10 +447,12 @@ class Climate extends Component {
                 </div>
 
                 <div className = "variable"> 
-                       <CheckboxGroup items={IndicesItems} />
+                       <CheckboxGroup id ='test' items={IndicesItems} />
                     <Divider style={{ margin: "6px 0" }} />
                 </div>
 
+                <div className ="Buttons">
+                <Divider style={{ margin: "6px 0" }} />
                 <div className ="myButton">
                     <div><button onClick={postClimateIndices}> INDICES </button></div>
                 </div>
@@ -332,7 +462,7 @@ class Climate extends Component {
                 <div className ="myButton">
                     <button onClick={postClimateVariables}> RANK </button>
                 </div>
-                
+                </div>
             </div>
         
         </div> );
