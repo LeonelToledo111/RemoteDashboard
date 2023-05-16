@@ -13,6 +13,7 @@ import ChartL from './ChartL';
 import ChartL2 from './ChartL2';
 import pattern from 'patternomaly';
 import ControlTiff from './ControlTiff'
+import {mapColor} from './mapColor.json'
 
 // import {Map, TileLayer, FeatureGroup, Circle} from "react-leaflet"
 import {EditControl} from "react-leaflet-draw"
@@ -87,7 +88,14 @@ class MapboxContainerVis extends React.Component {
       statsPolygonMean:[],
       statsPolygonMin:[],
       statsPolygonMax:[],
+      dataPolygonMin:[],
+      dataPolygonMax:[],
+      frequenciesPolygon:[],
+      subintervalPolygon:[],
+      xmean:0,
+      xstd:0,
       newPolygon:false,
+      definedPolygon:false,
       listGeoJSONX:[],
     };
 
@@ -163,6 +171,45 @@ class MapboxContainerVis extends React.Component {
       //return "rgba("+Math.floor(255*R)+", "+Math.floor(255*G)+", "+Math.floor(255*B)+", 0.5)";
     })
     //return colorMap
+  }
+
+
+  interpolateColorMap=() =>{
+    const N=mapColor.length;
+    let listColors=[]
+    console.log("interpolateColorMap")
+    console.log(this.state.subintervalPolygon)
+    console.log("-------------------")
+    console.log("tiffMin:",this.state.tiffMin)
+    console.log("tiffMax:",this.state.tiffMax)
+    console.log("N:",N)
+    this.state.subintervalPolygon.forEach((x)=>{
+      let y=(x-this.state.tiffMin)*(N-1)/(this.state.tiffMax-this.state.tiffMin)
+      let i=Math.floor(y)
+      let di=y-i
+      console.log("x:",x," y:",y," i:",i," di:",di)
+      let r,g,b;
+      if(y>N-1){
+        i=N-1
+        r = mapColor[i][0]
+        g = mapColor[i][1]
+        b = mapColor[i][2]
+      }
+      else if(y<0){
+        r = mapColor[0][0]
+        g = mapColor[0][1]
+        b = mapColor[0][2]
+      }
+      else{
+        r = mapColor[i][0]+di*(mapColor[i+1][0]-mapColor[i][0])
+        g = mapColor[i][1]+di*(mapColor[i+1][1]-mapColor[i][1])
+        b = mapColor[i][2]+di*(mapColor[i+1][2]-mapColor[i][2])
+      }
+      let color=`rgb(${r},${g},${b})`
+      listColors.push(color)
+    })
+    console.log("listColors:",listColors)
+    return listColors
   }
 
   // getDataChart = () => {
@@ -1030,6 +1077,8 @@ class MapboxContainerVis extends React.Component {
       bandN:response.data.bandN,
       ext:response.data.ext,
       newPolygon:response.data.newPolygon,
+      // frequenciesPolygon:response.data.frequenciesPolygon,
+      // subintervalPolygon:response.data.subintervalPolygon,
       // listGeoJSONX:response.data.filesGeoJson[0].dataGeoJson.features,
     })
 
@@ -1064,6 +1113,12 @@ class MapboxContainerVis extends React.Component {
         statsPolygonMean:response.data.statsPolygonMean,
         statsPolygonMin:response.data.statsPolygonMin,
         statsPolygonMax:response.data.statsPolygonMax,
+        dataPolygonMin:response.data.dataPolygonMin,
+        dataPolygonMax:response.data.dataPolygonMax,
+        frequenciesPolygon:response.data.frequenciesPolygon,
+        subintervalPolygon:response.data.subintervalPolygon,
+        xmean:response.data.xmean,
+        xstd:response.data.xstd,
         newPolygon:false,
       })
       // this.newPolygon=false;
@@ -1343,6 +1398,26 @@ class MapboxContainerVis extends React.Component {
       return this.onCreatedPolygon(e)
     }
   }
+
+  onDeletePolygon = (e) =>{
+    const {layers,type,target,sourceTarget}=e;
+    const {_layers}=layers;
+    console.log("onDeletePolygon:",e)
+    console.log("onDeletePolygon _layers:",_layers)
+    console.log("Object.keys(_layers).length:",Object.keys(_layers).length)
+
+    if( type === 'draw:deleted' && Object.keys(_layers).length > 0){
+      this.polygon=[]
+      this.lastAddedPolygonID = 0;
+      
+      this.setState({
+        definedPolygon: false,
+      })
+    }
+    //{layers: r, type: 'draw:deleted', target: r, sourceTarget: r}
+    
+
+  }
   
 
   onCreatedPolygon = (e) =>{
@@ -1371,6 +1446,9 @@ class MapboxContainerVis extends React.Component {
 
         if(layerType === "polygon"){
           const { _leaflet_id } = layer;
+          this.setState({
+            definedPolygon: true,
+          })
 
           // console.log("#### _leaflet_id:", _leaflet_id);
 
@@ -1957,6 +2035,7 @@ class MapboxContainerVis extends React.Component {
                     band:1,
                     timei:parseInt(value),
                     filesIn:this.state.filesIn,
+                    polygon:this.polygon,
                   }
                 )}
                 eventSelect = { (value)=>{
@@ -1975,7 +2054,9 @@ class MapboxContainerVis extends React.Component {
             }
 
             
-              {this.state.tiffLayers && this.state.tiffLayers.length &&
+              {this.state.definedPolygon &&
+              this.state.tiffLayers &&
+              this.state.tiffLayers.length &&
               this.state.statsPolygonTime &&
               this.state.statsPolygonTime.length &&
               <ChartL2
@@ -1983,12 +2064,22 @@ class MapboxContainerVis extends React.Component {
                 show={true}
                 position="topright"
                 x={this.state.statsPolygonTime}
-                y={[this.state.statsPolygonMean,this.state.statsPolygonMin,this.state.statsPolygonMax]}
-                color={['rgb(255, 0, 0)','rgb(0,255, 0)','rgb(0,0,255)']}
-                label={["Mean","Min","Max"]}
+                y={[this.state.statsPolygonMax,this.state.statsPolygonMean,this.state.statsPolygonMin]}
+                backgroundColor={['rgb(255,128,128)','rgb(128,255,128)','rgb(128,128,255)']}
+                borderColor={['rgb(255, 64, 64)','rgb(64,255, 64)','rgb(64,64,255)']}
+                label={["Max","Mean","Min"]}
                 type="line"
                 xi={this.state.timei}
                 var={this.state.var}
+                ymin={this.state.dataPolygonMin}
+                ymax={this.state.dataPolygonMax}
+                frequencies={this.state.frequenciesPolygon}
+                subinterval={this.state.subintervalPolygon}
+                mean={this.state.xmean}
+                std={this.state.xstd}
+                frequenciesColor={this.interpolateColorMap} //cambiar por un arreglo
+                //tiff.minRasterG tiff.maxRasterG
+        
                 // type="scatter"
 
                 // data={this.state.dataChart.data}
@@ -2073,14 +2164,20 @@ class MapboxContainerVis extends React.Component {
                 //   filesIn:this.state.filesIn,
                 // })}
                 
-                //onEdited={this._onCreated}
-                onDeleted={()=>console.log("onDeleted")}
+                //onDeleted={(e)=>console.log("onDeleted",e,"fin")}
+                onDeleted={this.onDeletePolygon}
+                onRemoved={(e)=>console.log("onRemove",e,"fin")}
+
                 draw={{
                   polyline: false,
                   rectangle: false,
                   circle: false,
                   marker: false,
                   circlemarker: false
+                }}
+                edit={{ 
+                  remove: true,
+                  // save: false
                 }}
               />
             </FeatureGroup>

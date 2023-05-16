@@ -13,7 +13,7 @@ from sympy import false, true
 
 import xarray as xr 
 import rioxarray
-import rasterio
+# import rasterio
 # import rasterstats as rstats
 
 import uuid
@@ -21,7 +21,7 @@ import uuid
 import pandas as pd
 import numpy as np
 from scipy.interpolate import Rbf
-from affine import Affine
+# from affine import Affine
 # import geopandas as gpd
 
 
@@ -100,7 +100,7 @@ def openGeoJsons(filesPath):
     files={"filesGeoJson":[]}
     cleanTiffs()
     for index,filePath in enumerate(filesPath):
-        print("openSHPs:",filePath)
+        print("openGeoJsons:",filePath)
         fileGeoJson=openGeoJson(filePath)
         # files.update(fileGeoJson)
         files["filesGeoJson"].append( fileGeoJson )
@@ -257,7 +257,7 @@ def netCDFs2Tiffs(filesPath, var='', timei=0, polygon=""):
     files={"filesNameTiff":[], "var":'', "vars":[]}
     cleanTiffs()
     print("***netCDFs2Tiffs var:",var)
-    for index,filePath in enumerate(filesPath):
+    for filePath in filesPath:
         print("netCDFs2Tiffs:",filePath)
         # filesTiff.append( netCDF2Tiff(filePath, var, index) )
         fileNetCDF2Tiff=netCDF2Tiff(filePath, var=var, id=uuid.uuid4().hex, timei=timei, polygon=polygon)
@@ -308,18 +308,18 @@ def netCDF2Tiff(filePath, var='',id=0, polygon=[], timei=0):
     if var=='' or not( var in vars ):
         var=vars[0]
     
-    band = 1
+    # band = 1
     # timei=0
     pr = xrFile[ var ][ timei ]
     datei= str( xrFile.time.data[ timei ] )
     timeN = len( xrFile[ 'time' ] )-1
-    min=float(pr.min())
-    minRAW=min
-    max=float(pr.max())
-    maxRAW=max
+    minValue=float(pr.min())
+    minRAW=minValue
+    maxValue=float(pr.max())
+    maxRAW=maxValue
     print(filePath)
-    print("min:",min,"minRAW:",minRAW)
-    print("max:",max,"maxRAW:",maxRAW)
+    print("min:",minValue,"minRAW:",minRAW)
+    print("max:",maxValue,"maxRAW:",maxRAW)
     #pr = pr.rio.set_spatial_dims('longitude', 'latitude')
     pr = pr.rio.set_spatial_dims(lon_str, lat_str)
     # pr.rio.crs
@@ -329,18 +329,18 @@ def netCDF2Tiff(filePath, var='',id=0, polygon=[], timei=0):
     
     fileNameTiff=path+"/tiffs/GeoTIFF_"+str(id)+".tif"
     pr.rio.to_raster(fileNameTiff)
-    dateIni = str(xrFile.time[0].values)
-    dateEnd = str(xrFile.time[-1].values)
-    print("***********time ini:****"+dateIni)
-    print("***********time end:****"+dateEnd)
+    # dateIni = str(xrFile.time[0].values)
+    # dateEnd = str(xrFile.time[-1].values)
+    # print("***********time ini:****"+dateIni)
+    # print("***********time end:****"+dateEnd)
     #self.datePeriod = int((nc_file.time[1].values - nc_file.time[0].values)/1000000)
     #self.datePeriod = int((nc_file.time[1].values - nc_file.time[0].values)/np.timedelta64(1, "h"))
     #print("********type***",type(nc_file.time[0].values)==np.datetime64)
-    if(type(xrFile.time[0].values)==np.datetime64):
-        datePeriod = int((xrFile.time[1].values - xrFile.time[0].values)/1000000)
-        #self.datePeriod = int((nc_file.time[1].values - nc_file.time[0].values)/np.timedelta64(1, "h"))
-    else:
-        datePeriod = -1 # int(np.timedelta64(1, "h"))
+    # if(type(xrFile.time[0].values)==np.datetime64):
+    #     datePeriod = int((xrFile.time[1].values - xrFile.time[0].values)/1000000)
+    #     #self.datePeriod = int((nc_file.time[1].values - nc_file.time[0].values)/np.timedelta64(1, "h"))
+    # else:
+    #     datePeriod = -1 # int(np.timedelta64(1, "h"))
     fileNetCDF["newPolygon"]=False
     #if polygon!="":
     if len(polygon)>0:
@@ -348,30 +348,30 @@ def netCDF2Tiff(filePath, var='',id=0, polygon=[], timei=0):
         #affine = src.transform
         #nodata = src.nodata
         #nodata = nc_var.rio.encoded_nodata
-        lat_start=xrFile[lat_str][0].item()
-        lat_end=xrFile[lat_str][xrFile.dims[lat_str]-1].item()
-        lon_start=xrFile[lon_str][0].item()
-        lon_end=xrFile[lon_str][xrFile.dims[lon_str]-1].item()
-        a=abs(lon_end-lon_start)/(xrFile.dims[lon_str]-1)
-        e=-abs(lat_end-lat_start)/(xrFile.dims[lat_str]-1)
-        b=0
-        d=0
-        if lon_end-lon_start<0:
-            c=lon_end-a/2
-            inv_lon=True
-        else:
-            c=lon_start-a/2
-            inv_lon=False
-        if lat_end-lat_start>0:
-            f=lat_end-e/2
-            inv_lat=True
-        else:
-            f=lat_start-e/2
-            inv_lat=False
+        # lat_start=xrFile[lat_str][0].item()
+        # lat_end=xrFile[lat_str][xrFile.dims[lat_str]-1].item()
+        # lon_start=xrFile[lon_str][0].item()
+        # lon_end=xrFile[lon_str][xrFile.dims[lon_str]-1].item()
+        # a=abs(lon_end-lon_start)/(xrFile.dims[lon_str]-1)
+        # e=-abs(lat_end-lat_start)/(xrFile.dims[lat_str]-1)
+        # b=0
+        # d=0
+        # if lon_end-lon_start<0:
+        #     c=lon_end-a/2
+        #     inv_lon=True
+        # else:
+        #     c=lon_start-a/2
+        #     inv_lon=False
+        # if lat_end-lat_start>0:
+        #     f=lat_end-e/2
+        #     inv_lat=True
+        # else:
+        #     f=lat_start-e/2
+        #     inv_lat=False
         
-        affine=Affine(a,b,c,d,e,f)
+        # affine=Affine(a,b,c,d,e,f)
         # print("**********affine:",affine)
-        nodata = xrFile[ var ].rio.encoded_nodata
+        # nodata = xrFile[ var ].rio.encoded_nodata
         # print("**********nodata:",nodata)
         #times=nc_file.time.values[:3]
         #times=xrFile.time.values
@@ -383,13 +383,39 @@ def netCDF2Tiff(filePath, var='',id=0, polygon=[], timei=0):
         statsPolygonMean=[]
         statsPolygonMax=[]
         statsPolygonMin=[]
-        stats="mean min max"
+        # stats="mean min max"
         if xrFile.rio.crs is None:
             xrFile.rio.write_crs(4326, inplace=True)
         xrFile = xrFile.rio.set_spatial_dims(lon_str, lat_str, inplace=True)
         clipped = xrFile.rio.clip(polygon, xrFile.rio.crs)
         clippedVar=clipped[var]
+
+        ti=clippedVar[timei]
+        values_ti = ti.values
+        nodata_ti = ti.rio.encoded_nodata
+        flat_list = [item for sublist in values_ti for item in sublist if ~np.isnan(item) and nodata_ti!=item]
+        h=np.histogram(flat_list, bins='auto')
+        arr = np.array(flat_list)
+        xmean=arr.mean()
+        xstd=arr.std()
+        print("--------histogram----------")
+        print("--------xmean----------",xmean)
+        print("--------xstd----------",xstd)
+        fileNetCDF["frequenciesPolygon"]=h[0].tolist()
+        fileNetCDF["subintervalPolygon"]=h[1].tolist()
+        fileNetCDF["xmean"]=float(xmean)
+        fileNetCDF["xstd"]=float(xstd)
+
+        print("frequenciesPolygon",fileNetCDF["frequenciesPolygon"])
+        print("subintervalPolygon",fileNetCDF["subintervalPolygon"])
+        # print("xmean",fileNetCDF["xmean"])
+        # print("xstd",fileNetCDF["xstd"])
+        
+        
+
+
         times=clippedVar.time.values
+
 
         for time in times:
             #print(time)
@@ -405,16 +431,25 @@ def netCDF2Tiff(filePath, var='',id=0, polygon=[], timei=0):
             # statsPolygonMean.append(zonal_stats[0]["mean"])
             # statsPolygonMin.append(zonal_stats[0]["min"])
             # statsPolygonMax.append(zonal_stats[0]["max"])
-
-            statsPolygonTime.append(str(time))
+            if np.issubdtype(time.dtype, np.datetime64):
+                # time_date=pd.to_datetime(time).date()
+                time_date=pd.to_datetime(time, format = "%d/%m/%Y %H:%M")
+                statsPolygonTime.append(str(time_date))
+                # statsPolygonTime.append(str(time))
+            else:
+                statsPolygonTime.append(str(time))
             # print("time:",time,"values:",clippedVar.sel(time=time).mean().values)
             statsPolygonMean.append(clippedVar.sel(time=time).mean().values.item())
             statsPolygonMin.append(clippedVar.sel(time=time).min().values.item())
             statsPolygonMax.append(clippedVar.sel(time=time).max().values.item())
+        dataPolygonMin=min(statsPolygonMin)
+        dataPolygonMax=max(statsPolygonMax)
         fileNetCDF["statsPolygonTime"]=statsPolygonTime
         fileNetCDF["statsPolygonMean"]=statsPolygonMean
         fileNetCDF["statsPolygonMin"]=statsPolygonMin
         fileNetCDF["statsPolygonMax"]=statsPolygonMax
+        fileNetCDF["dataPolygonMin"]=dataPolygonMin
+        fileNetCDF["dataPolygonMax"]=dataPolygonMax
         fileNetCDF["newPolygon"]=True
         # print("**************statsPolygonTime:",statsPolygonTime)
         # print("**************statsPolygonMean:",statsPolygonMean)
