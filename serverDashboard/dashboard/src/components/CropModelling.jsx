@@ -2,7 +2,31 @@ import React, { Component } from 'react';
 import Divider from "@material-ui/core/Divider";
 import CheckboxGroup from "./CheckboxGroup";
 import RadioGroup from "./RadioGroup";
+import axios from 'axios';
 import CSVComponent from "./CSVReaderComponent";
+
+var projectPost ={};
+
+async function postCrop(){
+
+    projectPost["project"] = "CROP";
+
+    let axiosConfig = {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            "Access-Control-Allow-Origin": "*",
+            "proxy" : "false",
+        }
+      };
+
+    const response = await axios.post('http://127.0.0.1:8000/climateVariablesHandler', {
+       // project: 'CMIP5',
+       projectPost,
+      },axiosConfig)
+
+      console.log(response.data)
+
+}
 
 class CropModelling extends Component {
 
@@ -99,7 +123,7 @@ class CropModelling extends Component {
                 </div>
 
                 <div className ="myButton">
-                    <button> RUN </button>
+                <button onClick={postCrop}> RUN </button>
                 </div>
                 
             </div>

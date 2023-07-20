@@ -174,6 +174,10 @@ def climateVariablesCMIP6(data):
       os.system(slurmJob)
       print("Download From CMIP6 was successful")
 
+def executeCropModel():
+      command='cat /RAID5/echavez/R1_1/bis/full-pipeline/2nd_try/web/cmd-web  #!/bin/bash ~/PRODUCTION/Indices_W/BB/bb.py 180 20 /RAID5/LOCATIONS/TZ_33.625_33.825_-8.375_-8.175/Weather/Chirps/Processed/TZ-chirps-v2.0.1981-2022-08-01.days_p05-merged-TRI-R1.nc  /RAID5/LOCATIONS/TZ_33.625_33.825_-8.375_-8.175/CropModelling/DSSAT/Tanzania_DSSAT_Rice_N64_Rice_plant-R1.nc  /RAID5/LOCATIONS/TZ_33.625_33.825_-8.375_-8.175/Weather/ERA5Land/Variable_temp/Regrid/TZ-ERA5_daily_mx2t_1981-2022-08-regridded-R1.nc   ~/PRODUCTION/Indices_W/BB/simple_indices_new_v4.ncl ~/PRODUCTION/Indices_W/BB/serial-ncl-ds-jobarray.slurm ~/PRODUCTION/Indices_W/BB/serial-ncl-cu-jobarray.slurm TZ_33.625_33.825_-8.375_-8.175 export id=`sed -n "1p"  "ds-cu_slurm_jobs_ids.txt"` '
+      os.system(command)
+#read -ra jid <<<"${id}" jidctest=`sbatch --export="NUM_FILE=1,REG=1,LOC=1,DATA=/RAID5/LOCATIONS/,site=TZ_33.625_33.825_-8.375_-8.175" --dependency=afterok:${jid[0]}:${jid[1]}  ~/PRODUCTION/Indices_W/Ctest/p-CTEST-48cores-conda-ariseA-web.slurm`read -ra jidct <<<"${jidctest}"sbatch --array=1-25  --export="BIN_CTEST_FILE=ctest_180_20_vayax_dssat_chirps_precip_hist_noirr_N064_notill_yield_ric_tz_mby_1982_2021_0000001_0000025.csv,I_N_CTEST_FILE=index_names_180_20_vayax_dssat_chirps_precip_hist_noirr_N064_notill_yield_ric_tz_mby_1982_2021_0000001_0000025.csv,NTREE=5000,NGRP=20,GRID=1,site=TZ_33.625_33.825_-8.375_-8.175" --dependency=afterok:${jidct[3]} ~/PRODUCTION/Indices_W/Varimp/Normal/p-VARIMP-48cores-jobarray-conda.slurm"
 @csrf_exempt
 def handle(request):
       if request.method == 'GET':
@@ -196,6 +200,11 @@ def handle(request):
                   climateVariablesCMIP5(body)
             if (project=='CMIP6'):
                   climateVariablesCMIP6(body)
+
+            if (project=='CROP'):
+                  print("CROP MODELING CONNECTED")
+                  executeCropModel()
+                  #climateVariablesCMIP6(body)
             return HttpResponse('This is POST request')
             
 
