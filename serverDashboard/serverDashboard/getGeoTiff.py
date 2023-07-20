@@ -14,7 +14,7 @@ from sympy import false, true
 
 import xarray as xr 
 
-#import rioxarray
+import rioxarray
 # import rasterio
 
 # import rasterstats as rstats
