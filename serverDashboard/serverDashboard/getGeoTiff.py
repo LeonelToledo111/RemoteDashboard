@@ -1,4 +1,5 @@
 from cmath import isnan, nan
+import math
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -111,7 +112,7 @@ def openGeoJsons(filesPath):
 
 #     fileData["shapefile"]=shpfile.to_json()
 
-def openTiff(filePath, band=1):
+def openTiff(filePath, band=1, polygon=[]):
     print(filePath)
     fileTiff = {}
     fileTiff["filename"]=filePath
@@ -146,13 +147,77 @@ def openTiff(filePath, band=1):
     fileTiff["palette"]="colorbrewer.diverging.RdYlGn_11"
     # fileTiff["var"]=[1]
     # fileTiff["vars"]=1
+    fileTiff["newPolygon"]=False
+    if len(polygon)>0:
+        new_tiff=rioFile.rio.reproject("EPSG:4326")
+        if new_tiff.rio.crs is None:
+            new_tiff.rio.write_crs(4326, inplace=True)
+        new_tiff.rio.set_spatial_dims('x','y', inplace=True)
+
+        clipped = new_tiff.rio.clip(polygon, new_tiff.rio.crs, all_touched=True)
+        values=clipped[fileTiff["band"]-1].values
+        nodata=new_tiff.attrs["_FillValue"]
+        flat_list2=values.flatten()
+        def f_isclose(x):
+            return math.isclose(x, nodata) # verifica si dos valores están cerca uno del otro
+        vec_isclose=np.vectorize(f_isclose)
+        flat_list = np.delete(flat_list2, vec_isclose(flat_list2) )
+        h=np.histogram(flat_list )
+        
+        #print("frequenciesPolygon",h[0].tolist())
+        #print("subintervalPolygon",h[1].tolist())
+        arr = np.array(flat_list)
+        xmean=arr.mean()
+        xstd=arr.std()
+        print("--------histogram----------")
+        print("histogram:",h[0], h[1])
+        print("--------xmean----------",xmean)
+        print("--------xstd----------",xstd)
+        fileTiff["frequenciesPolygon"]=h[0].tolist()
+        fileTiff["subintervalPolygon"]=h[1].tolist()
+        fileTiff["xmean"]=float(xmean)
+        fileTiff["xstd"]=float(xstd)
+
+        fileTiff["newPolygon"]=True
+        statsPolygonTime=[]
+        statsPolygonMean=[]
+        statsPolygonMax=[]
+        statsPolygonMin=[]
+
+        # xrFile = xr.open_dataset(filePath, decode_coords="all")
+        # # stats="mean min max"
+        # if xrFile.rio.crs is None:
+        #     xrFile.rio.write_crs(4326, inplace=True)
+        # xrFile = xrFile.rio.set_spatial_dims(lon_str, lat_str, inplace=True)
+        # clipped = xrFile.rio.clip(polygon, xrFile.rio.crs)
+        # clippedVar=clipped[var]
+
+        # ti=clippedVar[timei]
+        # values_ti = ti.values
+        # nodata_ti = ti.rio.encoded_nodata
+        # flat_list = [item for sublist in values_ti for item in sublist if ~np.isnan(item) and nodata_ti!=item]
+        # h=np.histogram(flat_list, bins='auto')
+        # arr = np.array(flat_list)
+        # xmean=arr.mean()
+        # xstd=arr.std()
+        # print("--------histogram----------")
+        # print("--------xmean----------",xmean)
+        # print("--------xstd----------",xstd)
+        # fileNetCDF["frequenciesPolygon"]=h[0].tolist()
+        # fileNetCDF["subintervalPolygon"]=h[1].tolist()
+        # fileNetCDF["xmean"]=float(xmean)
+        # fileNetCDF["xstd"]=float(xstd)
+
+        # print("frequenciesPolygon",fileNetCDF["frequenciesPolygon"])
+        # print("subintervalPolygon",fileNetCDF["subintervalPolygon"])
+
     return fileTiff
 
-def openTiffs(filesPath, band=1):
+def openTiffs(filesPath, band=1, polygon=[]):
     filesTiff={"files":[]}
     # for filePath in filesPath:
     #     filesTiff["files"].append( openTiff(filePath, band) )
-    filesTiff["files"]=tuple(openTiff(item, band) for item in filesPath)
+    filesTiff["files"]=tuple(openTiff(item, band, polygon) for item in filesPath)
     filesTiff["min"]=min(x['min'] for x in filesTiff["files"])
     filesTiff["max"]=max(x['max'] for x in filesTiff["files"])
     filesTiff["bandN"]=filesTiff["files"][0]["bandN"]
@@ -167,6 +232,7 @@ def openTiffs(filesPath, band=1):
         print("1 max:",fileTiff["max"],"maxRaster:",fileTiff["maxRaster"])
         fileTiff["maxRasterG"]=(filesTiff['max']-fileTiff["offset"])/fileTiff["scale"]
         print("2 max:",fileTiff["max"],"maxRaster:",fileTiff["maxRaster"])
+        filesTiff.update(fileTiff)
     
     print("filesTiff.min",filesTiff["min"]) 
     print("filesTiff.max",filesTiff["max"])
@@ -198,13 +264,13 @@ def cleanTiffs():
         except OSError as e:
             print("Error: %s: %s"%(f,e.strerror))
 
-def csvs2Tiffs(filesPath, var=''):
+def csvs2Tiffs(filesPath, var='', polygon=[]):
     files={"filesNameTiff":[], "var":'', "vars":[]}
     cleanTiffs()
     for index,filePath in enumerate(filesPath):
         print("csvs2Tiffs:",filePath)
         # filesTiff.append( netCDF2Tiff(filePath, var, index) )
-        fileCSV2Tiff=csv2Tiff(filePath, var, uuid.uuid4().hex)
+        fileCSV2Tiff=csv2Tiff(filePath, var, uuid.uuid4().hex, polygon)
         print("fileNetCDF2Tiff",fileCSV2Tiff)
         # filesTiff.append( fileNetCDF2Tiff["fileNameTiff"] )
         files["filesNameTiff"].append( fileCSV2Tiff["fileNameTiff"] )
@@ -213,7 +279,7 @@ def csvs2Tiffs(filesPath, var=''):
         files.update(fileCSV2Tiff)
     return files
 
-def csv2Tiff(filePath, var='',id=0):
+def csv2Tiff(filePath, var='',id=0, polygon=[]):
     fileCSV = {"fileNameTiff":''}
     print("filePath:",filePath)
     columns = list(pd.read_csv(filePath, nrows=1).select_dtypes("number").columns)
@@ -253,6 +319,45 @@ def csv2Tiff(filePath, var='',id=0):
     fileCSV["fileNameTiff"]=fileNameTiff
     fileCSV["var"]=var
     fileCSV["vars"]=vars
+
+    fileCSV["newPolygon"]=False
+    if len(polygon)>0:
+        rioFile = rioxarray.open_rasterio(fileNameTiff,masked=True)
+        print("************")
+        print("************file:",fileNameTiff)
+        print(rioFile)
+        print("************")
+        new_tiff=rioFile.rio.reproject("EPSG:4326")
+        if new_tiff.rio.crs is None:
+            new_tiff.rio.write_crs(4326, inplace=True)
+        new_tiff.rio.set_spatial_dims('x','y', inplace=True)
+
+        clipped = new_tiff.rio.clip(polygon, new_tiff.rio.crs, all_touched=True)
+        values=clipped[0].values
+        nodata=new_tiff.attrs["_FillValue"]
+        flat_list2=values.flatten()
+        def f_isclose(x):
+            return math.isclose(x, nodata) # verifica si dos valores están cerca uno del otro
+        vec_isclose=np.vectorize(f_isclose)
+        flat_list = np.delete(flat_list2, vec_isclose(flat_list2) )
+        h=np.histogram(flat_list )
+        
+        #print("frequenciesPolygon",h[0].tolist())
+        #print("subintervalPolygon",h[1].tolist())
+        arr = np.array(flat_list)
+        xmean=arr.mean()
+        xstd=arr.std()
+        print("--------histogram----------")
+        print("histogram:",h[0], h[1])
+        print("--------xmean----------",xmean)
+        print("--------xstd----------",xstd)
+        fileCSV["frequenciesPolygon"]=h[0].tolist()
+        fileCSV["subintervalPolygon"]=h[1].tolist()
+        fileCSV["xmean"]=float(xmean)
+        fileCSV["xstd"]=float(xstd)
+
+        fileCSV["newPolygon"]=True
+
     return fileCSV
 
 def netCDFs2Tiffs(filesPath, var='', timei=0, polygon=""):
@@ -401,6 +506,7 @@ def netCDF2Tiff(filePath, var='',id=0, polygon=[], timei=0):
         xmean=arr.mean()
         xstd=arr.std()
         print("--------histogram----------")
+        print("histogram:",h[0], h[1])
         print("--------xmean----------",xmean)
         print("--------xstd----------",xstd)
         fileNetCDF["frequenciesPolygon"]=h[0].tolist()
@@ -470,7 +576,7 @@ def openFiles(files, var='', band=1, timei=0, polygon=""):
     print("openfiles, files:",files)
     if files["ext"]=='tiff' or files["ext"]=='tif':
         print("Selección tiff")
-        filesTiff=openTiffs(files["path"],band)
+        filesTiff=openTiffs(files["path"],band, polygon=polygon)
         filesTiff["var"]="band:"+str(band)
         filesTiff["ext"]="tif"
         # filesTiff["bandN"]=filesTiff["files"]["bandN"]
@@ -498,12 +604,13 @@ def openFiles(files, var='', band=1, timei=0, polygon=""):
         return filesTiff
     elif files["ext"]=='csv':
         print("Selección CSV")
-        filesCSVs2Tiffs=csvs2Tiffs(files["path"],var=var)
+        filesCSVs2Tiffs=csvs2Tiffs(files["path"],var=var, polygon=polygon)
         print("filesCSVs2Tiffs:",filesCSVs2Tiffs)
         filesTiff=openTiffs(filesCSVs2Tiffs["filesNameTiff"])
         filesTiff["var"]=filesCSVs2Tiffs["var"]
         filesTiff["vars"]=filesCSVs2Tiffs["vars"]
         filesTiff["ext"]="csv"
+        filesTiff.update(filesCSVs2Tiffs)
         # filesTiff["bandN"]=filesTiff["files"]["bandN"]
         return filesTiff
     # elif files["ext"]=='shp':

@@ -117,7 +117,10 @@ class ChartL2 extends React.Component {
         container.setAttribute('style', 'height:800px; width:400px');
         //container.setAttribute('style', 'height:10vh; width:20vw');
         this.container = container;
-        this.makeChart(this.container);
+
+        if(this.state.subinterval.length>0 || this.state.x.length>0 ){
+          this.makeChart(this.container);
+        }
         
         return this.container;
       },
@@ -241,25 +244,33 @@ class ChartL2 extends React.Component {
         ctxContainer.setAttribute('width', '1000');
         ctxContainer.setAttribute('height', '800');
 
+        console.log("this.state.subinterval.length:",this.state.subinterval.length)
+        console.log("this.state.x.length:",this.state.x.length)
+        console.log("and:",this.state.subinterval.length && this.state.x.length)
+        if(this.state.subinterval.length>0 && this.state.x.length>0 ){
+          console.log("Dentro if")
+          const change_TimeSeries_Histogram = L.DomUtil.create('input','bttn_change',container);
+          change_TimeSeries_Histogram.setAttribute('width', '1000');
+          change_TimeSeries_Histogram.type="button";
+          change_TimeSeries_Histogram.value = "Time Series⟺Histogram";
+          change_TimeSeries_Histogram.addEventListener('click', ()=>{
+            console.log("TIME")
+            // configTimeSeries=undefined;
+            // configHistogram=undefined;
+            this.selectedTimeSeries=!this.selectedTimeSeries;
+            //this.changeSelected()
+  
+            let config=this.selectedTimeSeries?this.configTimeSeries:this.configHistogram;
+  
+            if (typeof this.myChart == 'object'){
+              this.myChart.destroy();
+            }
+            this.myChart = new Chart(ctxContainer, config);
+          });
+        }
 
-        const change_TimeSeries_Histogram = L.DomUtil.create('input','bttn_change',container);
-        change_TimeSeries_Histogram.setAttribute('width', '1000');
-        change_TimeSeries_Histogram.type="button";
-        change_TimeSeries_Histogram.value = "Time Series⟺Histogram";
-        change_TimeSeries_Histogram.addEventListener('click', ()=>{
-          console.log("TIME")
-          // configTimeSeries=undefined;
-          // configHistogram=undefined;
-          this.selectedTimeSeries=!this.selectedTimeSeries;
-          //this.changeSelected()
 
-          let config=this.selectedTimeSeries?this.configTimeSeries:this.configHistogram;
-
-          if (typeof this.myChart == 'object'){
-            this.myChart.destroy();
-          }
-          this.myChart = new Chart(ctxContainer, config);
-        });
+        
 
         const bttn = L.DomUtil.create('input','bttn_name',container);
         bttn.setAttribute('width', '1000');
@@ -488,24 +499,24 @@ class ChartL2 extends React.Component {
               x:{
                 type: 'linear'
               },
-              xAxes: [{
-                display: false,
-                barPercentage: 1,
-                ticks: {
-                  max: 3,
-                },
-              }, {
-                display: true,
-                ticks: {
-                  autoSkip: false,
-                  max: 4,
-                }
-              }],
-              yAxes: [{
-                ticks: {
-                  beginAtZero: true
-                }
-              }]
+              // xAxes: [{
+              //   display: false,
+              //   barPercentage: 1,
+              //   ticks: {
+              //     max: 3,
+              //   },
+              // }, {
+              //   display: true,
+              //   ticks: {
+              //     autoSkip: false,
+              //     max: 4,
+              //   }
+              // }],
+              // yAxes: [{
+              //   ticks: {
+              //     beginAtZero: true
+              //   }
+              // }]
             },
 
             animation: {
@@ -527,11 +538,11 @@ class ChartL2 extends React.Component {
                   ctxCanvas.restore();
                 },
                 afterDraw: chart => {//despues
-                  console.log("---------afterDraw-----------")
+                  // console.log("---------afterDraw-----------")
                   var ctx = chart.ctx;
                   var xAxis = chart.scales.x;
                   var yAxis = chart.scales.y;
-                  console.log("chart.scales:",chart.scales)
+                  // console.log("chart.scales:",chart.scales)
                   const x_1 = xAxis.getPixelForValue(this.state.mean-this.state.std);
                   const x_2 = xAxis.getPixelForValue(this.state.mean);
                   const x_3 = xAxis.getPixelForValue(this.state.mean+this.state.std);
@@ -542,10 +553,10 @@ class ChartL2 extends React.Component {
                   // const x1=xAxis.getPixelForValue(1)
                   // const x2=xAxis.getPixelForValue(2)
                   
-                  console.log("chart.scales x_1 x_2 x_3:",x_1,x_2,x_3)
-                  console.log("chart.scales mean std:",this.state.mean,this.state.std)
-                  console.log("subinterval min-max:",this.state.subinterval[0],this.state.subinterval[this.state.subinterval.length-1])
-                  console.log("yi yf:",yi,yf)
+                  // console.log("chart.scales x_1 x_2 x_3:",x_1,x_2,x_3)
+                  // console.log("chart.scales mean std:",this.state.mean,this.state.std)
+                  // console.log("subinterval min-max:",this.state.subinterval[0],this.state.subinterval[this.state.subinterval.length-1])
+                  // console.log("yi yf:",yi,yf)
                   // console.log("chart.width, chart.height",chart.width, chart.height)
                   // console.log("x=0 x=1 x=2",x0,x1,x2)
                   // const x_1 = xAxis.getPixelForValue(this.state.subinterval[1]);

@@ -2,7 +2,8 @@
 // import React, { useEffect, useRef } from 'react'
 import React from 'react'
 import axios from 'axios';
-import { MapContainer, TileLayer, ScaleControl, LayersControl, LayerGroup, Map, FeatureGroup, Circle, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer, ScaleControl, LayersControl, LayerGroup, Map, FeatureGroup, Circle, GeoJSON, useMapEvents } from 'react-leaflet';
+import {useState} from "react";
 
 import * as L from "leaflet";
 
@@ -17,6 +18,7 @@ import {mapColor} from './mapColor.json'
 
 // import {Map, TileLayer, FeatureGroup, Circle} from "react-leaflet"
 import {EditControl} from "react-leaflet-draw"
+import ZoomMap from './ZoomMap';
 
 //import pruebaJSON from "/home/alex/Pruebas/ShapeFileLeaflet/Mexico/estados"
 
@@ -48,6 +50,7 @@ const MAPBOX_ACCESS_TOKEN  = 'pk.eyJ1IjoibGlnaHRidXJuIiwiYSI6ImNpeXViOGptcDAwMmY
 //     return null;
 //   }
 // };
+
 
 class MapboxContainerVis extends React.Component {
 
@@ -177,38 +180,42 @@ class MapboxContainerVis extends React.Component {
   interpolateColorMap=() =>{
     const N=mapColor.length;
     let listColors=[]
-    console.log("interpolateColorMap")
-    console.log(this.state.subintervalPolygon)
-    console.log("-------------------")
-    console.log("tiffMin:",this.state.tiffMin)
-    console.log("tiffMax:",this.state.tiffMax)
-    console.log("N:",N)
+    // console.log("interpolateColorMap")
+    // console.log(this.state.subintervalPolygon)
+    // console.log("-------------------")
+    // console.log("tiffMin:",this.state.tiffMin)
+    // console.log("tiffMax:",this.state.tiffMax)
+    // console.log("N:",N)
     this.state.subintervalPolygon.forEach((x)=>{
       let y=(x-this.state.tiffMin)*(N-1)/(this.state.tiffMax-this.state.tiffMin)
       let i=Math.floor(y)
       let di=y-i
-      console.log("x:",x," y:",y," i:",i," di:",di)
+      // console.log("x:",x," y:",y," i:",i," di:",di)
       let r,g,b;
-      if(y>N-1){
+      if(y>=N-1){
+        // console.log("y>=N-1")
         i=N-1
         r = mapColor[i][0]
         g = mapColor[i][1]
         b = mapColor[i][2]
       }
       else if(y<0){
+        // console.log("y<0")
         r = mapColor[0][0]
         g = mapColor[0][1]
         b = mapColor[0][2]
       }
       else{
+        // console.log("else")
         r = mapColor[i][0]+di*(mapColor[i+1][0]-mapColor[i][0])
         g = mapColor[i][1]+di*(mapColor[i+1][1]-mapColor[i][1])
         b = mapColor[i][2]+di*(mapColor[i+1][2]-mapColor[i][2])
       }
       let color=`rgb(${r},${g},${b})`
+      // console.log("color:",color)
       listColors.push(color)
     })
-    console.log("listColors:",listColors)
+    // console.log("listColors:",listColors)
     return listColors
   }
 
@@ -1108,6 +1115,7 @@ class MapboxContainerVis extends React.Component {
 
     
     if( this.state.newPolygon ){
+      console.log("####Entro por this.state.newPolygon:",this.state.newPolygon)
       this.setState({
         statsPolygonTime:response.data.statsPolygonTime,
         statsPolygonMean:response.data.statsPolygonMean,
@@ -2053,12 +2061,20 @@ class MapboxContainerVis extends React.Component {
               />
             }
 
+            <ZoomMap
+              position="topright"
+              title="Zoom"
+              min="0"
+              max="18"
+              // value={this.INITIAL_VIEW_STATE.zoom}
+            />
+
             
               {this.state.definedPolygon &&
               this.state.tiffLayers &&
               this.state.tiffLayers.length &&
-              this.state.statsPolygonTime &&
-              this.state.statsPolygonTime.length &&
+              // this.state.statsPolygonTime &&
+              // this.state.statsPolygonTime.length &&
               <ChartL2
                 childRef={ref => (this.refChartL= ref)}
                 show={true}
@@ -2369,8 +2385,6 @@ class MapboxContainerVis extends React.Component {
               {/* </LayersControl.Overlay> */}
               
             </LayersControl>
-
-            
 
           </MapContainer>
 
